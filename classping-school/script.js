@@ -72,8 +72,24 @@ const loginError = document.querySelector("#loginError");
 const rememberLogin = document.querySelector("#rememberLogin");
 const logoutButton = document.querySelector("#logoutButton");
 const welcomeFirstName = document.querySelector("#welcomeFirstName");
+const dashboardDate = document.querySelector("#dashboardDate");
 let isParentView = false;
 let managedClass = "";
+
+function updateDashboardDate() {
+  dashboardDate.textContent = new Intl.DateTimeFormat("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date()).toLocaleUpperCase("id-ID");
+}
+
+updateDashboardDate();
+window.setInterval(updateDashboardDate, 60_000);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) updateDashboardDate();
+});
 
 const demoAccounts = {
   admin: { email: "admin@classping.id", password: "admin123", role: "ADMIN", name: "Andini Sari", initials: "AS" },

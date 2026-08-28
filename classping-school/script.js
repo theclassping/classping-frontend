@@ -71,6 +71,7 @@ const loginPassword = document.querySelector("#loginPassword");
 const loginError = document.querySelector("#loginError");
 const rememberLogin = document.querySelector("#rememberLogin");
 const logoutButton = document.querySelector("#logoutButton");
+const welcomeFirstName = document.querySelector("#welcomeFirstName");
 let isParentView = false;
 let managedClass = "";
 
@@ -102,6 +103,7 @@ function enterApp(account, remember = false) {
   profileName.textContent = account.name;
   profileRole.textContent = account.role === "TEACHER" ? "Guru" : "Administrator";
   profileAvatar.textContent = account.initials;
+  welcomeFirstName.textContent = account.name.split(" ")[0];
   loginPage.hidden = true;
   appShell.hidden = false;
   document.title = account.role === "TEACHER" ? "ClassPing School — Portal Guru" : "ClassPing School — Dashboard Admin";

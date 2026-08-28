@@ -79,6 +79,8 @@ const demoAccounts = {
   parent: { email: "parent@classping.id", password: "parent123", role: "PARENT", name: "Rina Ramadhani", initials: "RR" },
 };
 
+const sessionKey = "classping-guardian-session";
+
 function applyDashboardRole(role, allowPreview = true) {
   isParentView = role === "PARENT";
   document.body.classList.toggle("parent-view", isParentView);
@@ -93,13 +95,16 @@ function applyDashboardRole(role, allowPreview = true) {
 
 function enterApp(account, remember = false) {
   const session = { role: account.role, email: account.email, name: account.name, initials: account.initials };
-  sessionStorage.removeItem("classping-session");
-  localStorage.removeItem("classping-session");
-  (remember ? localStorage : sessionStorage).setItem("classping-session", JSON.stringify(session));
-  applyDashboardRole(account.role, account.role === "ADMIN");
+  sessionStorage.removeItem(sessionKey);
+  localStorage.removeItem(sessionKey);
+  (remember ? localStorage : sessionStorage).setItem(sessionKey, JSON.stringify(session));
+  applyDashboardRole("PARENT", false);
+  profileName.textContent = account.name;
+  profileRole.textContent = account.role === "ADMIN" ? "Administrator · Mode Wali" : "Orang Tua Alya";
+  profileAvatar.textContent = account.initials;
   loginPage.hidden = true;
   appShell.hidden = false;
-  document.title = account.role === "PARENT" ? "ClassPing — Portal Orang Tua" : "ClassPing — Dashboard Admin";
+  document.title = account.role === "ADMIN" ? "ClassPing Guardian — Mode Administrator" : "ClassPing Guardian — Portal Orang Tua";
   window.scrollTo(0, 0);
 }
 
@@ -138,12 +143,12 @@ document.querySelectorAll("[data-demo-account]").forEach((button) => {
 });
 
 logoutButton.addEventListener("click", () => {
-  sessionStorage.removeItem("classping-session");
-  localStorage.removeItem("classping-session");
+  sessionStorage.removeItem(sessionKey);
+  localStorage.removeItem(sessionKey);
   appShell.hidden = true;
   loginPage.hidden = false;
-  applyDashboardRole("ADMIN", true);
-  document.title = "ClassPing — Masuk";
+  applyDashboardRole("PARENT", false);
+  document.title = "ClassPing Guardian — Masuk";
   loginEmail.focus();
 });
 
@@ -440,14 +445,15 @@ renderStudents();
 updateDashboardStats();
 
 try {
-  const savedSession = localStorage.getItem("classping-session") || sessionStorage.getItem("classping-session");
+  const savedSession = localStorage.getItem(sessionKey) || sessionStorage.getItem(sessionKey);
   if (savedSession) {
     const session = JSON.parse(savedSession);
-    enterApp(session, Boolean(localStorage.getItem("classping-session")));
+    if (!['ADMIN', 'PARENT'].includes(session.role)) throw new Error("Invalid guardian role");
+    enterApp(session, Boolean(localStorage.getItem(sessionKey)));
   } else {
     loginEmail.focus();
   }
 } catch {
-  localStorage.removeItem("classping-session");
-  sessionStorage.removeItem("classping-session");
+  localStorage.removeItem(sessionKey);
+  sessionStorage.removeItem(sessionKey);
 }

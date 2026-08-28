@@ -1,15 +1,29 @@
 # ClassPing Frontend
 
-Simple, responsive SPP management dashboard for an Indonesian kindergarten.
+ClassPing is split into two role-specific frontend applications:
+
+- `classping-school/` — school portal for administrators and teachers.
+- `classping-guardian/` — guardian portal for administrators and parents.
+
+## Demo accounts
+
+| Account | Email | Password | School | Guardian |
+| --- | --- | --- | --- | --- |
+| Administrator | `admin@classping.id` | `admin123` | Yes | Yes |
+| Teacher — Nia Ramadhani | `nia@classping.id` | `guru123` | Yes | No |
+| Parent — Rina Ramadhani | `parent@classping.id` | `parent123` | No | Yes |
 
 ## Run locally
 
-No installation is required. Open `index.html` directly, or run:
+From this directory:
 
 ```bash
-python3 -m http.server 4174
+python3 -m http.server 4175
 ```
 
-Then visit `http://localhost:4174`.
+Then open:
 
-The dashboard currently uses in-browser sample data and is ready to be connected to the ClassPing backend API.
+- School: `http://localhost:4175/classping-school/`
+- Guardian: `http://localhost:4175/classping-guardian/`
+
+Authentication is currently mocked in the browser and is ready to be replaced with the ClassPing backend JWT API.

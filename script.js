@@ -63,8 +63,89 @@ const reminderForm = document.querySelector("#reminderForm");
 const reminderTemplate = document.querySelector("#reminderTemplate");
 const reminderRecipients = document.querySelector("#reminderRecipients");
 const reminderRecipientCount = document.querySelector("#reminderRecipientCount");
+const loginPage = document.querySelector("#loginPage");
+const appShell = document.querySelector("#appShell");
+const loginForm = document.querySelector("#loginForm");
+const loginEmail = document.querySelector("#loginEmail");
+const loginPassword = document.querySelector("#loginPassword");
+const loginError = document.querySelector("#loginError");
+const rememberLogin = document.querySelector("#rememberLogin");
+const logoutButton = document.querySelector("#logoutButton");
 let isParentView = false;
 let managedClass = "";
+
+const demoAccounts = {
+  admin: { email: "admin@classping.id", password: "admin123", role: "ADMIN", name: "Andini Sari", initials: "AS" },
+  parent: { email: "parent@classping.id", password: "parent123", role: "PARENT", name: "Rina Ramadhani", initials: "RR" },
+};
+
+function applyDashboardRole(role, allowPreview = true) {
+  isParentView = role === "PARENT";
+  document.body.classList.toggle("parent-view", isParentView);
+  adminView.hidden = isParentView;
+  parentView.hidden = !isParentView;
+  viewSwitch.hidden = !allowPreview;
+  viewSwitch.querySelector("span").textContent = isParentView ? "Kembali ke Admin" : "Lihat sebagai Orang Tua";
+  profileName.textContent = isParentView ? "Rina Ramadhani" : "Andini Sari";
+  profileRole.textContent = isParentView ? "Orang Tua Alya" : "Administrator";
+  profileAvatar.textContent = isParentView ? "RR" : "AS";
+}
+
+function enterApp(account, remember = false) {
+  const session = { role: account.role, email: account.email, name: account.name, initials: account.initials };
+  sessionStorage.removeItem("classping-session");
+  localStorage.removeItem("classping-session");
+  (remember ? localStorage : sessionStorage).setItem("classping-session", JSON.stringify(session));
+  applyDashboardRole(account.role, account.role === "ADMIN");
+  loginPage.hidden = true;
+  appShell.hidden = false;
+  document.title = account.role === "PARENT" ? "ClassPing — Portal Orang Tua" : "ClassPing — Dashboard Admin";
+  window.scrollTo(0, 0);
+}
+
+function authenticate(email, password) {
+  return Object.values(demoAccounts).find((account) => account.email === email.trim().toLowerCase() && account.password === password);
+}
+
+loginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  loginError.textContent = "";
+  if (!loginForm.reportValidity()) return;
+  const account = authenticate(loginEmail.value, loginPassword.value);
+  if (!account) {
+    loginError.textContent = "Email atau kata sandi tidak sesuai. Silakan coba kembali.";
+    loginPassword.focus();
+    return;
+  }
+  enterApp(account, rememberLogin.checked);
+  loginForm.reset();
+});
+
+document.querySelector("#togglePassword").addEventListener("click", (event) => {
+  const showing = loginPassword.type === "text";
+  loginPassword.type = showing ? "password" : "text";
+  event.currentTarget.setAttribute("aria-label", showing ? "Tampilkan kata sandi" : "Sembunyikan kata sandi");
+});
+
+document.querySelectorAll("[data-demo-account]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const account = demoAccounts[button.dataset.demoAccount];
+    loginEmail.value = account.email;
+    loginPassword.value = account.password;
+    enterApp(account, rememberLogin.checked);
+    loginForm.reset();
+  });
+});
+
+logoutButton.addEventListener("click", () => {
+  sessionStorage.removeItem("classping-session");
+  localStorage.removeItem("classping-session");
+  appShell.hidden = true;
+  loginPage.hidden = false;
+  applyDashboardRole("ADMIN", true);
+  document.title = "ClassPing — Masuk";
+  loginEmail.focus();
+});
 
 const rupiah = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
 
@@ -286,14 +367,7 @@ manageActivityForm.addEventListener("submit", (event) => {
 });
 
 viewSwitch.addEventListener("click", () => {
-  isParentView = !isParentView;
-  document.body.classList.toggle("parent-view", isParentView);
-  adminView.hidden = isParentView;
-  parentView.hidden = !isParentView;
-  viewSwitch.querySelector("span").textContent = isParentView ? "Kembali ke Admin" : "Lihat sebagai Orang Tua";
-  profileName.textContent = isParentView ? "Rina Ramadhani" : "Andini Sari";
-  profileRole.textContent = isParentView ? "Orang Tua Alya" : "Administrator";
-  profileAvatar.textContent = isParentView ? "RR" : "AS";
+  applyDashboardRole(isParentView ? "ADMIN" : "PARENT", true);
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
@@ -364,3 +438,16 @@ document.addEventListener("click", (event) => {
 renderPayments();
 renderStudents();
 updateDashboardStats();
+
+try {
+  const savedSession = localStorage.getItem("classping-session") || sessionStorage.getItem("classping-session");
+  if (savedSession) {
+    const session = JSON.parse(savedSession);
+    enterApp(session, Boolean(localStorage.getItem("classping-session")));
+  } else {
+    loginEmail.focus();
+  }
+} catch {
+  localStorage.removeItem("classping-session");
+  sessionStorage.removeItem("classping-session");
+}

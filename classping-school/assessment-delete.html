@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClassPing School — Penilaian</title>
+  <title>ClassPing School — Hapus Penilaian</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -57,55 +57,23 @@
       </header>
 
       <main id="main">
-        <section class="panel student-data" id="penilaian">
-          <div class="panel-heading student-heading">
+        <section class="panel student-manage">
+          <div class="panel-heading">
             <div>
-              <h2>Penilaian</h2>
-              <p>Daftar penilaian guru dan perkembangan hasil observasi siswa</p>
+              <h2>Hapus Penilaian</h2>
+              <p>Anda yakin ingin menghapus data penilaian ini?</p>
             </div>
-            <a class="primary-button compact-button" href="assessment-add.html"><svg><use href="#icon-plus" /></svg>Tambah Penilaian</a>
+            <a class="secondary-button" href="assessment.html">Kembali</a>
           </div>
 
-          <div class="table-tools">
-            <label class="search"><svg><use href="#icon-search" /></svg><input id="assessmentSearch" type="search" placeholder="Cari nama penilaian..." /></label>
-            <div class="assessment-period-filter">
-              <label>
-                <span>Periode mulai</span>
-                <input id="assessmentFilterStart" type="date" />
-              </label>
-              <label>
-                <span>Periode selesai</span>
-                <input id="assessmentFilterEnd" type="date" />
-              </label>
+          <div class="panel detail-panel" style="padding:24px; max-width:560px; margin:16px auto 0;">
+            <h3 id="deleteAssessmentName">Observasi Motorik</h3>
+            <p style="color: var(--muted); margin-top: 8px;">Data yang dihapus akan hilang dari daftar penilaian dan tidak dapat dikembalikan.</p>
+            <div class="student-form-actions" style="margin-top:24px;">
+              <button class="secondary-button" type="button" onclick="window.location.href='assessment.html'">Batal</button>
+              <button class="primary-button danger-button" id="confirmDeleteAssessment" type="button">Hapus</button>
             </div>
-            <select id="assessmentClassFilter" aria-label="Filter kelas penilaian">
-              <option value="all">Semua Kelas</option>
-              <option value="A1">A1</option>
-              <option value="A2">A2</option>
-              <option value="B1">B1</option>
-              <option value="B2">B2</option>
-            </select>
           </div>
-
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Nama Penilaian</th>
-                  <th>Kelas</th>
-                  <th>Periode</th>
-                  <th>Peserta</th>
-                  <th>Rata-rata</th>
-                  <th>Status</th>
-                  <th aria-label="Aksi"></th>
-                </tr>
-              </thead>
-              <tbody id="assessmentRows"></tbody>
-            </table>
-          </div>
-
-          <div class="pagination" id="assessmentPagination" aria-label="Navigasi halaman penilaian"></div>
-          <p class="empty-state" id="assessmentEmptyState" hidden>Tidak ada penilaian yang cocok.</p>
         </section>
       </main>
     </div>
@@ -126,6 +94,7 @@
     <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
     <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   </svg>
+
   <script src="script.js"></script>
 </body>
 </html>

@@ -22,6 +22,79 @@ const students = [
   { name: "Citra Maharani", initials: "CM", nis: "26008", className: "B2", gender: "Perempuan", guardian: "Bapak Reza Mahendra", relation: "Ayah", phone: "0878-3345-9012", color: "purple" }
 ];
 
+const assessmentReportLayout = [
+  {
+    title: "Personal Development",
+    sections: [
+      {
+        title: "Social Development",
+        indicators: ["Cooperation", "Taking Turns", "Sharing"]
+      },
+      {
+        title: "Emotional Development",
+        indicators: ["Confidence", "Independence"]
+      }
+    ]
+  }
+];
+const assessmentIndicators = assessmentReportLayout.flatMap((group) => group.sections.flatMap((section) => section.indicators));
+const defaultAssessments = [
+  {
+    id: "observasi-keterampilan",
+    name: "Observasi Keterampilan Motorik",
+    className: "A1",
+    startDate: "2026-07-01",
+    endDate: "2026-07-31",
+    period: "Juli 2026",
+    remark: "Anak-anak sudah mulai menunjukkan koordinasi motorik yang lebih baik dan mandiri saat mengikuti kegiatan.",
+    status: "Published",
+    students: ["Alya Putri Ramadhani", "Rafi Akbar Maulana"],
+    scores: {
+      "Alya Putri Ramadhani": { Cooperation: "4", "Taking Turns": "3", Sharing: "4", Confidence: "3", Independence: "4" },
+      "Rafi Akbar Maulana": { Cooperation: "3", "Taking Turns": "3", Sharing: "3", Confidence: "3", Independence: "4" }
+    }
+  },
+  {
+    id: "penilaian-sosial",
+    name: "Penilaian Sosial Emosional",
+    className: "A2",
+    startDate: "2026-08-01",
+    endDate: "2026-08-30",
+    period: "Agustus 2026",
+    remark: "Dukungan guru dan teman sebaya membantu siswa lebih aktif berkomunikasi dan berinteraksi secara sehat.",
+    status: "Draft",
+    students: ["Nayla Zahra Aulia", "Fathan Rizky Pratama"],
+    scores: {
+      "Nayla Zahra Aulia": { Cooperation: "4", "Taking Turns": "4", Sharing: "4", Confidence: "4", Independence: "4" },
+      "Fathan Rizky Pratama": { Cooperation: "3", "Taking Turns": "3", Sharing: "3", Confidence: "3", Independence: "3" }
+    }
+  },
+  {
+    id: "evaluasi-pembelajaran",
+    name: "Evaluasi Pembelajaran Bahasa",
+    className: "B1",
+    startDate: "2026-08-05",
+    endDate: "2026-08-25",
+    period: "Agustus 2026",
+    remark: "Siswa sudah lebih berani menyampaikan ide dan menjawab pertanyaan sederhana dengan benar.",
+    status: "Published",
+    students: ["Raka Aditya Pratama", "Keisha Amalia Putri"],
+    scores: {
+      "Raka Aditya Pratama": { Cooperation: "3", "Taking Turns": "4", Sharing: "4", Confidence: "4", Independence: "3" },
+      "Keisha Amalia Putri": { Cooperation: "4", "Taking Turns": "4", Sharing: "4", Confidence: "4", Independence: "4" }
+    }
+  }
+];
+
+const savedAssessments = JSON.parse(localStorage.getItem("classping-assessments") || "null");
+const assessments = Array.isArray(savedAssessments) && savedAssessments.length ? savedAssessments : defaultAssessments;
+const assessmentRows = document.querySelector("#assessmentRows");
+const assessmentSearch = document.querySelector("#assessmentSearch");
+const assessmentFilterStart = document.querySelector("#assessmentFilterStart");
+const assessmentFilterEnd = document.querySelector("#assessmentFilterEnd");
+const assessmentClassFilter = document.querySelector("#assessmentClassFilter");
+const assessmentPagination = document.querySelector("#assessmentPagination");
+const assessmentEmptyState = document.querySelector("#assessmentEmptyState");
 const paymentRows = document.querySelector("#paymentRows");
 const searchInput = document.querySelector("#searchInput");
 const classFilter = document.querySelector("#classFilter");
@@ -88,6 +161,7 @@ let managedClass = "";
 let studentPage = 1;
 let paymentPage = 1;
 let activityPage = 1;
+let assessmentPage = 1;
 
 const activityCatalog = {
   "melukis-dengan-jari": {
@@ -407,6 +481,105 @@ function renderStudents() {
   });
 }
 
+function saveAssessments() {
+  localStorage.setItem("classping-assessments", JSON.stringify(assessments));
+}
+
+function getAssessmentAverage(assessment) {
+  if (!assessment || !Array.isArray(assessment.students) || !assessment.students.length) return 0;
+  const values = assessment.students.flatMap((student) => {
+    const scoreSet = assessment.scores?.[student] || {};
+    return assessmentIndicators
+      .filter((indicator) => scoreSet[indicator] !== undefined && scoreSet[indicator] !== "")
+      .map((indicator) => Number(scoreSet[indicator] || 0));
+  });
+  if (!values.length) return 0;
+  const total = values.reduce((sum, item) => sum + Number(item || 0), 0);
+  return Number((total / values.length).toFixed(1));
+}
+
+function renderAssessments() {
+  const tableBody = document.querySelector("#assessmentRows");
+  const searchInput = document.querySelector("#assessmentSearch");
+  const startFilter = document.querySelector("#assessmentFilterStart");
+  const endFilter = document.querySelector("#assessmentFilterEnd");
+  const classFilter = document.querySelector("#assessmentClassFilter");
+  const emptyState = document.querySelector("#assessmentEmptyState");
+  const pagination = document.querySelector("#assessmentPagination");
+
+  if (!tableBody || !searchInput || !classFilter || !emptyState || !pagination) return;
+
+  const term = searchInput.value.trim().toLocaleLowerCase("id");
+  const selectedClass = classFilter.value;
+  const fromDate = startFilter ? startFilter.value : "";
+  const toDate = endFilter ? endFilter.value : "";
+
+  const filtered = assessments.filter((assessment) => {
+    const matchesName = assessment.name.toLocaleLowerCase("id").includes(term);
+    const matchesClass = selectedClass === "all" || assessment.className === selectedClass;
+    const assessmentStart = assessment.startDate || "";
+    const assessmentEnd = assessment.endDate || "";
+    const matchesFrom = !fromDate || !assessmentStart || assessmentStart >= fromDate;
+    const matchesTo = !toDate || !assessmentEnd || assessmentEnd <= toDate;
+    return matchesName && matchesClass && matchesFrom && matchesTo;
+  });
+
+  const pageSize = 5;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  assessmentPage = Math.min(assessmentPage, totalPages);
+  const start = (assessmentPage - 1) * pageSize;
+
+  tableBody.innerHTML = filtered.slice(start, start + pageSize).map((assessment) => {
+    const slug = assessment.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const average = getAssessmentAverage(assessment);
+    return `
+      <tr>
+        <td><strong>${assessment.name}</strong></td>
+        <td>${assessment.className}</td>
+        <td>${assessment.period}</td>
+        <td>${assessment.students.length} siswa</td>
+        <td><strong>${average}</strong></td>
+        <td><span class="status-pill ${assessment.status === "Draft" ? "draft" : ""}">${assessment.status}</span></td>
+        <td>
+          <div class="student-action-wrap">
+            <button class="more-button action-menu-trigger" type="button" aria-label="Menu untuk ${assessment.name}" data-assessment="${assessment.name}">•••</button>
+            <div class="action-menu" aria-label="Aksi untuk ${assessment.name}">
+              <a class="action-menu-item" href="assessment-view.html?assessment=${slug}">View</a>
+              <a class="action-menu-item" href="assessment-update.html?assessment=${slug}">Update</a>
+              <a class="action-menu-item danger" href="assessment-delete.html?assessment=${slug}">Delete</a>
+            </div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  emptyState.hidden = filtered.length > 0;
+  renderPagination(totalPages, assessmentPage, pagination, "assessment");
+
+  pagination.querySelectorAll(".page-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextPage = Number(button.dataset.page || assessmentPage);
+      if (!Number.isFinite(nextPage)) return;
+      assessmentPage = nextPage;
+      renderAssessments();
+    });
+  });
+
+  document.querySelectorAll(".action-menu-trigger").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const wrap = event.currentTarget.closest(".student-action-wrap");
+      const menu = wrap?.querySelector(".action-menu");
+      document.querySelectorAll(".student-action-wrap").forEach((item) => {
+        const otherMenu = item.querySelector(".action-menu");
+        if (otherMenu && otherMenu !== menu) otherMenu.classList.remove("open");
+      });
+      if (menu) menu.classList.toggle("open");
+    });
+  });
+}
+
 const activityActionTriggers = document.querySelectorAll(".action-menu-trigger");
 if (activityActionTriggers.length) {
   activityActionTriggers.forEach((button) => {
@@ -537,10 +710,294 @@ function updateActivityView() {
 if (activityDateFilter) activityDateFilter.addEventListener("change", () => { activityPage = 1; updateActivityView(); });
 if (activityClassFilter) activityClassFilter.addEventListener("change", () => { activityPage = 1; updateActivityView(); });
 
+function syncAssessmentListStorage() {
+  localStorage.setItem("classping-assessments", JSON.stringify(assessments));
+}
+
+function generateAssessmentSlug(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+function getStudentsForClass(className) {
+  return students.filter((student) => student.className === className);
+}
+
+function populateAssessmentStudentChecklist(className, containerId, selectedValues = []) {
+  const container = document.querySelector(containerId);
+  if (!container) return;
+  const eligible = getStudentsForClass(className);
+  const selectedSet = new Set(selectedValues);
+  container.innerHTML = eligible.length
+    ? eligible.map((student) => `
+        <label class="assessment-student-option">
+          <input type="checkbox" name="assessmentStudents" value="${student.name}" ${selectedSet.has(student.name) ? "checked" : ""} />
+          <span class="student-avatar ${student.color}">${student.initials}</span>
+          <span>${student.name}</span>
+        </label>
+      `).join("")
+    : '<p class="empty-state">Belum ada siswa pada kelas ini.</p>';
+}
+
+function renderAssessmentScoringFields(className, containerId) {
+  const container = document.querySelector(containerId);
+  if (!container) return;
+  const eligible = getStudentsForClass(className);
+  const selected = [...document.querySelectorAll('input[name="assessmentStudents"]:checked')].map((input) => input.value);
+  const studentsToRender = selected.length ? selected : eligible.map((student) => student.name).slice(0, 2);
+  const assessmentForm = document.querySelector("#assessmentAddForm");
+  const activeAssessment = assessmentForm?.dataset.assessmentId
+    ? assessments.find((item) => item.id === assessmentForm.dataset.assessmentId)
+    : null;
+
+  container.innerHTML = studentsToRender.map((studentName) => {
+    const student = students.find((item) => item.name === studentName) || { initials: studentName.slice(0, 2).toUpperCase() };
+    const existingScores = activeAssessment?.scores?.[studentName] || {};
+    const reportSections = assessmentReportLayout.map((group) => `
+      <div class="assessment-report-group">
+        <div class="assessment-report-group-title">${group.title}</div>
+        ${group.sections.map((section) => `
+          <div class="assessment-report-section">
+            <div class="assessment-report-section-title">${section.title}</div>
+            <div class="assessment-score-grid">
+              ${section.indicators.map((indicator) => {
+                const currentValue = existingScores[indicator] || "";
+                const options = ["1", "2", "3", "4"].map((value) => `<option value="${value}" ${currentValue === value ? "selected" : ""}>${value}</option>`).join("");
+                return `
+                  <label>
+                    <span>${indicator}</span>
+                    <select name="score-${studentName}" data-student="${studentName}" data-indicator="${indicator}">
+                      <option value="" ${!currentValue ? "selected" : ""}>Pilih</option>
+                      ${options}
+                    </select>
+                  </label>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `).join("");
+
+    return `
+      <div class="assessment-score-row">
+        <div class="assessment-student-meta">
+          <span class="student-avatar ${student.color || ""}">${student.initials}</span>
+          <strong>${studentName}</strong>
+        </div>
+        ${reportSections}
+        <div class="assessment-student-remark">
+          <label for="studentRemark-${studentName}">Catatan siswa</label>
+          <textarea id="studentRemark-${studentName}" name="studentRemark-${studentName}" data-student="${studentName}" rows="3" placeholder="Tuliskan catatan pembelajaran siswa...">${existingScores.remark || ""}</textarea>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function getAssessmentFormPayload(form) {
+  const data = new FormData(form);
+  const selectedStudents = [...form.querySelectorAll('input[name="assessmentStudents"]:checked')].map((input) => input.value);
+  const scores = {};
+
+  selectedStudents.forEach((studentName) => {
+    scores[studentName] = {};
+    assessmentIndicators.forEach((indicator) => {
+      const value = form.querySelector(`select[data-student="${studentName}"][data-indicator="${indicator}"]`)?.value || "";
+      scores[studentName][indicator] = value;
+    });
+    const remark = form.querySelector(`textarea[data-student="${studentName}"]`)?.value?.trim() || "";
+    scores[studentName].remark = remark;
+  });
+
+  return {
+    id: form.dataset.assessmentId || generateAssessmentSlug(data.get("assessmentName") + "-" + Date.now()),
+    name: data.get("assessmentName").toString().trim(),
+    className: data.get("assessmentClass").toString(),
+    startDate: data.get("assessmentStartDate").toString(),
+    endDate: data.get("assessmentEndDate").toString(),
+    period: `${new Date(data.get("assessmentStartDate").toString()).toLocaleString("id-ID", { month: "long", year: "numeric" })}`,
+    students: selectedStudents,
+    scores,
+    remark: data.get("assessmentRemark").toString().trim(),
+    status: data.get("assessmentStatus") || "Draft",
+    image: data.get("assessmentImage")?.name || ""
+  };
+}
+
+function getAssessmentByQuery() {
+  const param = new URLSearchParams(window.location.search).get("assessment");
+  if (!param) return null;
+  return assessments.find((item) => generateAssessmentSlug(item.name) === param) || null;
+}
+
+function populateAssessmentViewPage() {
+  const detail = document.querySelector("#assessmentDetail");
+  if (!detail) return;
+  const assessment = getAssessmentByQuery() || assessments[0];
+  if (!assessment) return;
+
+  const average = getAssessmentAverage(assessment);
+  document.querySelector("#assessmentName")?.replaceChildren(document.createTextNode(assessment.name));
+  document.querySelector("#assessmentClass")?.replaceChildren(document.createTextNode(assessment.className));
+  document.querySelector("#assessmentPeriod")?.replaceChildren(document.createTextNode(assessment.period));
+  document.querySelector("#assessmentStatus")?.replaceChildren(document.createTextNode(assessment.status));
+  document.querySelector("#assessmentStudents")?.replaceChildren(document.createTextNode(`${assessment.students.length} siswa`));
+  document.querySelector("#assessmentAverage")?.replaceChildren(document.createTextNode(`${average.toFixed(1)}`));
+  document.querySelector("#assessmentRemark")?.replaceChildren(document.createTextNode(assessment.remark || "Tidak ada catatan."));
+  const detailStudentList = document.querySelector("#assessmentStudentList");
+  if (detailStudentList) {
+    detailStudentList.innerHTML = assessment.students.map((studentName) => {
+      const student = students.find((item) => item.name === studentName) || { initials: studentName.slice(0, 2).toUpperCase(), color: "" };
+      return `
+        <li class="participant-item">
+          <span class="student-avatar ${student.color}">${student.initials}</span>
+          <span>${studentName}</span>
+        </li>
+      `;
+    }).join("");
+  }
+
+  const scoreTableBody = document.querySelector("#assessmentScoreTableBody");
+  if (scoreTableBody) {
+    scoreTableBody.innerHTML = assessment.students.map((studentName) => {
+      const studentScores = assessment.scores?.[studentName] || {};
+      const scoreValues = assessmentIndicators
+        .map((indicator) => Number(studentScores[indicator] || 0))
+        .filter((value) => value > 0);
+      const average = scoreValues.length
+        ? (scoreValues.reduce((sum, value) => sum + value, 0) / scoreValues.length).toFixed(1)
+        : "0.0";
+      const remark = studentScores.remark || "-";
+
+      const row = assessmentIndicators.map((indicator) => `
+        <td>${studentScores[indicator] || "-"}</td>
+      `).join("");
+
+      return `
+        <tr>
+          <td><strong>${studentName}</strong></td>
+          ${row}
+          <td>${remark}</td>
+          <td><strong>${average}</strong></td>
+        </tr>
+      `;
+    }).join("") || '<tr><td colspan="8" class="empty-state">Belum ada siswa yang dipilih.</td></tr>';
+  }
+
+  const studentCount = document.querySelector("#assessmentStudentCount");
+  if (studentCount) studentCount.textContent = `${assessment.students.length} siswa`;
+  const deleteTitle = document.querySelector("#deleteAssessmentName");
+  if (deleteTitle) deleteTitle.textContent = assessment.name;
+  const summaryPeriod = document.querySelector("#assessmentSummaryPeriod");
+  if (summaryPeriod) summaryPeriod.textContent = assessment.period;
+}
+
+function populateAssessmentEditForm() {
+  const form = document.querySelector("#assessmentAddForm");
+  if (!form || !window.location.pathname.endsWith("assessment-update.html")) return;
+  const assessment = getAssessmentByQuery() || assessments[0];
+  if (!assessment) return;
+
+  form.dataset.assessmentId = assessment.id;
+  form.querySelector("#assessmentName") && (form.querySelector("#assessmentName").value = assessment.name);
+  form.querySelector("#assessmentClass") && (form.querySelector("#assessmentClass").value = assessment.className);
+  form.querySelector("#assessmentStartDate") && (form.querySelector("#assessmentStartDate").value = assessment.startDate || "");
+  form.querySelector("#assessmentEndDate") && (form.querySelector("#assessmentEndDate").value = assessment.endDate || "");
+  form.querySelector("#assessmentStatus") && (form.querySelector("#assessmentStatus").value = assessment.status || "Draft");
+  form.querySelector("#assessmentRemark") && (form.querySelector("#assessmentRemark").value = assessment.remark || "");
+
+  const selectedClass = assessment.className || "A1";
+  populateAssessmentStudentChecklist(selectedClass, "#assessmentStudentOptions", assessment.students || []);
+  renderAssessmentScoringFields(selectedClass, "#assessmentScoringFields");
+}
+
+function handleAssessmentDelete() {
+  const assessment = getAssessmentByQuery();
+  const confirmButton = document.querySelector("#confirmDeleteAssessment");
+  if (!confirmButton) return;
+
+  confirmButton.addEventListener("click", () => {
+    if (!assessment) return;
+    const index = assessments.findIndex((item) => item.id === assessment.id);
+    if (index >= 0) assessments.splice(index, 1);
+    localStorage.setItem("classping-assessments", JSON.stringify(assessments));
+    window.location.href = "assessment.html";
+  });
+}
+
+if (document.querySelector("#assessmentAddForm")) {
+  const classSelect = document.querySelector("#assessmentClass");
+  const studentContainer = document.querySelector("#assessmentStudentOptions");
+  const scoreContainer = document.querySelector("#assessmentScoringFields");
+
+  if (classSelect && studentContainer && scoreContainer) {
+    classSelect.addEventListener("change", () => {
+      populateAssessmentStudentChecklist(classSelect.value || "A1", "#assessmentStudentOptions");
+      renderAssessmentScoringFields(classSelect.value || "A1", "#assessmentScoringFields");
+    });
+
+    studentContainer.addEventListener("change", () => {
+      renderAssessmentScoringFields(classSelect.value || "A1", "#assessmentScoringFields");
+    });
+
+    const existingAssessment = getAssessmentByQuery();
+    if (window.location.pathname.endsWith("assessment-update.html") && existingAssessment) {
+      populateAssessmentStudentChecklist(existingAssessment.className || "A1", "#assessmentStudentOptions", existingAssessment.students || []);
+      renderAssessmentScoringFields(existingAssessment.className || "A1", "#assessmentScoringFields");
+    } else {
+      populateAssessmentStudentChecklist(classSelect.value || "A1", "#assessmentStudentOptions");
+      renderAssessmentScoringFields(classSelect.value || "A1", "#assessmentScoringFields");
+    }
+  }
+
+  const assessmentForm = document.querySelector("#assessmentAddForm");
+  if (assessmentForm) {
+    const existingAssessment = getAssessmentByQuery();
+    if (existingAssessment) {
+      assessmentForm.dataset.assessmentId = existingAssessment.id;
+    }
+
+    assessmentForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const payload = getAssessmentFormPayload(assessmentForm);
+      if (!payload.name || !payload.className || !payload.students.length) {
+        const toast = document.querySelector("#toast");
+        if (toast) {
+          toast.innerHTML = "<span>!</span>Lengkapi form penilaian dan pilih siswa minimal 1.";
+          toast.classList.add("show");
+          window.setTimeout(() => toast.classList.remove("show"), 3000);
+        }
+        return;
+      }
+
+      const existingIndex = assessments.findIndex((item) => item.id === payload.id);
+      if (existingIndex >= 0) {
+        assessments.splice(existingIndex, 1, payload);
+      } else {
+        assessments.unshift(payload);
+      }
+      syncAssessmentListStorage();
+      if (document.querySelector("#toast")) {
+        const toast = document.querySelector("#toast");
+        toast.innerHTML = "<span>✓</span>Penilaian berhasil disimpan.";
+        toast.classList.add("show");
+        window.setTimeout(() => toast.classList.remove("show"), 3000);
+      }
+      window.setTimeout(() => {
+        window.location.href = "assessment.html";
+      }, 500);
+    });
+  }
+}
+
 if (searchInput) searchInput.addEventListener("input", renderPayments);
 if (classFilter) classFilter.addEventListener("change", renderPayments);
 if (studentSearch) studentSearch.addEventListener("input", renderStudents);
 if (studentClassFilter) studentClassFilter.addEventListener("change", renderStudents);
+if (document.querySelector("#assessmentSearch")) document.querySelector("#assessmentSearch").addEventListener("input", renderAssessments);
+if (document.querySelector("#assessmentFilterStart")) document.querySelector("#assessmentFilterStart").addEventListener("change", renderAssessments);
+if (document.querySelector("#assessmentFilterEnd")) document.querySelector("#assessmentFilterEnd").addEventListener("change", renderAssessments);
+if (document.querySelector("#assessmentClassFilter")) document.querySelector("#assessmentClassFilter").addEventListener("change", renderAssessments);
 if (document.querySelector("#openPayment") && paymentDialog) document.querySelector("#openPayment").addEventListener("click", () => paymentDialog.showModal());
 if (document.querySelector("#openActivity") && activityDialog) document.querySelector("#openActivity").addEventListener("click", () => activityDialog.showModal());
 if (document.querySelector("#emptyAddActivity") && activityDialog) document.querySelector("#emptyAddActivity").addEventListener("click", () => activityDialog.showModal());
@@ -784,6 +1241,9 @@ if (document.querySelector("#collectedAmount")) updateDashboardStats();
 if (paymentRows && searchInput && classFilter) renderPayments();
 if (studentRows && studentSearch && studentClassFilter) renderStudents();
 if (document.querySelector("#activityName")) populateActivityView();
+if (document.querySelector("#assessmentDetail")) populateAssessmentViewPage();
+if (window.location.pathname.endsWith("assessment-update.html")) populateAssessmentEditForm();
+if (document.querySelector("#confirmDeleteAssessment")) handleAssessmentDelete();
 
 document.querySelectorAll(".settings-tab").forEach((tab) => {
   tab.addEventListener("click", () => {

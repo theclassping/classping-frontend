@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClassPing School — Penilaian</title>
+  <title>ClassPing School — View Penilaian</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -57,55 +57,73 @@
       </header>
 
       <main id="main">
-        <section class="panel student-data" id="penilaian">
-          <div class="panel-heading student-heading">
+        <section class="panel student-manage" id="assessmentDetail">
+          <div class="panel-heading">
             <div>
-              <h2>Penilaian</h2>
-              <p>Daftar penilaian guru dan perkembangan hasil observasi siswa</p>
+              <h2>Detail Penilaian</h2>
+              <p>Ringkasan hasil observasi siswa</p>
             </div>
-            <a class="primary-button compact-button" href="assessment-add.html"><svg><use href="#icon-plus" /></svg>Tambah Penilaian</a>
+            <a class="secondary-button" href="assessment.html">Kembali</a>
           </div>
 
-          <div class="table-tools">
-            <label class="search"><svg><use href="#icon-search" /></svg><input id="assessmentSearch" type="search" placeholder="Cari nama penilaian..." /></label>
-            <div class="assessment-period-filter">
-              <label>
-                <span>Periode mulai</span>
-                <input id="assessmentFilterStart" type="date" />
-              </label>
-              <label>
-                <span>Periode selesai</span>
-                <input id="assessmentFilterEnd" type="date" />
-              </label>
+          <div class="student-detail-layout" style="padding: 0 22px 20px;">
+            <div class="panel detail-panel">
+              <div class="detail-header">
+                <span class="detail-avatar">★</span>
+                <div class="detail-meta">
+                  <h2 id="assessmentName">Observasi Motorik</h2>
+                  <p id="assessmentPeriod">A1 • Juli 2026</p>
+                </div>
+              </div>
+
+              <div class="detail-grid">
+                <div class="detail-item"><span>Kelas</span><strong id="assessmentClass">A1</strong></div>
+                <div class="detail-item"><span>Status</span><strong><span class="status-badge" id="assessmentStatus">Published</span></strong></div>
+                <div class="detail-item"><span>Jumlah siswa</span><strong id="assessmentStudents">2 siswa</strong></div>
+                <div class="detail-item"><span>Rata-rata</span><strong id="assessmentAverage">3.4</strong></div>
+                <div class="detail-item full"><span>Remark</span><strong id="assessmentRemark">Tidak ada catatan.</strong></div>
+              </div>
+
+              <div class="participant-section detail-card">
+                <div class="participant-heading">
+                  <h3>Skoring Siswa</h3>
+                </div>
+                <div class="score-table-wrap">
+                  <table class="assessment-score-table">
+                    <thead>
+                      <tr>
+                        <th>Nama Siswa</th>
+                        <th>Cooperation</th>
+                        <th>Taking Turns</th>
+                        <th>Sharing</th>
+                        <th>Confidence</th>
+                        <th>Independence</th>
+                        <th>Catatan</th>
+                        <th>Rata-rata</th>
+                      </tr>
+                    </thead>
+                    <tbody id="assessmentScoreTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-            <select id="assessmentClassFilter" aria-label="Filter kelas penilaian">
-              <option value="all">Semua Kelas</option>
-              <option value="A1">A1</option>
-              <option value="A2">A2</option>
-              <option value="B1">B1</option>
-              <option value="B2">B2</option>
-            </select>
-          </div>
 
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Nama Penilaian</th>
-                  <th>Kelas</th>
-                  <th>Periode</th>
-                  <th>Peserta</th>
-                  <th>Rata-rata</th>
-                  <th>Status</th>
-                  <th aria-label="Aksi"></th>
-                </tr>
-              </thead>
-              <tbody id="assessmentRows"></tbody>
-            </table>
-          </div>
+            <div class="side-note">
+              <div class="info-card">
+                <h3>Ringkasan</h3>
+                <div class="info-list">
+                  <div><span>Indikator</span><strong>5 aspek</strong></div>
+                  <div><span>Periode</span><strong id="assessmentSummaryPeriod">Juli 2026</strong></div>
+                  <div><span>Terakhir update</span><strong>Hari ini</strong></div>
+                </div>
+              </div>
 
-          <div class="pagination" id="assessmentPagination" aria-label="Navigasi halaman penilaian"></div>
-          <p class="empty-state" id="assessmentEmptyState" hidden>Tidak ada penilaian yang cocok.</p>
+              <div class="warning-box">
+                <h3>Catatan</h3>
+                <p>Nilai yang tersimpan dapat diperbarui apabila guru menambahkan hasil observasi terbaru.</p>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
     </div>

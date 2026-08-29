@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClassPing School — Penilaian</title>
+  <title>ClassPing School — Tambah Penilaian</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -57,59 +57,74 @@
       </header>
 
       <main id="main">
-        <section class="panel student-data" id="penilaian">
-          <div class="panel-heading student-heading">
+        <section class="panel student-manage">
+          <div class="panel-heading">
             <div>
-              <h2>Penilaian</h2>
-              <p>Daftar penilaian guru dan perkembangan hasil observasi siswa</p>
+              <h2>Tambah Penilaian</h2>
+              <p>Catat observasi, skor, dan catatan guru untuk siswa</p>
             </div>
-            <a class="primary-button compact-button" href="assessment-add.html"><svg><use href="#icon-plus" /></svg>Tambah Penilaian</a>
+            <a class="secondary-button" href="assessment.html">Kembali</a>
           </div>
 
-          <div class="table-tools">
-            <label class="search"><svg><use href="#icon-search" /></svg><input id="assessmentSearch" type="search" placeholder="Cari nama penilaian..." /></label>
-            <div class="assessment-period-filter">
-              <label>
-                <span>Periode mulai</span>
-                <input id="assessmentFilterStart" type="date" />
-              </label>
-              <label>
-                <span>Periode selesai</span>
-                <input id="assessmentFilterEnd" type="date" />
-              </label>
+          <form class="student-form" id="assessmentAddForm">
+            <div class="form-grid">
+              <div class="field-group">
+                <label for="assessmentClass">Pilih kelas</label>
+                <select id="assessmentClass" name="assessmentClass" required>
+                  <option value="">Pilih kelas</option>
+                  <option value="A1">A1 — Matahari</option>
+                  <option value="A2">A2 — Pelangi</option>
+                  <option value="B1">B1 — Bintang</option>
+                  <option value="B2">B2 — Bulan</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="assessmentName">Nama penilaian</label>
+                <input id="assessmentName" name="assessmentName" type="text" placeholder="Contoh: Observasi Motorik" required />
+              </div>
+              <div class="field-group">
+                <label for="assessmentStartDate">Tanggal mulai</label>
+                <input id="assessmentStartDate" name="assessmentStartDate" type="date" required />
+              </div>
+              <div class="field-group">
+                <label for="assessmentEndDate">Tanggal selesai</label>
+                <input id="assessmentEndDate" name="assessmentEndDate" type="date" required />
+              </div>
+              <div class="field-group">
+                <label for="assessmentStatus">Status</label>
+                <select id="assessmentStatus" name="assessmentStatus">
+                  <option value="Draft">Draft</option>
+                  <option value="Published">Published</option>
+                </select>
+              </div>
+              <div class="field-group full">
+                <label for="assessmentRemark">Catatan guru / remark</label>
+                <textarea id="assessmentRemark" name="assessmentRemark" rows="4" placeholder="Tuliskan pengamatan dan catatan untuk penilaian ini..."></textarea>
+              </div>
             </div>
-            <select id="assessmentClassFilter" aria-label="Filter kelas penilaian">
-              <option value="all">Semua Kelas</option>
-              <option value="A1">A1</option>
-              <option value="A2">A2</option>
-              <option value="B1">B1</option>
-              <option value="B2">B2</option>
-            </select>
-          </div>
 
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Nama Penilaian</th>
-                  <th>Kelas</th>
-                  <th>Periode</th>
-                  <th>Peserta</th>
-                  <th>Rata-rata</th>
-                  <th>Status</th>
-                  <th aria-label="Aksi"></th>
-                </tr>
-              </thead>
-              <tbody id="assessmentRows"></tbody>
-            </table>
-          </div>
+            <h3>Pilih siswa</h3>
+            <div id="assessmentStudentOptions" class="assessment-student-list"></div>
 
-          <div class="pagination" id="assessmentPagination" aria-label="Navigasi halaman penilaian"></div>
-          <p class="empty-state" id="assessmentEmptyState" hidden>Tidak ada penilaian yang cocok.</p>
+            <h3>Skor indikator</h3>
+            <div id="assessmentScoringFields" class="assessment-scoring-wrap"></div>
+
+            <div class="field-group full">
+              <label for="assessmentImage">Unggah foto pendukung (opsional)</label>
+              <input id="assessmentImage" name="assessmentImage" type="file" accept="image/*" />
+            </div>
+
+            <div class="student-form-actions">
+              <button class="secondary-button" type="button" onclick="window.location.href='assessment.html'">Batal</button>
+              <button class="primary-button" type="submit">Simpan Penilaian</button>
+            </div>
+          </form>
         </section>
       </main>
     </div>
   </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <svg class="svg-defs" aria-hidden="true">
     <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClassPing School — Nonaktifkan Siswa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html" aria-label="ClassPing beranda">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>class<span>ping</span></span>
+      </a>
+
+      <nav class="main-nav admin-nav" aria-label="Navigasi admin">
+        <p class="nav-label">MENU UTAMA</p>
+        <a class="nav-item" href="index.html"><svg><use href="#icon-grid" /></svg>Dashboard</a>
+        <a class="nav-item active" href="student.html"><svg><use href="#icon-users" /></svg>Data Siswa</a>
+        <a class="nav-item" href="activity.html"><svg><use href="#icon-clipboard" /></svg>Laporan Aktivitas</a>
+        <a class="nav-item" href="assessment.html"><svg><use href="#icon-award" /></svg>Penilaian</a>
+        <a class="nav-item" href="payment.html"><svg><use href="#icon-wallet" /></svg>Pembayaran <span class="nav-badge">8</span></a>
+        <a class="nav-item" href="report.html"><svg><use href="#icon-chart" /></svg>Laporan</a>
+        <p class="nav-label">PENGATURAN</p>
+        <a class="nav-item" href="school-profile.html"><svg><use href="#icon-school" /></svg>Profil Sekolah</a>
+        <a class="nav-item" href="settings.html"><svg><use href="#icon-settings" /></svg>Pengaturan</a>
+      </nav>
+
+      <div class="help-card">
+        <span class="help-icon">?</span>
+        <strong>Butuh bantuan?</strong>
+        <p>Tim ClassPing siap membantu Anda.</p>
+        <button type="button">Hubungi Kami</button>
+      </div>
+      <button class="logout" type="button"><svg><use href="#icon-logout" /></svg>Keluar</button>
+    </aside>
+
+    <div class="page">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuButton" type="button" aria-label="Buka menu" aria-expanded="false"><svg><use href="#icon-menu" /></svg></button>
+        <div class="topbar-school">
+          <span class="school-avatar">TK</span>
+          <div><strong>TK Harapan Bangsa</strong><small>Tahun Ajaran 2026/2027</small></div>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-button" type="button" aria-label="Notifikasi"><svg><use href="#icon-bell" /></svg><span></span></button>
+          <div class="profile">
+            <span class="profile-avatar">AS</span>
+            <div><strong>Andini Sari</strong><small>Administrator</small></div>
+            <svg><use href="#icon-chevron" /></svg>
+          </div>
+        </div>
+      </header>
+
+      <main id="main">
+        <section class="panel student-manage">
+          <div class="panel-heading">
+            <div>
+              <h2>Nonaktifkan Siswa</h2>
+              <p>Ubah status siswa menjadi nonaktif untuk periode tertentu</p>
+            </div>
+            <a class="secondary-button" href="student.html">Kembali</a>
+          </div>
+
+          <div class="student-detail-layout" style="padding: 0 22px 20px;">
+            <div class="panel detail-panel">
+              <div class="detail-header">
+                <span class="detail-avatar" id="detailAvatar">AP</span>
+                <div class="detail-meta">
+                  <h2 id="detailName">Alya Putri Ramadhani</h2>
+                  <p id="detailSubtitle">NIS 26001 · Kelas A1</p>
+                </div>
+              </div>
+
+              <div class="detail-grid">
+                <div class="detail-item"><span>Nama Wali</span><strong id="detailGuardian">Ibu Rina Ramadhani</strong></div>
+                <div class="detail-item"><span>Hubungan</span><strong id="detailRelation">Ibu</strong></div>
+                <div class="detail-item"><span>Nomor WA</span><strong id="detailPhone">0812-3456-7801</strong></div>
+                <div class="detail-item"><span>Status saat ini</span><strong><span class="status-badge" id="detailStatus">Aktif</span></strong></div>
+              </div>
+
+              <div class="warning-box" style="margin-top:18px;">
+                <h3>Konfirmasi nonaktif</h3>
+                <p id="inactiveText">Status siswa akan diubah dari aktif menjadi nonaktif dan tidak lagi ditampilkan dalam aktivitas terjadwal tanpa menghapus data permanen.</p>
+              </div>
+            </div>
+
+            <div class="side-note">
+              <div class="info-card">
+                <h3>Alasan nonaktif</h3>
+                <div class="field-group" style="margin-top:10px;">
+                  <label for="inactiveReason">Pilih alasan</label>
+                  <select id="inactiveReason" name="inactiveReason">
+                    <option value="Mutasi sekolah">Mutasi sekolah</option>
+                    <option value="Cuti panjang">Cuti panjang</option>
+                    <option value="Izin sementara">Izin sementara</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="info-card">
+                <h3>Catatan</h3>
+                <div class="field-group" style="margin-top:10px;">
+                  <label for="inactiveNote">Catatan admin</label>
+                  <textarea id="inactiveNote" name="inactiveNote" placeholder="Tuliskan keterangan jika diperlukan"></textarea>
+                </div>
+              </div>
+
+              <div class="student-form-actions">
+                <button class="secondary-button" type="button">Batal</button>
+                <button class="primary-button" type="button">Nonaktifkan</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <svg class="svg-defs" aria-hidden="true">
+    <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="icon-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M9 4V2h6v2M8 10h8M8 14h8M8 18h5"/></symbol>
+    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.5 9 5-3 5 3-1.5-9M10 8l1.3 1.3L14 6.5"/></symbol>
+    <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M20 7V5a2 2 0 0 0-2-2H5a3 3 0 0 0 0 6h15v12H5a3 3 0 0 1-3-3V6"/><path d="M16 13h4"/></symbol>
+    <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 16 4-5 4 3 5-7"/></symbol>
+    <symbol id="icon-school" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9M9 20v-6h6v6"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55V21h-4v-.08a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3v-4h.08a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3h4v.08a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.12.6.65 1 1.26 1H21v4h-.34c-.61 0-1.14.4-1.26 1Z"/></symbol>
+    <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+    <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="icon-filter" viewBox="0 0 24 24"><path d="M4 5h16M7 12h10M10 19h4"/></symbol>
+  </svg>
+
+  <script>
+    const studentMap = {
+      "alya-putri-ramadhani": { name: "Alya Putri Ramadhani", nis: "26001", className: "A1", guardian: "Ibu Rina Ramadhani", relation: "Ibu", phone: "0812-3456-7801", status: "Aktif", avatar: "AP" },
+      "rafi-akbar-maulana": { name: "Rafi Akbar Maulana", nis: "26002", className: "A1", guardian: "Bapak Dedi Maulana", relation: "Ayah", phone: "0813-7890-1245", status: "Aktif", avatar: "RA" },
+      "nayla-zahra-aulia": { name: "Nayla Zahra Aulia", nis: "26003", className: "A2", guardian: "Ibu Siti Aulia", relation: "Ibu", phone: "0857-2234-1180", status: "Aktif", avatar: "NZ" },
+      "fathan-rizky-pratama": { name: "Fathan Rizky Pratama", nis: "26004", className: "A2", guardian: "Bapak Andri Pratama", relation: "Ayah", phone: "0819-5521-9034", status: "Aktif", avatar: "FR" }
+    };
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get("student") || "alya-putri-ramadhani";
+    const current = studentMap[key] || studentMap["alya-putri-ramadhani"];
+    document.getElementById("detailAvatar").textContent = current.avatar;
+    document.getElementById("detailName").textContent = current.name;
+    document.getElementById("detailSubtitle").textContent = `NIS ${current.nis} · Kelas ${current.className}`;
+    document.getElementById("detailGuardian").textContent = current.guardian;
+    document.getElementById("detailRelation").textContent = current.relation;
+    document.getElementById("detailPhone").textContent = current.phone;
+    document.getElementById("detailStatus").textContent = current.status;
+    document.getElementById("inactiveText").textContent = `Status ${current.name} akan diubah dari aktif menjadi nonaktif dan tidak lagi ditampilkan dalam aktivitas terjadwal tanpa menghapus data permanen.`;
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

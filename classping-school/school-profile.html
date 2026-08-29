@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClassPing School — Profil Sekolah</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html" aria-label="ClassPing beranda">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>class<span>ping</span></span>
+      </a>
+
+      <nav class="main-nav admin-nav" aria-label="Navigasi admin">
+        <p class="nav-label">MENU UTAMA</p>
+        <a class="nav-item" href="index.html"><svg><use href="#icon-grid" /></svg>Dashboard</a>
+        <a class="nav-item" href="student.html"><svg><use href="#icon-users" /></svg>Data Siswa</a>
+        <a class="nav-item" href="activity.html"><svg><use href="#icon-clipboard" /></svg>Laporan Aktivitas</a>
+        <a class="nav-item" href="assessment.html"><svg><use href="#icon-award" /></svg>Penilaian</a>
+        <a class="nav-item" href="payment.html"><svg><use href="#icon-wallet" /></svg>Pembayaran <span class="nav-badge">8</span></a>
+        <a class="nav-item" href="report.html"><svg><use href="#icon-chart" /></svg>Laporan</a>
+        <p class="nav-label">PENGATURAN</p>
+        <a class="nav-item active" href="school-profile.html"><svg><use href="#icon-school" /></svg>Profil Sekolah</a>
+        <a class="nav-item" href="settings.html"><svg><use href="#icon-settings" /></svg>Pengaturan</a>
+      </nav>
+
+      <div class="help-card">
+        <span class="help-icon">?</span>
+        <strong>Butuh bantuan?</strong>
+        <p>Tim ClassPing siap membantu Anda.</p>
+        <button type="button">Hubungi Kami</button>
+      </div>
+      <button class="logout" type="button"><svg><use href="#icon-logout" /></svg>Keluar</button>
+    </aside>
+
+    <div class="page">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuButton" type="button" aria-label="Buka menu" aria-expanded="false"><svg><use href="#icon-menu" /></svg></button>
+        <div class="topbar-school">
+          <span class="school-avatar">TK</span>
+          <div><strong>TK Harapan Bangsa</strong><small>Tahun Ajaran 2026/2027</small></div>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-button" type="button" aria-label="Notifikasi"><svg><use href="#icon-bell" /></svg><span></span></button>
+          <div class="profile">
+            <span class="profile-avatar">AS</span>
+            <div><strong>Andini Sari</strong><small>Administrator</small></div>
+            <svg><use href="#icon-chevron" /></svg>
+          </div>
+        </div>
+      </header>
+
+      <main id="main">
+        <section class="profile-page">
+          <div class="profile-hero panel">
+            <div class="profile-hero__info">
+              <span class="eyebrow">SEKOLAH</span>
+              <h1>TK Harapan Bangsa</h1>
+              <p>Lingkungan belajar yang menumbuhkan rasa percaya diri, kreativitas, dan semangat bertumbuh setiap hari.</p>
+            </div>
+            <div class="profile-hero__badge">
+              <span class="school-avatar large">TK</span>
+              <div>
+                <strong>Akreditasi A</strong>
+                <small>Terakreditasi 2025</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-summary-grid">
+            <article class="panel profile-summary-card">
+              <p class="eyebrow">DATA UMUM</p>
+              <ul>
+                <li><span>Nama sekolah</span><strong>TK Harapan Bangsa</strong></li>
+                <li><span>Alamat</span><strong>Jl. Merdeka No. 12, Bandung</strong></li>
+                <li><span>Telepon</span><strong>(022) 456-7890</strong></li>
+                <li><span>Email</span><strong>admin@harapanbangsa.sch.id</strong></li>
+              </ul>
+            </article>
+
+            <article class="panel profile-summary-card">
+              <p class="eyebrow">RINGKASAN</p>
+              <ul>
+                <li><span>Jumlah kelas</span><strong>4 kelas aktif</strong></li>
+                <li><span>Jumlah siswa</span><strong>128 siswa</strong></li>
+                <li><span>Guru aktif</span><strong>12 orang</strong></li>
+                <li><span>Status</span><strong>Aktif</strong></li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="profile-two-col">
+            <article class="panel profile-section">
+              <div class="section-heading compact">
+                <div>
+                  <p class="eyebrow">CABANG</p>
+                  <h2>Branch Sekolah</h2>
+                </div>
+                <button class="text-button" type="button">Tambah cabang</button>
+              </div>
+
+              <div class="branch-list">
+                <div class="branch-item">
+                  <div>
+                    <strong>Cabang Pusat</strong>
+                    <small>Jl. Merdeka No. 12, Bandung</small>
+                  </div>
+                  <span class="status-badge">Primary</span>
+                </div>
+                <div class="branch-item">
+                  <div>
+                    <strong>Cabang Cibiru</strong>
+                    <small>Jl. Cibiru Indah No. 8, Bandung</small>
+                  </div>
+                  <span class="status-badge muted">Secondary</span>
+                </div>
+                <div class="branch-item">
+                  <div>
+                    <strong>Cabang Ujungberung</strong>
+                    <small>Jl. Ujungberung Raya No. 21, Bandung</small>
+                  </div>
+                  <span class="status-badge muted">Secondary</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel profile-section">
+              <div class="section-heading compact">
+                <div>
+                  <p class="eyebrow">SOSIAL MEDIA</p>
+                  <h2>Media Sosial</h2>
+                </div>
+              </div>
+
+              <div class="social-list">
+                <div class="social-item">
+                  <span class="social-icon instagram">IG</span>
+                  <div>
+                    <strong>@harapanbangsa_tk</strong>
+                    <small>Instagram</small>
+                  </div>
+                </div>
+                <div class="social-item">
+                  <span class="social-icon facebook">FB</span>
+                  <div>
+                    <strong>TK Harapan Bangsa</strong>
+                    <small>Facebook</small>
+                  </div>
+                </div>
+                <div class="social-item">
+                  <span class="social-icon youtube">YT</span>
+                  <div>
+                    <strong>Harapan Bangsa School</strong>
+                    <small>YouTube</small>
+                  </div>
+                </div>
+                <div class="social-item">
+                  <span class="social-icon tiktok">TT</span>
+                  <div>
+                    <strong>@harapanbangsa</strong>
+                    <small>TikTok</small>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <svg class="svg-defs" aria-hidden="true">
+    <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="icon-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M9 4V2h6v2M8 10h8M8 14h8M8 18h5"/></symbol>
+    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.5 9 5-3 5 3-1.5-9M10 8l1.3 1.3L14 6.5"/></symbol>
+    <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M20 7V5a2 2 0 0 0-2-2H5a3 3 0 0 0 0 6h15v12H5a3 3 0 0 1-3-3V6"/><path d="M16 13h4"/></symbol>
+    <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 16 4-5 4 3 5-7"/></symbol>
+    <symbol id="icon-school" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9M9 20v-6h6v6"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55V21h-4v-.08a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3v-4h.08a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3h4v.08a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.12.6.65 1 1.26 1H21v4h-.34c-.61 0-1.14.4-1.26 1Z"/></symbol>
+    <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+    <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+  </svg>
+  <script src="script.js"></script>
+</body>
+</html>

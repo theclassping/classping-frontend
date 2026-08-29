@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClassPing School — Pengaturan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html" aria-label="ClassPing beranda">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>class<span>ping</span></span>
+      </a>
+
+      <nav class="main-nav admin-nav" aria-label="Navigasi admin">
+        <p class="nav-label">MENU UTAMA</p>
+        <a class="nav-item" href="index.html"><svg><use href="#icon-grid" /></svg>Dashboard</a>
+        <a class="nav-item" href="student.html"><svg><use href="#icon-users" /></svg>Data Siswa</a>
+        <a class="nav-item" href="activity.html"><svg><use href="#icon-clipboard" /></svg>Laporan Aktivitas</a>
+        <a class="nav-item" href="assessment.html"><svg><use href="#icon-award" /></svg>Penilaian</a>
+        <a class="nav-item" href="payment.html"><svg><use href="#icon-wallet" /></svg>Pembayaran <span class="nav-badge">8</span></a>
+        <a class="nav-item" href="report.html"><svg><use href="#icon-chart" /></svg>Laporan</a>
+        <p class="nav-label">PENGATURAN</p>
+        <a class="nav-item" href="school-profile.html"><svg><use href="#icon-school" /></svg>Profil Sekolah</a>
+        <a class="nav-item active" href="settings.html"><svg><use href="#icon-settings" /></svg>Pengaturan</a>
+      </nav>
+
+      <div class="help-card">
+        <span class="help-icon">?</span>
+        <strong>Butuh bantuan?</strong>
+        <p>Tim ClassPing siap membantu Anda.</p>
+        <button type="button">Hubungi Kami</button>
+      </div>
+      <button class="logout" type="button"><svg><use href="#icon-logout" /></svg>Keluar</button>
+    </aside>
+
+    <div class="page">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuButton" type="button" aria-label="Buka menu" aria-expanded="false"><svg><use href="#icon-menu" /></svg></button>
+        <div class="topbar-school">
+          <span class="school-avatar">TK</span>
+          <div><strong>TK Harapan Bangsa</strong><small>Tahun Ajaran 2026/2027</small></div>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-button" type="button" aria-label="Notifikasi"><svg><use href="#icon-bell" /></svg><span></span></button>
+          <div class="profile">
+            <span class="profile-avatar">AS</span>
+            <div><strong>Andini Sari</strong><small>Administrator</small></div>
+            <svg><use href="#icon-chevron" /></svg>
+          </div>
+        </div>
+      </header>
+
+      <main id="main">
+        <section class="settings-page panel">
+          <div class="panel-heading settings-header">
+            <div>
+              <h2>Pengaturan</h2>
+              <p>Kelola konfigurasi sekolah dan master data</p>
+            </div>
+          </div>
+
+          <div class="settings-tabs" aria-label="Submenu pengaturan">
+            <button class="settings-tab active" type="button" data-target="branchSection">Branch</button>
+            <button class="settings-tab" type="button" data-target="staffSection">Staff</button>
+            <button class="settings-tab" type="button" data-target="teacherSection">Teacher</button>
+            <button class="settings-tab" type="button" data-target="classSection">Class</button>
+            <button class="settings-tab" type="button" data-target="reportLayoutSection">Report Layout</button>
+          </div>
+
+          <div class="settings-panel active" id="branchSection">
+            <div class="setting-card">
+              <div class="setting-card__header">
+                <h3>Branch</h3>
+                <button class="secondary-button" type="button">Tambah Branch</button>
+              </div>
+              <form class="setting-form">
+                <div class="form-grid">
+                  <div class="field-group">
+                    <label for="branchName">Nama branch</label>
+                    <input id="branchName" type="text" value="Cabang Pusat" />
+                  </div>
+                  <div class="field-group">
+                    <label for="branchCode">Kode</label>
+                    <input id="branchCode" type="text" value="CP01" />
+                  </div>
+                  <div class="field-group full">
+                    <label for="branchAddress">Alamat</label>
+                    <textarea id="branchAddress">Jl. Merdeka No. 12, Bandung</textarea>
+                  </div>
+                </div>
+                <div class="student-form-actions">
+                  <button class="secondary-button" type="button">Batal</button>
+                  <button class="primary-button" type="submit">Simpan</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="setting-list">
+              <table>
+                <thead>
+                  <tr><th>Branch</th><th>Kode</th><th>Alamat</th><th>Status</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Cabang Pusat</td><td>CP01</td><td>Jl. Merdeka No. 12</td><td>Aktif</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                  <tr><td>Cabang Cibiru</td><td>CB02</td><td>Jl. Cibiru Indah No. 8</td><td>Aktif</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                  <tr><td>Cabang Ujungberung</td><td>UJ03</td><td>Jl. Ujungberung Raya No. 21</td><td>Aktif</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="settings-panel" id="staffSection">
+            <div class="setting-card">
+              <div class="setting-card__header">
+                <h3>Staff</h3>
+                <button class="secondary-button" type="button">Tambah Staff</button>
+              </div>
+              <form class="setting-form">
+                <div class="form-grid">
+                  <div class="field-group">
+                    <label for="staffName">Nama staff</label>
+                    <input id="staffName" type="text" value="Rina Wulandari" />
+                  </div>
+                  <div class="field-group">
+                    <label for="staffRole">Jabatan</label>
+                    <input id="staffRole" type="text" value="Administrasi" />
+                  </div>
+                  <div class="field-group">
+                    <label for="staffPhone">Telepon</label>
+                    <input id="staffPhone" type="tel" value="0812-3311-9001" />
+                  </div>
+                  <div class="field-group">
+                    <label for="staffBranch">Branch</label>
+                    <select id="staffBranch"><option selected>Cabang Pusat</option><option>Cabang Cibiru</option></select>
+                  </div>
+                </div>
+                <div class="student-form-actions">
+                  <button class="secondary-button" type="button">Batal</button>
+                  <button class="primary-button" type="submit">Simpan</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="setting-list">
+              <table>
+                <thead>
+                  <tr><th>Nama</th><th>Jabatan</th><th>Telepon</th><th>Branch</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Rina Wulandari</td><td>Administrasi</td><td>0812-3311-9001</td><td>Cabang Pusat</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                  <tr><td>Budi Santoso</td><td>Keuangan</td><td>0812-4450-9120</td><td>Cabang Cibiru</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="settings-panel" id="teacherSection">
+            <div class="setting-card">
+              <div class="setting-card__header">
+                <h3>Teacher</h3>
+                <button class="secondary-button" type="button">Tambah Teacher</button>
+              </div>
+              <form class="setting-form">
+                <div class="form-grid">
+                  <div class="field-group">
+                    <label for="teacherName">Nama guru</label>
+                    <input id="teacherName" type="text" value="Nia Ramadhani" />
+                  </div>
+                  <div class="field-group">
+                    <label for="teacherRole">Mapel</label>
+                    <input id="teacherRole" type="text" value="PAUD / Kelas A" />
+                  </div>
+                  <div class="field-group">
+                    <label for="teacherPhone">Telepon</label>
+                    <input id="teacherPhone" type="tel" value="0813-6632-8800" />
+                  </div>
+                  <div class="field-group">
+                    <label for="teacherStatus">Status</label>
+                    <select id="teacherStatus"><option selected>Aktif</option><option>Nonaktif</option></select>
+                  </div>
+                </div>
+                <div class="student-form-actions">
+                  <button class="secondary-button" type="button">Batal</button>
+                  <button class="primary-button" type="submit">Simpan</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="setting-list">
+              <table>
+                <thead>
+                  <tr><th>Nama</th><th>Mapel</th><th>Telepon</th><th>Status</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Nia Ramadhani</td><td>PAUD / Kelas A</td><td>0813-6632-8800</td><td>Aktif</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                  <tr><td>Rahmat Hidayat</td><td>Kelas B</td><td>0812-7789-5503</td><td>Aktif</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="settings-panel" id="classSection">
+            <div class="setting-card">
+              <div class="setting-card__header">
+                <h3>Class & Academic Year</h3>
+                <button class="secondary-button" type="button">Tambah Kelas</button>
+              </div>
+
+              <div class="class-subsection">
+                <h4>Academic Year</h4>
+                <form class="setting-form compact-form">
+                  <div class="form-grid">
+                    <div class="field-group">
+                      <label for="academicYearName">Tahun ajaran</label>
+                      <input id="academicYearName" type="text" value="2026/2027" />
+                    </div>
+                    <div class="field-group">
+                      <label for="academicYearStatus">Status</label>
+                      <select id="academicYearStatus"><option selected>Aktif</option><option>Draft</option></select>
+                    </div>
+                  </div>
+                  <div class="student-form-actions">
+                    <button class="secondary-button" type="button">Batal</button>
+                    <button class="primary-button" type="submit">Simpan</button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="class-subsection">
+                <h4>Class</h4>
+                <form class="setting-form compact-form">
+                  <div class="form-grid">
+                    <div class="field-group">
+                      <label for="className">Nama kelas</label>
+                      <input id="className" type="text" value="A1" />
+                    </div>
+                    <div class="field-group">
+                      <label for="classYear">Tahun ajaran</label>
+                      <select id="classYear"><option selected>2026/2027</option><option>2025/2026</option></select>
+                    </div>
+                    <div class="field-group full">
+                      <label for="classTeacher">Wali kelas</label>
+                      <input id="classTeacher" type="text" value="Nia Ramadhani" />
+                    </div>
+                  </div>
+                  <div class="student-form-actions">
+                    <button class="secondary-button" type="button">Batal</button>
+                    <button class="primary-button" type="submit">Simpan</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="setting-list">
+              <table>
+                <thead>
+                  <tr><th>Nama kelas</th><th>Tahun ajaran</th><th>Wali kelas</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>A1</td><td>2026/2027</td><td>Nia Ramadhani</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                  <tr><td>A2</td><td>2026/2027</td><td>Rahmat Hidayat</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                  <tr><td>B1</td><td>2026/2027</td><td>Sari Ningsih</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="settings-panel" id="reportLayoutSection">
+            <div class="setting-card">
+              <div class="setting-card__header">
+                <h3>Report Layout</h3>
+                <button class="secondary-button" type="button">Tambah Layout</button>
+              </div>
+
+              <div class="report-layout-grid">
+                <div class="report-setting-block">
+                  <h4>Report Layout</h4>
+                  <form class="setting-form compact-form">
+                    <div class="field-group">
+                      <label for="layoutName">Nama layout</label>
+                      <input id="layoutName" type="text" value="Laporan Semester" />
+                    </div>
+                    <div class="field-group">
+                      <label for="layoutTheme">Tema</label>
+                      <select id="layoutTheme"><option selected>Standar</option><option>Minimal</option><option>Modern</option></select>
+                    </div>
+                    <div class="student-form-actions">
+                      <button class="secondary-button" type="button">Batal</button>
+                      <button class="primary-button" type="submit">Simpan</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="report-setting-block">
+                  <h4>Report Section</h4>
+                  <form class="setting-form compact-form">
+                    <div class="field-group">
+                      <label for="sectionName">Nama section</label>
+                      <input id="sectionName" type="text" value="Kehadiran" />
+                    </div>
+                    <div class="field-group">
+                      <label for="sectionOrder">Urutan</label>
+                      <input id="sectionOrder" type="number" value="1" />
+                    </div>
+                    <div class="student-form-actions">
+                      <button class="secondary-button" type="button">Batal</button>
+                      <button class="primary-button" type="submit">Simpan</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="report-setting-block">
+                  <h4>Indicators</h4>
+                  <form class="setting-form compact-form">
+                    <div class="field-group">
+                      <label for="indicatorName">Nama indikator</label>
+                      <input id="indicatorName" type="text" value="Kemandirian" />
+                    </div>
+                    <div class="field-group">
+                      <label for="indicatorScore">Skala</label>
+                      <input id="indicatorScore" type="text" value="1-4" />
+                    </div>
+                    <div class="student-form-actions">
+                      <button class="secondary-button" type="button">Batal</button>
+                      <button class="primary-button" type="submit">Simpan</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="report-setting-block">
+                  <h4>Scoring Setting</h4>
+                  <form class="setting-form compact-form">
+                    <div class="field-group">
+                      <label for="scoreMethod">Metode scoring</label>
+                      <select id="scoreMethod"><option selected>Rata-rata</option><option>Bobot</option><option>Persentase</option></select>
+                    </div>
+                    <div class="field-group">
+                      <label for="scorePass">Nilai minimum</label>
+                      <input id="scorePass" type="number" value="75" />
+                    </div>
+                    <div class="student-form-actions">
+                      <button class="secondary-button" type="button">Batal</button>
+                      <button class="primary-button" type="submit">Simpan</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <svg class="svg-defs" aria-hidden="true">
+    <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="icon-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M9 4V2h6v2M8 10h8M8 14h8M8 18h5"/></symbol>
+    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.5 9 5-3 5 3-1.5-9M10 8l1.3 1.3L14 6.5"/></symbol>
+    <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M20 7V5a2 2 0 0 0-2-2H5a3 3 0 0 0 0 6h15v12H5a3 3 0 0 1-3-3V6"/><path d="M16 13h4"/></symbol>
+    <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 16 4-5 4 3 5-7"/></symbol>
+    <symbol id="icon-school" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9M9 20v-6h6v6"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55V21h-4v-.08a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3v-4h.08a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3h4v.08a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.12.6.65 1 1.26 1H21v4h-.34c-.61 0-1.14.4-1.26 1Z"/></symbol>
+    <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+    <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+  </svg>
+  <script src="script.js"></script>
+</body>
+</html>

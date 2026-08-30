@@ -23,3 +23,52 @@ body.parent-view .admin-nav,body.parent-view .help-card,body.parent-view #adminV
 @media(max-width:850px){.login-page{grid-template-columns:1fr}.login-showcase{display:none}.login-panel{min-height:100vh;padding:35px 22px}.mobile-login-brand{display:flex}}
 @media(max-width:420px){.demo-accounts{grid-template-columns:1fr}.login-card>h2{font-size:27px}}
 .login-help a{color:var(--green);font-weight:700;text-decoration:none}.login-help a:hover{text-decoration:underline}
+/* Profile & Settings Pages */
+.profile-page, .settings-page {padding:0}
+.profile-hero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-bottom:21px;padding:28px!important;background:linear-gradient(135deg,#e8f7f1,#f4fbf8)}
+.profile-hero__info h1{font:700 28px "Plus Jakarta Sans";margin:12px 0 10px}
+.profile-hero__info p{color:var(--muted);font-size:12px;line-height:1.6;max-width:420px;margin:0}
+.profile-hero__badge{display:flex;align-items:center;gap:14px}.school-avatar.large{width:80px;height:80px;font-size:32px}
+.profile-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.profile-summary-card{padding:18px!important}.profile-summary-card ul{list-style:none;margin:0;padding:0}.profile-summary-card li{display:grid;grid-template-columns:80px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.profile-summary-card li:last-child{border-bottom:0}.profile-summary-card span{color:var(--muted);font-size:10px;font-weight:600}.profile-summary-card strong{font-size:12px;color:var(--ink)}
+.profile-two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:17px}
+.profile-section .section-heading{margin-bottom:14px}
+.branch-list, .social-list{display:flex;flex-direction:column;gap:10px}
+.branch-item, .social-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px;background:var(--canvas);border-radius:11px;border:1px solid var(--line)}
+.branch-item div, .social-item div{flex:1}
+.branch-item strong, .social-item strong{font-size:12px;display:block}.branch-item small, .social-item small{font-size:9px;color:var(--muted);display:block;margin-top:3px}
+.status-badge{display:inline-block;background:var(--green);color:#fff;font-size:9px;font-weight:700;padding:4px 8px;border-radius:6px}.status-badge.muted{background:#e7ece9;color:var(--muted)}
+.social-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:8px;font-size:9px;font-weight:700;color:#fff}.social-icon.instagram{background:#e4405f}.social-icon.facebook{background:#1877f2}.social-icon.youtube{background:#ff0000}.social-icon.tiktok{background:#000}
+/* Settings Tabs */
+.settings-tabs{display:flex;gap:6px;padding:0 22px 18px;border-bottom:1px solid var(--line);overflow-x:auto}
+.settings-tab{background:none;border:none;padding:10px 12px;font-size:11px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;transition:.2s}.settings-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.settings-panel{display:none;padding:0}.settings-panel.active{display:block}
+.setting-card{background:#fff;border-radius:10px;padding:18px;margin:0 22px 22px}
+.setting-card__header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.setting-card__header h3{font:700 14px "Plus Jakarta Sans";margin:0}.setting-form{display:flex;flex-direction:column}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-grid.full .field-group, .form-grid .field-group.full{grid-column:1/-1}
+.field-group{display:flex;flex-direction:column}.field-group label{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:5px}
+.field-group input, .field-group select, .field-group textarea{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:10px "DM Sans";color:var(--ink)}.field-group textarea{resize:vertical;min-height:70px}
+.student-form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+/* Detail Pages */
+.student-detail-layout{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.detail-panel{padding:22px!important}
+.detail-header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.detail-avatar{display:grid;place-items:center;width:60px;height:60px;border-radius:11px;background:var(--canvas);font-size:28px;flex:0 0 auto}
+.detail-meta h2{font:700 20px "Plus Jakarta Sans";margin:0 0 5px}.detail-meta p{color:var(--muted);font-size:10px;margin:0}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.detail-item{display:flex;flex-direction:column}.detail-item.full{grid-column:1/-1}.detail-item span{color:var(--muted);font-size:9px;font-weight:600;margin-bottom:4px}.detail-item strong{font-size:12px}
+.participant-section{padding-top:16px}
+.participant-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.participant-heading h3{font:700 13px "Plus Jakarta Sans";margin:0}.participant-heading span{font-size:9px;color:var(--muted)}
+.participant-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.participant-list li{display:grid;grid-template-columns:35px 1fr;gap:11px;align-items:center;padding:10px;background:var(--canvas);border-radius:9px}
+.mini-avatar{display:grid;place-items:center;width:35px;height:35px;border-radius:8px;background:var(--green);color:#fff;font-size:10px;font-weight:700}.participant-list li>div strong{font-size:11px;display:block}.participant-list li>div small{font-size:9px;color:var(--muted);display:block}
+.side-note{display:flex;flex-direction:column;gap:14px}
+.info-card, .warning-box{background:#f9faf9;border:1px solid var(--line);border-radius:10px;padding:14px}
+.info-card h3, .warning-box h3{font:700 11px "Plus Jakarta Sans";margin:0 0 10px}
+.info-list{display:flex;flex-direction:column;gap:8px}.info-list>div{display:grid;grid-template-columns:1fr 1fr;align-items:center}
+.info-list span{color:var(--muted);font-size:9px}.info-list strong{font-size:11px}
+.warning-box p{font-size:9px;color:var(--muted);line-height:1.5;margin:0}
+@media(max-width:1050px){.profile-hero{grid-template-columns:1fr}.profile-two-col, .student-detail-layout{grid-template-columns:1fr}.profile-summary-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.settings-tabs{padding:0 16px 14px}.setting-card{margin:0 16px 14px;padding:16px}.settings-tabs{font-size:10px}.form-grid{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.student-detail-layout{padding:0 16px 25px!important}}

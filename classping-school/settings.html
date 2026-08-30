@@ -70,6 +70,8 @@
             <button class="settings-tab" type="button" data-target="staffSection">Staff</button>
             <button class="settings-tab" type="button" data-target="teacherSection">Teacher</button>
             <button class="settings-tab" type="button" data-target="classSection">Class</button>
+            <button class="settings-tab" type="button" data-target="studentProfileSection">Student Profile</button>
+            <button class="settings-tab" type="button" data-target="guardianAccountSection">Guardian Account</button>
             <button class="settings-tab" type="button" data-target="reportLayoutSection">Report Layout</button>
           </div>
 
@@ -266,6 +268,116 @@
                   <tr><td>A1</td><td>2026/2027</td><td>Nia Ramadhani</td><td><button class="text-button" type="button">Edit</button></td></tr>
                   <tr><td>A2</td><td>2026/2027</td><td>Rahmat Hidayat</td><td><button class="text-button" type="button">Edit</button></td></tr>
                   <tr><td>B1</td><td>2026/2027</td><td>Sari Ningsih</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="settings-panel" id="studentProfileSection">
+            <div class="setting-card">
+              <div class="setting-card__header">
+                <h3>Student Profile</h3>
+                <button class="secondary-button" type="button">Tambah Profil Siswa</button>
+              </div>
+              <form class="setting-form">
+                <div class="form-grid">
+                  <div class="field-group">
+                    <label for="studentProfileName">Nama lengkap</label>
+                    <input id="studentProfileName" type="text" value="Alya Putri Ramadhani" />
+                  </div>
+                  <div class="field-group">
+                    <label for="studentProfileNis">NIS</label>
+                    <input id="studentProfileNis" type="text" value="26001" />
+                  </div>
+                  <div class="field-group">
+                    <label for="studentProfileClass">Kelas</label>
+                    <select id="studentProfileClass"><option selected>A1</option><option>A2</option><option>B1</option><option>B2</option></select>
+                  </div>
+                  <div class="field-group">
+                    <label for="studentProfileBirth">Tanggal lahir</label>
+                    <input id="studentProfileBirth" type="date" value="2020-06-12" />
+                  </div>
+                  <div class="field-group">
+                    <label for="studentProfileGuardian">Nama wali</label>
+                    <input id="studentProfileGuardian" type="text" value="Rina Ramadhani" />
+                  </div>
+                  <div class="field-group">
+                    <label for="studentProfileEmail">Email wali</label>
+                    <input id="studentProfileEmail" type="email" value="rina.ramadhani@email.com" />
+                  </div>
+                  <div class="field-group full">
+                    <label for="studentProfileAddress">Alamat rumah</label>
+                    <textarea id="studentProfileAddress">Jl. Melati No. 10, Bandung</textarea>
+                  </div>
+                </div>
+                <div class="student-form-actions">
+                  <button class="secondary-button" type="button">Batal</button>
+                  <button class="primary-button" type="submit">Simpan</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="setting-list">
+              <table>
+                <thead>
+                  <tr><th>Nama siswa</th><th>Kelas</th><th>Wali</th><th>Email</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Alya Putri Ramadhani</td><td>A1</td><td>Rina Ramadhani</td><td>rina.ramadhani@email.com</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                  <tr><td>Rafi Akbar Maulana</td><td>A1</td><td>Dedi Maulana</td><td>dedi.maulana@email.com</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="settings-panel" id="guardianAccountSection">
+            <div class="setting-card">
+              <div class="setting-card__header">
+                <h3>Guardian Account</h3>
+                <button class="secondary-button" type="button">Tambah Akun Wali</button>
+              </div>
+              <form class="setting-form">
+                <div class="form-grid">
+                  <div class="field-group">
+                    <label for="guardianAccountName">Nama lengkap</label>
+                    <input id="guardianAccountName" type="text" value="Rina Ramadhani" />
+                  </div>
+                  <div class="field-group">
+                    <label for="guardianAccountEmail">Email</label>
+                    <input id="guardianAccountEmail" type="email" value="rina.ramadhani@email.com" />
+                  </div>
+                  <div class="field-group">
+                    <label for="guardianAccountPhone">Nomor telepon</label>
+                    <input id="guardianAccountPhone" type="tel" value="0812-3456-7801" />
+                  </div>
+                  <div class="field-group">
+                    <label for="guardianAccountRelation">Hubungan dengan siswa</label>
+                    <select id="guardianAccountRelation"><option selected>Ibu</option><option>Ayah</option><option>Wali</option></select>
+                  </div>
+                  <div class="field-group">
+                    <label for="guardianAccountRole">Role</label>
+                    <select id="guardianAccountRole"><option selected>Parent</option><option>Admin</option></select>
+                  </div>
+                  <div class="field-group">
+                    <label for="guardianAccountPassword">Password</label>
+                    <input id="guardianAccountPassword" type="password" value="parent123" />
+                  </div>
+                </div>
+                <div class="student-form-actions">
+                  <button class="secondary-button" type="button">Batal</button>
+                  <button class="primary-button" type="submit">Simpan</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="setting-list">
+              <table>
+                <thead>
+                  <tr><th>Nama wali</th><th>Email</th><th>Telepon</th><th>Hubungan</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Rina Ramadhani</td><td>rina.ramadhani@email.com</td><td>0812-3456-7801</td><td>Ibu</td><td><button class="text-button" type="button">Edit</button></td></tr>
+                  <tr><td>Dedi Maulana</td><td>dedi.maulana@email.com</td><td>0813-7890-1245</td><td>Ayah</td><td><button class="text-button" type="button">Edit</button></td></tr>
                 </tbody>
               </table>
             </div>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClassPing Guardian — View Penilaian</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html" aria-label="ClassPing beranda">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>class<span>ping</span></span>
+      </a>
+
+      <nav class="main-nav admin-nav" aria-label="Navigasi admin">
+        <p class="nav-label">MENU UTAMA</p>
+        <a class="nav-item" href="index.html"><svg><use href="#icon-grid" /></svg>Dashboard</a>
+        <a class="nav-item" href="student-activity.html"><svg><use href="#icon-clipboard" /></svg>Aktivitas Alya</a>
+        <a class="nav-item active" href="assessment.html"><svg><use href="#icon-award" /></svg>Penilaian</a>
+        <a class="nav-item" href="payment.html"><svg><use href="#icon-wallet" /></svg>SPP &amp; Tagihan <span class="nav-badge">1</span></a>
+        <p class="nav-label">PENGATURAN</p>
+        <a class="nav-item" href="school-profile.html"><svg><use href="#icon-school" /></svg>Profil Sekolah</a>
+        <a class="nav-item" href="settings.html"><svg><use href="#icon-settings" /></svg>Pengaturan</a>
+      </nav>
+
+      <nav class="main-nav parent-nav" aria-label="Navigasi orang tua">
+        <p class="nav-label">MENU ORANG TUA</p>
+        <a class="nav-item" href="index.html"><svg><use href="#icon-grid" /></svg>Beranda</a>
+        <a class="nav-item" href="student-activity.html"><svg><use href="#icon-clipboard" /></svg>Aktivitas Alya</a>
+        <a class="nav-item active" href="assessment.html"><svg><use href="#icon-award" /></svg>Penilaian</a>
+        <a class="nav-item" href="payment.html"><svg><use href="#icon-wallet" /></svg>SPP &amp; Tagihan <span class="nav-badge">1</span></a>
+      </nav>
+
+      <div class="help-card">
+        <span class="help-icon">?</span>
+        <strong>Butuh bantuan?</strong>
+        <p>Tim ClassPing siap membantu Anda.</p>
+        <button type="button">Hubungi Kami</button>
+      </div>
+      <button class="logout" id="logoutButton" type="button"><svg><use href="#icon-logout" /></svg>Keluar</button>
+    </aside>
+
+    <div class="page">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuButton" type="button" aria-label="Buka menu" aria-expanded="false"><svg><use href="#icon-menu" /></svg></button>
+        <div class="topbar-school">
+          <span class="school-avatar">TK</span>
+          <div><strong>TK Harapan Bangsa</strong><small>Tahun Ajaran 2026/2027</small></div>
+        </div>
+        <div class="topbar-actions">
+          <div class="profile">
+            <span class="profile-avatar">RR</span>
+            <div><strong>Rina Ramadhani</strong><small>Orang Tua Alya</small></div>
+            <svg><use href="#icon-chevron" /></svg>
+          </div>
+        </div>
+      </header>
+
+      <main id="main">
+        <section class="panel student-manage">
+          <div class="panel-heading">
+            <div>
+              <h2>View Penilaian</h2>
+              <p>Detail evaluasi perkembangan Alya</p>
+            </div>
+            <a class="secondary-button" href="assessment.html">Kembali</a>
+          </div>
+
+          <div class="student-detail-layout" style="padding: 0 22px 20px;">
+            <div class="panel detail-panel">
+              <div class="detail-header">
+                <span class="detail-avatar" id="activityAvatar">🏅</span>
+                <div class="detail-meta">
+                  <h2 id="activityName">Penilaian Keterampilan Motorik</h2>
+                  <p id="activitySubtitle">Kelas A1 · Semester 1</p>
+                </div>
+              </div>
+
+              <div class="detail-grid">
+                <div class="detail-item"><span>Periode</span><strong id="detailTime">Semester 1</strong></div>
+                <div class="detail-item"><span>Status</span><strong><span class="status-badge" id="detailStatus">Published</span></strong></div>
+                <div class="detail-item full"><span>Catatan guru</span><strong id="detailCaption">Alya menunjukkan perkembangan yang baik dalam koordinasi mata-tangan dan kontrol motorik halus.</strong></div>
+                <div class="detail-item"><span>Rata-rata</span><strong id="detailPhotos">88</strong></div>
+                <div class="detail-item"><span>Peserta</span><strong id="detailParticipants">1 siswa</strong></div>
+              </div>
+
+              <div class="participant-section">
+                <div class="participant-heading">
+                  <h3>Indikator</h3>
+                  <span id="participantCount">5 indikator</span>
+                </div>
+                <ul class="participant-list" id="activityParticipants">
+                  <li><div><strong>Koordinasi Mata-Tangan</strong><small>90</small></div></li>
+                  <li><div><strong>Kontrol Motorik Halus</strong><small>88</small></div></li>
+                  <li><div><strong>Konsentrasi</strong><small>84</small></div></li>
+                  <li><div><strong>Kepercayaan Diri</strong><small>92</small></div></li>
+                  <li><div><strong>Ketelitian</strong><small>86</small></div></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="side-note">
+              <div class="info-card">
+                <h3>Ringkasan</h3>
+                <div class="info-list">
+                  <div><span>Kelas</span><strong id="summaryClass">A1</strong></div>
+                  <div><span>Nilai akhir</span><strong id="summaryTagged">88</strong></div>
+                  <div><span>Terakhir update</span><strong id="summaryUpdate">25 Agu 2026</strong></div>
+                </div>
+              </div>
+
+              <div class="warning-box">
+                <h3>Catatan</h3>
+                <p id="activityNote">Alya sudah mulai mandiri saat mengikuti aktivitas motorik dan sangat antusias dalam menyiapkan alat kegiatan.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <svg class="svg-defs" aria-hidden="true">
+    <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="icon-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M9 4V2h6v2M8 10h8M8 14h8M8 18h5"/></symbol>
+    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-1.5 9 5-3 5 3-1.5-9M10 8l1.3 1.3L14 6.5"/></symbol>
+    <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M20 7V5a2 2 0 0 0-2-2H5a3 3 0 0 0 0 6h15v12H5a3 3 0 0 1-3-3V6"/><path d="M16 13h4"/></symbol>
+    <symbol id="icon-school" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9M9 20v-6h6v6"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55V21h-4v-.08a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3v-4h.08a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3h4v.08a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.12.6.65 1 1.26 1H21v4h-.34c-.61 0-1.14.4-1.26 1Z"/></symbol>
+    <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+    <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+  </svg>
+  <script src="script.js"></script>
+</body>
+</html>

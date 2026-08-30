@@ -351,6 +351,47 @@ if (document.querySelector("#loginForm")) {
   renderStudents();
   updateDashboardStats();
 
+  const settingsTabs = document.querySelectorAll(".settings-tab");
+  if (settingsTabs.length) {
+    settingsTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const targetId = tab.dataset.target;
+        settingsTabs.forEach((t) => t.classList.remove("active"));
+        document.querySelectorAll(".settings-panel").forEach((panel) => panel.classList.remove("active"));
+        tab.classList.add("active");
+        const targetPanel = document.getElementById(targetId);
+        if (targetPanel) targetPanel.classList.add("active");
+      });
+    });
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const detailId = urlParams.get("id");
+  if (detailId) {
+    if (document.querySelector("#activityName")) {
+      const matchedAct = guardianActivityData.find((a) => slugify(a.title) === detailId);
+      if (matchedAct) {
+        document.querySelector("#activityName").textContent = matchedAct.title;
+        const sub = document.querySelector("#activitySubtitle");
+        if (sub) sub.textContent = `Kelas ${matchedAct.className} · ${matchedAct.date}`;
+      } else {
+        const matchedAss = guardianAssessmentData.find((a) => slugify(a.name) === detailId);
+        if (matchedAss) {
+          document.querySelector("#activityName").textContent = matchedAss.name;
+          const sub = document.querySelector("#activitySubtitle");
+          if (sub) sub.textContent = `Kelas ${matchedAss.className} · ${matchedAss.period}`;
+        } else {
+          const matchedPay = guardianPaymentData.find((a) => slugify(a.month) === detailId);
+          if (matchedPay) {
+            document.querySelector("#activityName").textContent = matchedPay.type;
+            const sub = document.querySelector("#activitySubtitle");
+            if (sub) sub.textContent = `${matchedPay.month} · ${matchedPay.student}`;
+          }
+        }
+      }
+    }
+  }
+
   try {
     const savedSession = localStorage.getItem(sessionKey) || sessionStorage.getItem(sessionKey);
     if (savedSession) {

@@ -39,6 +39,289 @@ const guardianPaymentData = [
   { student: "Alya Putri Ramadhani", month: "Oktober 2026", type: "Kegiatan Ekskul", nominal: "Rp 180.000", status: "Belum", date: "Belum dibayar" }
 ];
 
+const students = [
+  { name: "Alya Putri Ramadhani", className: "A1", guardian: "Ibu Rina Ramadhani", phone: "0812-3456-7801" },
+  { name: "Rafi Akbar Maulana", className: "A1", guardian: "Bapak Dedi Maulana", phone: "0813-7890-1245", overdue: true },
+  { name: "Nayla Zahra Aulia", className: "A2", guardian: "Ibu Siti Aulia", phone: "0857-2234-1180" },
+  { name: "Fathan Rizky Pratama", className: "A2", guardian: "Bapak Andri Pratama", phone: "0819-5521-9034" }
+];
+
+const sessionKey = "classping-guardian-session";
+const demoAccounts = {
+  admin: { email: "admin@classping.id", password: "admin123", role: "ADMIN", name: "Andini Sari", initials: "AS" },
+  parent: { email: "parent@classping.id", password: "parent123", role: "PARENT", name: "Rina Ramadhani", initials: "RR" }
+};
+
+const loginPage = document.querySelector("#loginPage");
+const appShell = document.querySelector("#appShell");
+const loginForm = document.querySelector("#loginForm");
+const loginEmail = document.querySelector("#loginEmail");
+const loginPassword = document.querySelector("#loginPassword");
+const loginError = document.querySelector("#loginError");
+const rememberLogin = document.querySelector("#rememberLogin");
+const logoutButton = document.querySelector("#logoutButton");
+const adminView = document.querySelector("#adminView");
+const parentView = document.querySelector("#parentView");
+const viewSwitch = document.querySelector("#viewSwitch");
+const profileName = document.querySelector(".profile strong");
+const profileRole = document.querySelector(".profile small");
+const profileAvatar = document.querySelector(".profile-avatar");
+const sidebar = document.querySelector("#sidebar");
+const menuButton = document.querySelector("#menuButton");
+const dialog = document.querySelector("#paymentDialog");
+const form = document.querySelector("#paymentForm");
+const toast = document.querySelector("#toast");
+const reminderDialog = document.querySelector("#reminderDialog");
+const reminderForm = document.querySelector("#reminderForm");
+const reminderTemplate = document.querySelector("#reminderTemplate");
+const reminderRecipients = document.querySelector("#reminderRecipients");
+const activityDialog = document.querySelector("#activityDialog");
+const activityForm = document.querySelector("#activityForm");
+const activityPhotos = document.querySelector("#activityPhotos");
+const uploadPreview = document.querySelector("#uploadPreview");
+const activityGrid = document.querySelector("#activityGrid");
+const activityEmpty = document.querySelector("#activityEmpty");
+const activityDateFilter = document.querySelector("#activityDateFilter");
+const activityClassFilter = document.querySelector("#activityClassFilter");
+const manageActivityDialog = document.querySelector("#manageActivityDialog");
+const manageActivityForm = document.querySelector("#manageActivityForm");
+const manageActivitySubtitle = document.querySelector("#manageActivitySubtitle");
+const existingPhotoCount = document.querySelector("#existingPhotoCount");
+const managedPhotoGrid = document.querySelector("#managedPhotoGrid");
+const managePhotos = document.querySelector("#managePhotos");
+const classStudentOptions = document.querySelector("#classStudentOptions");
+const selectAllStudents = document.querySelector("#selectAllStudents");
+const newActivityClass = activityForm?.elements?.activityClass;
+const todoChecks = [...document.querySelectorAll(".todo-check")];
+const todoProgressBar = document.querySelector("#todoProgressBar");
+const todoProgressLabel = document.querySelector("#todoProgressLabel");
+const paymentRows = document.querySelector("#paymentRows");
+const searchInput = document.querySelector("#searchInput");
+const classFilter = document.querySelector("#classFilter");
+const emptyState = document.querySelector("#emptyState");
+const studentRows = document.querySelector("#studentRows");
+const studentSearch = document.querySelector("#studentSearch");
+const studentClassFilter = document.querySelector("#studentClassFilter");
+const studentEmptyState = document.querySelector("#studentEmptyState");
+const studentCount = document.querySelector("#studentCount");
+const activityTotal = document.querySelector(".activity-total");
+let activeSession = null;
+let isParentView = false;
+let managedClass = "";
+
+function authenticate(email, password) {
+  const normalizedEmail = String(email).trim().toLowerCase();
+  return Object.values(demoAccounts).find((account) => account.email === normalizedEmail && account.password === password) || null;
+}
+
+function saveSession(session, remember) {
+  sessionStorage.removeItem(sessionKey);
+  localStorage.removeItem(sessionKey);
+  (remember ? localStorage : sessionStorage).setItem(sessionKey, JSON.stringify(session));
+}
+
+function updateProfile(session, viewingAsParent) {
+  if (!profileName || !profileRole || !profileAvatar) return;
+  profileName.textContent = session.name;
+  profileAvatar.textContent = session.initials;
+  profileRole.textContent = session.role === "PARENT"
+    ? "Orang Tua Alya"
+    : viewingAsParent ? "Administrator · Mode Orang Tua" : "Administrator";
+}
+
+function applyDashboardRole(targetRole, persistView = false) {
+  isParentView = targetRole === "PARENT";
+  document.body.classList.toggle("parent-view", isParentView);
+  if (adminView) adminView.hidden = isParentView;
+  if (parentView) parentView.hidden = !isParentView;
+
+  if (viewSwitch) {
+    const canPreview = activeSession?.role === "ADMIN";
+    viewSwitch.hidden = !canPreview;
+    const label = viewSwitch.querySelector("span");
+    if (label) label.textContent = isParentView ? "Kembali ke Admin" : "Lihat sebagai Orang Tua";
+  }
+
+  if (activeSession) {
+    activeSession.viewRole = targetRole;
+    updateProfile(activeSession, isParentView);
+    if (persistView) {
+      const remember = Boolean(localStorage.getItem(sessionKey));
+      saveSession(activeSession, remember);
+    }
+  }
+}
+
+function enterApp(account, remember = false) {
+  const session = {
+    role: account.role,
+    email: account.email,
+    name: account.name,
+    initials: account.initials,
+    viewRole: account.viewRole || account.role
+  };
+  activeSession = session;
+  saveSession(session, remember);
+  if (loginPage) loginPage.hidden = true;
+  if (appShell) appShell.hidden = false;
+  applyDashboardRole(session.viewRole);
+  if (loginPage) {
+    document.title = session.role === "PARENT" ? "ClassPing Guardian — Beranda Alya" : "ClassPing Guardian — Dashboard Admin";
+  }
+  window.scrollTo(0, 0);
+}
+
+function restoreSavedSession() {
+  try {
+    const saved = localStorage.getItem(sessionKey) || sessionStorage.getItem(sessionKey);
+    if (!saved) {
+      if (!loginForm && appShell) window.location.replace("index.html");
+      else loginEmail?.focus();
+      return;
+    }
+    const session = JSON.parse(saved);
+    if (!["ADMIN", "PARENT"].includes(session.role)) throw new Error("Invalid guardian role");
+    enterApp(session, Boolean(localStorage.getItem(sessionKey)));
+  } catch {
+    localStorage.removeItem(sessionKey);
+    sessionStorage.removeItem(sessionKey);
+    if (!loginForm && appShell) window.location.replace("index.html");
+  }
+}
+
+function logoutGuardian() {
+  sessionStorage.removeItem(sessionKey);
+  localStorage.removeItem(sessionKey);
+  activeSession = null;
+  document.body.classList.remove("parent-view");
+  if (loginPage && appShell) {
+    appShell.hidden = true;
+    loginPage.hidden = false;
+    document.title = "ClassPing Guardian — Masuk";
+    loginEmail?.focus();
+  } else {
+    window.location.replace("index.html");
+  }
+}
+
+if (logoutButton) logoutButton.onclick = logoutGuardian;
+
+restoreSavedSession();
+
+function showToast(message, warning = false) {
+  if (!toast) return;
+  toast.innerHTML = `<span>${warning ? "!" : "✓"}</span>${message}`;
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+function updateDashboardStats() {
+  const paidNames = new Set(payments.map((payment) => payment.name));
+  const collected = payments.length * 250000;
+  const format = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
+  const collectedAmount = document.querySelector("#collectedAmount");
+  const paidCount = document.querySelector("#paidCount");
+  const unpaidCount = document.querySelector("#unpaidCount");
+  const studentTotal = document.querySelector("#studentTotal");
+  if (collectedAmount) collectedAmount.textContent = format.format(collected);
+  if (paidCount) paidCount.textContent = String(paidNames.size);
+  if (unpaidCount) unpaidCount.textContent = String(Math.max(0, students.length - paidNames.size));
+  if (studentTotal) studentTotal.textContent = String(students.length);
+}
+
+function renderPayments() {
+  if (!paymentRows) return;
+  const term = searchInput?.value.trim().toLowerCase() || "";
+  const selectedClass = classFilter?.value || "all";
+  const filtered = payments.filter((payment) => {
+    const matchesName = payment.name.toLowerCase().includes(term);
+    const matchesClass = selectedClass === "all" || payment.className === selectedClass;
+    return matchesName && matchesClass;
+  });
+  paymentRows.innerHTML = filtered.map((payment) => `<tr><td><strong>${payment.name}</strong></td><td>${payment.className}</td><td>${payment.month}</td><td>${payment.date}</td><td>${payment.amount}</td><td><span class="status-pill">Lunas</span></td><td>···</td></tr>`).join("");
+  if (emptyState) emptyState.hidden = filtered.length > 0;
+}
+
+function renderStudents() {
+  if (!studentRows) return;
+  const term = studentSearch?.value.trim().toLowerCase() || "";
+  const selectedClass = studentClassFilter?.value || "all";
+  const filtered = students.filter((student) => {
+    const matchesSearch = `${student.name} ${student.guardian}`.toLowerCase().includes(term);
+    const matchesClass = selectedClass === "all" || student.className === selectedClass;
+    return matchesSearch && matchesClass;
+  });
+  studentRows.innerHTML = filtered.map((student, index) => `<tr><td><strong>${student.name}</strong></td><td>2600${index + 1}</td><td>${student.className}</td><td>—</td><td>${student.guardian}</td><td>${student.phone}</td><td><span class="status-pill">Aktif</span></td><td>···</td></tr>`).join("");
+  if (studentCount) studentCount.textContent = `${filtered.length} siswa`;
+  if (studentEmptyState) studentEmptyState.hidden = filtered.length > 0;
+}
+
+searchInput?.addEventListener("input", renderPayments);
+classFilter?.addEventListener("change", renderPayments);
+studentSearch?.addEventListener("input", renderStudents);
+studentClassFilter?.addEventListener("change", renderStudents);
+
+function updateTodoProgress() {
+  if (!todoProgressBar || !todoProgressLabel || !todoChecks.length) return;
+  const completed = todoChecks.filter((checkbox) => checkbox.checked).length;
+  todoProgressBar.style.width = `${Math.round((completed / todoChecks.length) * 100)}%`;
+  todoProgressLabel.textContent = `${completed} dari ${todoChecks.length} selesai`;
+}
+
+function personalizeReminder(student) {
+  return reminderTemplate?.value
+    .replaceAll("{nama_wali}", student.guardian)
+    .replaceAll("{nama_siswa}", student.name) || "";
+}
+
+function renderReminderRecipients() {
+  if (!reminderRecipients) return;
+  const unpaid = students.filter((student) => !payments.some((payment) => payment.name === student.name));
+  const counter = document.querySelector("#reminderRecipientCount");
+  if (counter) counter.textContent = `${unpaid.length} orang tua`;
+  reminderRecipients.innerHTML = unpaid.map((student) => {
+    const phone = student.phone.replace(/^0/, "62").replace(/\D/g, "");
+    const link = `https://wa.me/${phone}?text=${encodeURIComponent(personalizeReminder(student))}`;
+    return `<div class="recipient-row"><span class="student-avatar">${student.name.slice(0, 2).toUpperCase()}</span><div><strong>${student.guardian}</strong><small>${student.name} · ${student.phone}</small></div><a class="whatsapp-link" href="${link}" target="_blank" rel="noopener">Buka WhatsApp</a></div>`;
+  }).join("") || "<p class='empty-state'>Semua siswa sudah membayar.</p>";
+}
+
+function openReminderDialog(event) {
+  event?.preventDefault();
+  if (!reminderDialog) return;
+  renderReminderRecipients();
+  reminderDialog.showModal();
+}
+
+function updateActivityView() {
+  if (!activityGrid || !activityDateFilter || !activityClassFilter || !activityEmpty) return;
+  const selectedDate = activityDateFilter.value;
+  const selectedClass = activityClassFilter.value;
+  let visibleActivities = 0;
+  let visiblePhotos = 0;
+  activityGrid.querySelectorAll(".activity-card").forEach((card) => {
+    const visible = selectedDate === "2026-08-27" && (selectedClass === "all" || card.dataset.class === selectedClass);
+    card.hidden = !visible;
+    if (visible) {
+      visibleActivities += 1;
+      visiblePhotos += Number(card.dataset.photos || 0);
+    }
+  });
+  activityEmpty.hidden = visibleActivities > 0;
+  if (activityTotal) activityTotal.textContent = `${visibleActivities} aktivitas · ${visiblePhotos} foto`;
+}
+
+function openManageActivity(button) {
+  if (!manageActivityDialog || !managedPhotoGrid || !classStudentOptions) return;
+  managedClass = button.dataset.class || "";
+  const photoCount = Number(button.dataset.photos || 0);
+  if (manageActivitySubtitle) manageActivitySubtitle.textContent = `${button.dataset.title || "Aktivitas"} · Kelas ${managedClass}`;
+  if (existingPhotoCount) existingPhotoCount.textContent = `${photoCount} foto tersimpan`;
+  managedPhotoGrid.innerHTML = Array.from({ length: photoCount }, (_, index) => `<button class="managed-photo ${index === 0 ? "active" : ""}" type="button"><span>📷</span><small class="photo-tag-count">Periksa tag</small></button>`).join("");
+  classStudentOptions.innerHTML = students.filter((student) => student.className === managedClass).map((student) => `<label><input type="checkbox" value="${student.name}" /> ${student.name}</label>`).join("");
+  manageActivityDialog.showModal();
+}
+
 function renderPagination(container, totalPages, currentPage, onPageClick) {
   if (!container) return;
   if (totalPages <= 1) {
@@ -107,7 +390,7 @@ function renderGuardianListPage({ rowsSelector, searchSelector, filterSelector, 
   apply();
 }
 
-if (document.querySelector("#loginForm")) {
+if (loginForm && loginEmail && loginPassword && loginError && rememberLogin) {
   loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
     loginError.textContent = "";
@@ -133,24 +416,13 @@ if (document.querySelector("#loginForm")) {
   document.querySelectorAll("[data-demo-account]").forEach((button) => {
     button.addEventListener("click", () => {
       const account = demoAccounts[button.dataset.demoAccount];
+      if (!account) return;
       loginEmail.value = account.email;
       loginPassword.value = account.password;
       enterApp(account, rememberLogin.checked);
       loginForm.reset();
     });
   });
-
-  if (logoutButton) {
-    logoutButton.addEventListener("click", () => {
-      sessionStorage.removeItem(sessionKey);
-      localStorage.removeItem(sessionKey);
-      appShell.hidden = true;
-      loginPage.hidden = false;
-      applyDashboardRole("PARENT", false);
-      document.title = "ClassPing Guardian — Masuk";
-      loginEmail.focus();
-    });
-  }
 
   if (document.querySelector("#openPayment")) {
     document.querySelector("#openPayment").addEventListener("click", () => dialog.showModal());
@@ -347,9 +619,9 @@ if (document.querySelector("#loginForm")) {
     });
   }
 
-  renderPayments();
-  renderStudents();
-  updateDashboardStats();
+  if (typeof renderPayments === "function") renderPayments();
+  if (typeof renderStudents === "function") renderStudents();
+  if (typeof updateDashboardStats === "function") updateDashboardStats();
 
   const settingsTabs = document.querySelectorAll(".settings-tab");
   if (settingsTabs.length) {
@@ -392,22 +664,9 @@ if (document.querySelector("#loginForm")) {
     }
   }
 
-  try {
-    const savedSession = localStorage.getItem(sessionKey) || sessionStorage.getItem(sessionKey);
-    if (savedSession) {
-      const session = JSON.parse(savedSession);
-      if (!["ADMIN", "PARENT"].includes(session.role)) throw new Error("Invalid guardian role");
-      enterApp(session, Boolean(localStorage.getItem(sessionKey)));
-    } else {
-      loginEmail.focus();
-    }
-  } catch {
-    localStorage.removeItem(sessionKey);
-    sessionStorage.removeItem(sessionKey);
-  }
 }
 
-if (document.querySelector("#studentActivityRows")) {
+if (document.querySelector("#studentActivityRows") && activeSession?.role === "ADMIN") {
   renderGuardianListPage({
     rowsSelector: "#studentActivityRows",
     searchSelector: "#studentActivitySearch",
@@ -429,6 +688,25 @@ if (document.querySelector("#studentActivityRows")) {
     `
   });
 }
+
+document.querySelectorAll(".post-like").forEach((button) => {
+  button.addEventListener("click", () => {
+    const isLiked = button.getAttribute("aria-pressed") === "true";
+    const likes = button.closest(".guardian-post")?.querySelector(".post-likes span");
+    button.setAttribute("aria-pressed", String(!isLiked));
+    button.classList.toggle("liked", !isLiked);
+    if (likes) likes.textContent = String(Number(likes.textContent) + (isLiked ? -1 : 1));
+  });
+});
+
+document.querySelectorAll(".post-save").forEach((button) => {
+  button.addEventListener("click", () => {
+    const isSaved = button.getAttribute("aria-pressed") === "true";
+    button.setAttribute("aria-pressed", String(!isSaved));
+    button.classList.toggle("saved", !isSaved);
+    button.setAttribute("aria-label", isSaved ? button.getAttribute("aria-label").replace("Batalkan simpan", "Simpan") : button.getAttribute("aria-label").replace("Simpan", "Batalkan simpan"));
+  });
+});
 
 if (document.querySelector("#assessmentRows")) {
   renderGuardianListPage({

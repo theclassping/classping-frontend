@@ -53,7 +53,7 @@
           <button type="button" data-demo-account="admin"><span class="demo-icon admin">AS</span><span><strong>Administrator</strong><small>admin@classping.id</small></span><svg><use href="#icon-arrow-right" /></svg></button>
           <button type="button" data-demo-account="teacher"><span class="demo-icon teacher">NR</span><span><strong>Nia Ramadhani · Guru</strong><small>nia@classping.id</small></span><svg><use href="#icon-arrow-right" /></svg></button>
         </div>
-        <p class="login-help">Mencari akses orang tua? <a href="../classping-guardian/index.html">Buka ClassPing Guardian</a></p>
+        <p class="login-help">Mencari akses orang tua? <a href="http://localhost:4174/index.html?portal=guardian">Buka ClassPing Guardian</a></p>
       </div>
     </section>
   </main>
@@ -72,7 +72,6 @@
         <a class="nav-item" href="activity.html"><svg><use href="#icon-clipboard" /></svg>Laporan Aktivitas</a>
         <a class="nav-item" href="assessment.html"><svg><use href="#icon-award" /></svg>Penilaian</a>
         <a class="nav-item" href="payment.html"><svg><use href="#icon-wallet" /></svg>Pembayaran <span class="nav-badge">8</span></a>
-        <a class="nav-item" href="report.html"><svg><use href="#icon-chart" /></svg>Laporan</a>
         <p class="nav-label">PENGATURAN</p>
         <a class="nav-item" href="school-profile.html"><svg><use href="#icon-school" /></svg>Profil Sekolah</a>
         <a class="nav-item" href="settings.html"><svg><use href="#icon-settings" /></svg>Pengaturan</a>
@@ -120,26 +119,6 @@
             <h1>Selamat pagi, Bu <span id="welcomeFirstName">Andini</span>! <span aria-hidden="true">👋</span></h1>
             <p>Berikut ringkasan aktivitas dan hal penting sekolah hari ini.</p>
           </div>
-          <button class="primary-button" id="openPayment" type="button"><svg><use href="#icon-plus" /></svg>Catat Pembayaran</button>
-        </section>
-
-        <section class="stats-grid" aria-label="Ringkasan SPP">
-          <article class="stat-card green">
-            <div class="stat-top"><span class="stat-icon"><svg><use href="#icon-wallet" /></svg></span><span class="trend up">↗ 12%</span></div>
-            <p>Total SPP Terkumpul</p><strong id="collectedAmount">Rp 1.250.000</strong><small>dari target <span id="targetAmount">Rp 2.000.000</span></small>
-          </article>
-          <article class="stat-card blue">
-            <div class="stat-top"><span class="stat-icon"><svg><use href="#icon-check" /></svg></span><span class="trend">Bulan ini</span></div>
-            <p>Sudah Membayar</p><strong><span id="paidStudentCount">5</span> <em>siswa</em></strong><small>dari total <span id="paidStudentTotal">8</span> siswa</small>
-          </article>
-          <article class="stat-card orange">
-            <div class="stat-top"><span class="stat-icon"><svg><use href="#icon-clock" /></svg></span><span class="trend warning">Perlu tindak lanjut</span></div>
-            <p>Belum Membayar</p><strong><span id="unpaidStudentCount">3</span> <em>siswa</em></strong><small><span id="overdueStudentCount">1</span> siswa melewati jatuh tempo</small><button class="stat-action" id="openReminder" type="button"><svg><use href="#icon-bell" /></svg>Atur pengingat WhatsApp</button>
-          </article>
-          <article class="stat-card purple">
-            <div class="stat-top"><span class="stat-icon"><svg><use href="#icon-users" /></svg></span><span class="trend">Aktif</span></div>
-            <p>Total Siswa</p><strong><span id="totalStudentCount">8</span> <em>siswa</em></strong><small><span id="activeClassCount">4</span> kelas aktif</small>
-          </article>
         </section>
 
         <section class="admin-focus-grid" aria-label="Aktivitas admin dan tugas penting">
@@ -191,26 +170,61 @@
           </article>
         </section>
 
-        <section class="overview-grid">
-          <article class="panel payment-progress" id="laporan">
-            <div class="panel-heading"><div><h2>Progres Pembayaran</h2><p>Realisasi SPP 6 bulan terakhir</p></div><select aria-label="Pilih tahun"><option>2026</option><option>2025</option></select></div>
-            <div class="chart-wrap">
-              <div class="chart-y"><span>25jt</span><span>20jt</span><span>15jt</span><span>10jt</span><span>5jt</span><span>0</span></div>
-              <div class="chart" aria-label="Grafik pembayaran Januari hingga Juni">
-                <div class="grid-lines"></div>
-                <div class="bar-group"><div class="bar" style="--height:76%"><span>19jt</span></div><small>Jan</small></div>
-                <div class="bar-group"><div class="bar" style="--height:84%"><span>21jt</span></div><small>Feb</small></div>
-                <div class="bar-group"><div class="bar" style="--height:72%"><span>18jt</span></div><small>Mar</small></div>
-                <div class="bar-group"><div class="bar" style="--height:92%"><span>23jt</span></div><small>Apr</small></div>
-                <div class="bar-group"><div class="bar" style="--height:88%"><span>22jt</span></div><small>Mei</small></div>
-                <div class="bar-group current"><div class="bar" style="--height:75%"><span>18,75jt</span></div><small>Jun</small></div>
+        <section class="dashboard-insight-grid" aria-label="Ringkasan siswa dan aktivitas">
+          <article class="panel dashboard-insight student-insight" id="siswa" aria-labelledby="studentSummaryTitle">
+            <header class="insight-header">
+              <div><h2 id="studentSummaryTitle">Ringkasan Siswa</h2><p class="insight-subtitle">Data siswa tahun ajaran 2026/2027</p></div>
+              <a class="insight-link" href="student.html">Lihat data <span>→</span></a>
+            </header>
+            <div class="student-insight-body">
+              <div class="student-total-spotlight">
+                <span class="insight-main-icon"><svg><use href="#icon-users" /></svg></span>
+                <div><strong id="studentTotalSummary">8</strong><span>Siswa aktif</span><small>Dalam 4 kelas aktif</small></div>
+              </div>
+              <div class="student-detail-list">
+                <div class="insight-row">
+                  <div><span>Jenis kelamin</span><small>Komposisi siswa</small></div>
+                  <div class="gender-pills" aria-label="Ringkasan jenis kelamin siswa"><span class="female"><b id="femaleStudentSummary">4</b> P</span><span class="male"><b id="maleStudentSummary">4</b> L</span></div>
+                </div>
+                <div class="insight-row">
+                  <div><span>Rentang usia</span><small id="studentAgeDistributionSummary">4 th: 1 · 5 th: 4 · 6 th: 3</small></div>
+                  <strong id="studentAgeRangeSummary">4–6 tahun</strong>
+                </div>
+                <div class="insight-row">
+                  <div><span>Status</span><small><span id="inactiveStudentSummary">0</span> siswa nonaktif</small></div>
+                  <span class="active-student-pill"><i></i><b id="activeStudentSummary">8</b> Aktif</span>
+                </div>
               </div>
             </div>
-            <div class="chart-legend"><span><i></i>SPP terkumpul</span><span class="target"><i></i>Target bulanan Rp 24jt</span></div>
           </article>
 
+          <article class="panel dashboard-insight activity-insight" id="aktivitas" aria-labelledby="activitySummaryTitle">
+            <header class="insight-header">
+              <div><h2 id="activitySummaryTitle">Ringkasan Aktivitas</h2><p class="insight-subtitle">Dokumentasi kegiatan harian</p></div>
+              <a class="insight-link" href="activity.html">Lihat laporan <span>→</span></a>
+            </header>
+            <div class="activity-kpi-strip" aria-label="Statistik aktivitas hari ini">
+              <div class="primary"><strong>3</strong><span>Aktivitas</span><small>2 kelas terlibat</small></div>
+              <div><strong>12</strong><span>Foto</span><small>Diunggah hari ini</small></div>
+              <div><strong>2</strong><span>Dipublikasi</span><small>Dilihat orang tua</small></div>
+            </div>
+            <div class="activity-attention-row">
+              <span class="attention-icon">!</span>
+              <div><strong>2 foto belum ditandai</strong><small>Tambahkan tag siswa sebelum dipublikasi.</small></div>
+              <a href="activity.html">Periksa</a>
+            </div>
+            <div class="latest-activity-row"><div><span>Aktivitas terakhir</span><strong>Bermain Alat Musik</strong><small>A2 · Pelangi · 11.00</small></div><span class="status-pill draft">Draf</span></div>
+          </article>
+        </section>
+
+        <section class="panel assessment-admin" id="penilaian">
+          <div class="panel-heading"><div><h2>Ringkasan Penilaian</h2><p>Perkembangan siswa semester berjalan</p></div><a class="text-button" href="assessment.html">Kelola penilaian →</a></div>
+          <div class="assessment-summary"><div><span>Nilai tersimpan</span><strong>63%</strong><div class="progress"><i style="width:63%"></i></div></div><div><span>Perlu dilengkapi</span><strong>3 siswa</strong><small>4 indikator perkembangan</small></div><div><span>Terakhir diperbarui</span><strong>25 Agu 2026</strong><small>oleh Bu Ratna</small></div></div>
+        </section>
+
+        <section class="overview-grid dashboard-class-overview">
           <article class="panel class-status">
-            <div class="panel-heading"><div><h2>Status per Kelas</h2><p>Pembayaran bulan Agustus</p></div><button class="text-button" type="button">Lihat semua</button></div>
+            <div class="panel-heading"><div><h2>Status Pembayaran SPP per Kelas</h2><p>Pembayaran bulan Agustus</p></div><a class="text-button" href="payment.html">Lihat semua →</a></div>
             <div class="class-list">
               <div class="class-row"><span class="class-badge sun">A1</span><div><strong>Kelas A1 — Matahari</strong><span>1 dari 2 siswa</span><div class="progress"><i style="width:50%"></i></div></div><b>50%</b></div>
               <div class="class-row"><span class="class-badge leaf">A2</span><div><strong>Kelas A2 — Pelangi</strong><span>1 dari 2 siswa</span><div class="progress"><i style="width:50%"></i></div></div><b>50%</b></div>
@@ -220,59 +234,8 @@
           </article>
         </section>
 
-        <section class="activity-section" id="aktivitas">
-          <div class="section-heading">
-            <div><p class="eyebrow">DOKUMENTASI HARIAN</p><h2>Laporan Aktivitas</h2><p>Kelola aktivitas dan foto yang hanya dapat dilihat orang tua siswa terkait.</p></div>
-            <button class="primary-button" id="openActivity" type="button"><svg><use href="#icon-plus" /></svg>Tambah Aktivitas</button>
-          </div>
-          <div class="activity-toolbar panel">
-            <label class="date-chip" for="activityDateFilter"><svg><use href="#icon-calendar" /></svg><span><small>Tanggal kegiatan</small><input id="activityDateFilter" type="date" value="2026-08-27" min="2026-08-01" max="2026-08-31" /></span></label>
-            <select id="activityClassFilter" aria-label="Filter kelas aktivitas"><option value="all">Semua Kelas</option><option value="A1">Kelas A1 — Matahari</option><option value="A2">Kelas A2 — Pelangi</option><option value="B1">Kelas B1 — Bintang</option><option value="B2">Kelas B2 — Bulan</option></select>
-            <span class="activity-total">3 aktivitas · 12 foto hari ini</span>
-          </div>
-          <div class="activity-grid" id="activityGrid">
-            <article class="activity-card panel" data-class="A1" data-photos="4">
-              <div class="activity-cover art-paint"><span>🎨</span><b>4 foto</b></div>
-              <div class="activity-body"><div class="activity-meta"><span>09.00</span><span>A1 · Matahari</span><span class="published">● Dipublikasi</span></div><h3>Melukis dengan Jari</h3><p>Anak-anak mengenal warna primer dan mencampurnya menjadi warna baru.</p><div class="tag-summary"><span class="mini-avatars">AP <i>RA</i><i>NZ</i></span><strong>8 siswa ditandai</strong></div><button class="outline-button manage-activity" type="button" data-class="A1" data-title="Melukis dengan Jari" data-photos="4">Kelola foto & tag</button></div>
-            </article>
-            <article class="activity-card panel" data-class="A1" data-photos="5">
-              <div class="activity-cover art-garden"><span>🌱</span><b>5 foto</b></div>
-              <div class="activity-body"><div class="activity-meta"><span>10.15</span><span>A1 · Matahari</span><span class="published">● Dipublikasi</span></div><h3>Menanam Kacang Hijau</h3><p>Belajar merawat tanaman dan mengamati proses pertumbuhan biji.</p><div class="tag-summary"><span class="mini-avatars">AP <i>FR</i><i>+9</i></span><strong>12 siswa ditandai</strong></div><button class="outline-button manage-activity" type="button" data-class="A1" data-title="Menanam Kacang Hijau" data-photos="5">Kelola foto & tag</button></div>
-            </article>
-            <article class="activity-card panel" data-class="A2" data-photos="3">
-              <div class="activity-cover art-music"><span>🎵</span><b>3 foto</b></div>
-              <div class="activity-body"><div class="activity-meta"><span>11.00</span><span>A2 · Pelangi</span><span class="draft">● Draf</span></div><h3>Bermain Alat Musik</h3><p>Eksplorasi ritme sederhana menggunakan tamborin dan marakas.</p><div class="tag-summary warning-tag"><span>!</span><strong>2 foto belum memiliki tag</strong></div><button class="outline-button manage-activity" type="button" data-class="A2" data-title="Bermain Alat Musik" data-photos="3">Lanjutkan & tag siswa</button></div>
-            </article>
-          </div>
-          <div class="activity-empty panel" id="activityEmpty" hidden><span>📅</span><h3>Belum ada aktivitas</h3><p>Belum ada laporan aktivitas pada tanggal yang dipilih.</p><button class="text-button" type="button" id="emptyAddActivity">+ Tambah aktivitas pada tanggal ini</button></div>
-        </section>
-
-        <section class="panel assessment-admin" id="penilaian">
-          <div class="panel-heading"><div><h2>Ringkasan Penilaian</h2><p>Perkembangan siswa semester berjalan</p></div><button class="text-button" type="button">Kelola penilaian →</button></div>
-          <div class="assessment-summary"><div><span>Nilai tersimpan</span><strong>63%</strong><div class="progress"><i style="width:63%"></i></div></div><div><span>Perlu dilengkapi</span><strong>3 siswa</strong><small>4 indikator perkembangan</small></div><div><span>Terakhir diperbarui</span><strong>25 Agu 2026</strong><small>oleh Bu Ratna</small></div></div>
-        </section>
-
-        <section class="panel student-data" id="siswa">
-          <div class="panel-heading student-heading">
-            <div><h2>Data Siswa</h2><p>Daftar siswa aktif TK Harapan Bangsa tahun ajaran 2026/2027</p></div>
-            <a class="primary-button compact-button" href="student-add.html"><svg><use href="#icon-plus" /></svg>Tambah Siswa</a>
-          </div>
-          <div class="table-tools">
-            <label class="search"><svg><use href="#icon-search" /></svg><input id="studentSearch" type="search" placeholder="Cari siswa atau orang tua..." /></label>
-            <select id="studentClassFilter" aria-label="Filter kelas siswa"><option value="all">Semua Kelas</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option></select>
-            <span class="student-count" id="studentCount">8 siswa</span>
-          </div>
-          <div class="table-scroll">
-            <table>
-              <thead><tr><th>Nama Siswa</th><th>NIS</th><th>Kelas</th><th>Jenis Kelamin</th><th>Orang Tua / Wali</th><th>No. WhatsApp</th><th>Status</th><th aria-label="Aksi"></th></tr></thead>
-              <tbody id="studentRows"></tbody>
-            </table>
-          </div>
-          <p class="empty-state" id="studentEmptyState" hidden>Tidak ada data siswa yang cocok.</p>
-        </section>
-
         <section class="panel transactions" id="pembayaran">
-          <div class="panel-heading transaction-heading"><div><h2>Pembayaran Terbaru</h2><p>Transaksi SPP yang baru saja tercatat</p></div><button class="text-button" type="button">Lihat semua transaksi <span>→</span></button></div>
+          <div class="panel-heading transaction-heading"><div><h2>Pembayaran Terbaru</h2><p>Transaksi SPP yang baru saja tercatat</p></div><a class="text-button" href="payment.html">Lihat semua transaksi <span>→</span></a></div>
           <div class="table-tools">
             <label class="search"><svg><use href="#icon-search" /></svg><input id="searchInput" type="search" placeholder="Cari nama siswa..." /></label>
             <select id="classFilter" aria-label="Filter kelas"><option value="all">Semua Kelas</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option></select>
@@ -315,18 +278,9 @@
     </div>
   </div>
 
-  <dialog id="paymentDialog" aria-labelledby="dialogTitle">
-    <form id="paymentForm" method="dialog">
-      <div class="dialog-heading"><div><span class="dialog-icon"><svg><use href="#icon-wallet" /></svg></span><div><h2 id="dialogTitle">Catat Pembayaran</h2><p>Tambahkan pembayaran SPP siswa.</p></div></div><button class="close-button" value="cancel" aria-label="Tutup" type="submit">×</button></div>
-      <label>Nama siswa<input name="student" required placeholder="Contoh: Alya Putri Ramadhani" /></label>
-      <div class="form-grid"><label>Kelas<select name="class" required><option value="">Pilih kelas</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option></select></label><label>Bulan SPP<select name="month" required><option>Agustus 2026</option><option>September 2026</option></select></label></div>
-      <div class="form-grid"><label>Jumlah<input name="amount" required inputmode="numeric" value="250.000" /></label><label>Metode<select name="method"><option>Transfer Bank</option><option>Tunai</option><option>QRIS</option></select></label></div>
-      <div class="dialog-actions"><button class="secondary-button" value="cancel" type="submit">Batal</button><button class="primary-button" value="default" type="submit">Simpan Pembayaran</button></div>
-    </form>
-  </dialog>
   <dialog id="sendReminderDialog" class="reminder-dialog" aria-labelledby="sendReminderDialogTitle">
     <form method="dialog">
-      <div class="dialog-heading"><div><span class="dialog-icon whatsapp-icon">WA</span><div><h2 id="sendReminderDialogTitle">Ingatkan wali siswa via?</h2><p>Pilih media pengiriman reminder untuk wali siswa.</p></div></div><button class="close-button" value="cancel" aria-label="Tutup" type="submit">×</button></div>
+      <div class="dialog-heading"><div><span class="dialog-icon whatsapp-icon">WA</span><div><h2 id="sendReminderDialogTitle">Ingatkan wali siswa via?</h2><p>Pilih media pengiriman reminder untuk wali siswa.</p></div></div><button class="close-button" value="cancel" aria-label="Tutup" type="submit" formnovalidate>×</button></div>
       <div class="send-reminder-choice">
         <button type="button" class="primary-button" data-reminder-method="email">Email</button>
         <button type="button" class="secondary-button" data-reminder-method="whatsapp">Whatsapp</button>
@@ -335,7 +289,7 @@
   </dialog>
   <dialog id="reminderDialog" class="reminder-dialog" aria-labelledby="reminderDialogTitle">
     <form id="reminderForm" method="dialog">
-      <div class="dialog-heading"><div><span class="dialog-icon whatsapp-icon">WA</span><div><h2 id="reminderDialogTitle">Pengingat SPP WhatsApp</h2><p>Atur pesan formal untuk orang tua yang belum membayar.</p></div></div><button class="close-button" value="cancel" aria-label="Tutup" type="submit">×</button></div>
+      <div class="dialog-heading"><div><span class="dialog-icon whatsapp-icon">WA</span><div><h2 id="reminderDialogTitle">Pengingat SPP WhatsApp</h2><p>Atur pesan formal untuk orang tua yang belum membayar.</p></div></div><button class="close-button" value="cancel" aria-label="Tutup" type="submit" formnovalidate>×</button></div>
       <div class="automation-status"><span class="automation-dot"></span><div><strong>Otomasi pengingat</strong><small>Pesan dijadwalkan berdasarkan status pembayaran terbaru.</small></div><label class="switch"><input id="automationEnabled" type="checkbox" /><span></span></label></div>
       <div class="form-grid"><label>Jatuh tempo<input id="reminderDueDate" type="date" value="2026-08-10" /></label><label>Waktu pengiriman<input id="reminderTime" type="time" value="08:00" /></label></div>
       <label>Jadwal pengingat<select id="reminderSchedule"><option value="before">H-3 dan hari jatuh tempo</option><option value="daily">Setiap hari setelah jatuh tempo</option><option value="combined">H-3, jatuh tempo, lalu setiap 3 hari</option></select></label>
@@ -352,29 +306,7 @@ Admin TK Harapan Bangsa</textarea></label>
       <div class="recipient-heading"><div><strong>Penerima saat ini</strong><small id="reminderRecipientCount">3 orang tua</small></div><button class="text-button" id="previewAllMessages" type="button">Pratinjau pesan</button></div>
       <div class="reminder-recipients" id="reminderRecipients"></div>
       <p class="automation-note"><strong>Catatan prototipe:</strong> tombol WhatsApp membuka pesan siap kirim. Pengiriman terjadwal otomatis memerlukan WhatsApp Business API dan backend.</p>
-      <div class="dialog-actions"><button class="secondary-button" value="cancel" type="submit">Batal</button><button class="primary-button" value="save" type="submit">Simpan Otomasi</button></div>
-    </form>
-  </dialog>
-  <dialog id="activityDialog" class="activity-dialog" aria-labelledby="activityDialogTitle">
-    <form id="activityForm" method="dialog">
-      <div class="dialog-heading"><div><span class="dialog-icon"><svg><use href="#icon-clipboard" /></svg></span><div><h2 id="activityDialogTitle">Tambah Aktivitas</h2><p>Buat dokumentasi baru tanpa batas aktivitas harian.</p></div></div><button class="close-button" value="cancel" aria-label="Tutup" type="submit">×</button></div>
-      <div class="form-grid"><label>Judul aktivitas<input name="title" required placeholder="Contoh: Membuat Kolase" /></label><label>Kelas<select name="activityClass" required><option value="">Pilih kelas</option><option>A1 · Matahari</option><option>A2 · Pelangi</option><option>B1 · Bintang</option><option>B2 · Bulan</option></select></label></div>
-      <div class="form-grid"><label>Tanggal<input name="date" type="date" value="2026-08-27" required /></label><label>Waktu<input name="time" type="time" value="09:00" required /></label></div>
-      <label>Deskripsi<textarea name="description" rows="3" placeholder="Apa yang dipelajari anak-anak?"></textarea></label>
-      <label class="upload-zone" for="activityPhotos"><svg><use href="#icon-upload" /></svg><strong>Unggah foto aktivitas</strong><span>Pilih satu atau beberapa foto · JPG/PNG</span><input id="activityPhotos" name="photos" type="file" accept="image/*" multiple /></label>
-      <div class="upload-preview" id="uploadPreview"><p>Foto yang dipilih akan muncul di sini.</p></div>
-      <fieldset class="student-tags"><legend>Tag siswa dalam foto</legend><p>Orang tua hanya akan melihat foto yang menandai anak mereka.</p><div class="tag-options"><label><input type="checkbox" value="Alya Putri Ramadhani" /> Alya Putri</label><label><input type="checkbox" value="Rafi Akbar Maulana" /> Rafi Akbar</label><label><input type="checkbox" value="Nayla Zahra Aulia" /> Nayla Zahra</label><label><input type="checkbox" value="Fathan Rizky Pratama" /> Fathan Rizky</label></div></fieldset>
-      <div class="dialog-actions"><button class="secondary-button" value="cancel" type="submit">Simpan Draf</button><button class="primary-button" value="publish" type="submit">Publikasikan Aktivitas</button></div>
-    </form>
-  </dialog>
-  <dialog id="manageActivityDialog" class="activity-dialog manage-dialog" aria-labelledby="manageDialogTitle">
-    <form id="manageActivityForm" method="dialog">
-      <div class="dialog-heading"><div><span class="dialog-icon"><svg><use href="#icon-clipboard" /></svg></span><div><h2 id="manageDialogTitle">Kelola Foto & Tag</h2><p id="manageActivitySubtitle">Aktivitas · Kelas</p></div></div><button class="close-button" value="cancel" aria-label="Tutup" type="submit">×</button></div>
-      <div class="privacy-notice"><svg><use href="#icon-users" /></svg><p><strong>Tag terbatas sesuai kelas</strong><span id="classPrivacyCopy">Hanya siswa dari kelas aktivitas ini yang dapat dipilih.</span></p></div>
-      <div class="existing-photo-heading"><div><strong>Foto aktivitas</strong><small id="existingPhotoCount">0 foto tersimpan</small></div><label class="mini-upload" for="managePhotos"><svg><use href="#icon-upload" /></svg>Tambah foto<input id="managePhotos" type="file" accept="image/*" multiple /></label></div>
-      <div class="managed-photo-grid" id="managedPhotoGrid"></div>
-      <fieldset class="student-tags manage-student-tags"><legend>Siswa dalam foto yang dipilih</legend><p>Pilih semua siswa yang terlihat. Orang tua hanya menerima foto yang menandai anaknya.</p><label class="select-all-students"><input id="selectAllStudents" type="checkbox" /> Pilih seluruh kelas</label><div class="tag-options" id="classStudentOptions"></div></fieldset>
-      <div class="dialog-actions"><button class="secondary-button" value="cancel" type="submit">Batal</button><button class="primary-button" value="save" type="submit">Simpan Foto & Tag</button></div>
+      <div class="dialog-actions"><button class="secondary-button" value="cancel" type="submit" formnovalidate>Batal</button><button class="primary-button" value="save" type="submit">Simpan Otomasi</button></div>
     </form>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span>Pembayaran berhasil dicatat.</div>
@@ -404,6 +336,6 @@ Admin TK Harapan Bangsa</textarea></label>
     <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
     <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
   </svg>
-  <script src="script.js"></script>
+  <script src="script.js?v=20260901-session"></script>
 </body>
 </html>

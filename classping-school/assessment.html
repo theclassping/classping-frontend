@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260901-listing-header" />
 </head>
 <body>
   <div class="app-shell" id="appShell">
@@ -24,7 +24,6 @@
         <a class="nav-item" href="activity.html"><svg><use href="#icon-clipboard" /></svg>Laporan Aktivitas</a>
         <a class="nav-item active" href="assessment.html"><svg><use href="#icon-award" /></svg>Penilaian</a>
         <a class="nav-item" href="payment.html"><svg><use href="#icon-wallet" /></svg>Pembayaran <span class="nav-badge">8</span></a>
-        <a class="nav-item" href="report.html"><svg><use href="#icon-chart" /></svg>Laporan</a>
         <p class="nav-label">PENGATURAN</p>
         <a class="nav-item" href="school-profile.html"><svg><use href="#icon-school" /></svg>Profil Sekolah</a>
         <a class="nav-item" href="settings.html"><svg><use href="#icon-settings" /></svg>Pengaturan</a>
@@ -57,15 +56,17 @@
       </header>
 
       <main id="main">
-        <section class="panel student-data" id="penilaian">
-          <div class="panel-heading student-heading">
+        <section class="listing-section" id="penilaian" aria-labelledby="assessmentPageTitle">
+          <div class="section-heading">
             <div>
-              <h2>Penilaian</h2>
+              <p class="eyebrow">PERKEMBANGAN SISWA</p>
+              <h2 id="assessmentPageTitle">Penilaian</h2>
               <p>Daftar penilaian guru dan perkembangan hasil observasi siswa</p>
             </div>
-            <a class="primary-button compact-button" href="assessment-add.html"><svg><use href="#icon-plus" /></svg>Tambah Penilaian</a>
+            <a class="primary-button" href="assessment-add.html"><svg><use href="#icon-plus" /></svg>Tambah Penilaian</a>
           </div>
 
+          <div class="panel student-data">
           <div class="table-tools">
             <label class="search"><svg><use href="#icon-search" /></svg><input id="assessmentSearch" type="search" placeholder="Cari nama penilaian..." /></label>
             <div class="assessment-period-filter">
@@ -106,6 +107,7 @@
 
           <div class="pagination" id="assessmentPagination" aria-label="Navigasi halaman penilaian"></div>
           <p class="empty-state" id="assessmentEmptyState" hidden>Tidak ada penilaian yang cocok.</p>
+          </div>
         </section>
       </main>
     </div>
@@ -126,6 +128,6 @@
     <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
     <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   </svg>
-  <script src="script.js"></script>
+  <script src="script.js?v=20260901-listing-header"></script>
 </body>
 </html>

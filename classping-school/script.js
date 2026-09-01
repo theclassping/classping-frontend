@@ -12,14 +12,14 @@
 ];
 
 const students = [
-  { name: "Alya Putri Ramadhani", initials: "AP", nis: "26001", className: "A1", gender: "Perempuan", guardian: "Ibu Rina Ramadhani", relation: "Ibu", phone: "0812-3456-7801", color: "" },
-  { name: "Rafi Akbar Maulana", initials: "RA", nis: "26002", className: "A1", gender: "Laki-laki", guardian: "Bapak Dedi Maulana", relation: "Ayah", phone: "0813-7890-1245", color: "alt", overdue: true },
-  { name: "Nayla Zahra Aulia", initials: "NZ", nis: "26003", className: "A2", gender: "Perempuan", guardian: "Ibu Siti Aulia", relation: "Ibu", phone: "0857-2234-1180", color: "blue" },
-  { name: "Fathan Rizky Pratama", initials: "FR", nis: "26004", className: "A2", gender: "Laki-laki", guardian: "Bapak Andri Pratama", relation: "Ayah", phone: "0819-5521-9034", color: "purple" },
-  { name: "Raka Aditya Pratama", initials: "RA", nis: "26005", className: "B1", gender: "Laki-laki", guardian: "Ibu Maya Lestari", relation: "Ibu", phone: "0821-7789-4421", color: "alt" },
-  { name: "Keisha Amalia Putri", initials: "KA", nis: "26006", className: "B1", gender: "Perempuan", guardian: "Bapak Arif Setiawan", relation: "Ayah", phone: "0812-9065-7730", color: "" },
-  { name: "Daffa Alfarizi", initials: "DA", nis: "26007", className: "B2", gender: "Laki-laki", guardian: "Ibu Nurul Hikmah", relation: "Ibu", phone: "0852-1109-6832", color: "blue" },
-  { name: "Citra Maharani", initials: "CM", nis: "26008", className: "B2", gender: "Perempuan", guardian: "Bapak Reza Mahendra", relation: "Ayah", phone: "0878-3345-9012", color: "purple" }
+  { name: "Alya Putri Ramadhani", initials: "AP", nis: "26001", className: "A1", gender: "Perempuan", age: 5, status: "Aktif", guardian: "Ibu Rina Ramadhani", relation: "Ibu", phone: "0812-3456-7801", color: "" },
+  { name: "Rafi Akbar Maulana", initials: "RA", nis: "26002", className: "A1", gender: "Laki-laki", age: 5, status: "Aktif", guardian: "Bapak Dedi Maulana", relation: "Ayah", phone: "0813-7890-1245", color: "alt", overdue: true },
+  { name: "Nayla Zahra Aulia", initials: "NZ", nis: "26003", className: "A2", gender: "Perempuan", age: 4, status: "Aktif", guardian: "Ibu Siti Aulia", relation: "Ibu", phone: "0857-2234-1180", color: "blue" },
+  { name: "Fathan Rizky Pratama", initials: "FR", nis: "26004", className: "A2", gender: "Laki-laki", age: 5, status: "Aktif", guardian: "Bapak Andri Pratama", relation: "Ayah", phone: "0819-5521-9034", color: "purple" },
+  { name: "Raka Aditya Pratama", initials: "RA", nis: "26005", className: "B1", gender: "Laki-laki", age: 6, status: "Aktif", guardian: "Ibu Maya Lestari", relation: "Ibu", phone: "0821-7789-4421", color: "alt" },
+  { name: "Keisha Amalia Putri", initials: "KA", nis: "26006", className: "B1", gender: "Perempuan", age: 6, status: "Aktif", guardian: "Bapak Arif Setiawan", relation: "Ayah", phone: "0812-9065-7730", color: "" },
+  { name: "Daffa Alfarizi", initials: "DA", nis: "26007", className: "B2", gender: "Laki-laki", age: 5, status: "Aktif", guardian: "Ibu Nurul Hikmah", relation: "Ibu", phone: "0852-1109-6832", color: "blue" },
+  { name: "Citra Maharani", initials: "CM", nis: "26008", className: "B2", gender: "Perempuan", age: 6, status: "Aktif", guardian: "Bapak Reza Mahendra", relation: "Ayah", phone: "0878-3345-9012", color: "purple" }
 ];
 
 const assessmentReportLayout = [
@@ -149,10 +149,12 @@ const loginEmail = document.querySelector("#loginEmail");
 const loginPassword = document.querySelector("#loginPassword");
 const loginError = document.querySelector("#loginError");
 const rememberLogin = document.querySelector("#rememberLogin");
-const logoutButton = document.querySelector("#logoutButton");
+const logoutButton = document.querySelector(".logout");
 const welcomeFirstName = document.querySelector("#welcomeFirstName");
 const dashboardDate = document.querySelector("#dashboardDate");
 const sessionKey = "classping-school-session";
+const sessionIdleTimeout = 30 * 60 * 1000;
+const sessionTouchInterval = 30 * 1000;
 const studentPagination = document.querySelector("#studentPagination");
 const paymentPagination = document.querySelector("#paymentPagination");
 const activityPagination = document.querySelector("#activityPagination");
@@ -162,6 +164,9 @@ let studentPage = 1;
 let paymentPage = 1;
 let activityPage = 1;
 let assessmentPage = 1;
+let activeSchoolSession = null;
+let sessionRemembered = false;
+let lastSessionTouch = 0;
 
 const activityCatalog = {
   "melukis-dengan-jari": {
@@ -249,20 +254,115 @@ function authenticate(email, password) {
   return Object.values(demoAccounts).find((account) => account.email === email.trim().toLowerCase() && account.password === password);
 }
 
-function enterApp(account, remember = false) {
-  if (!loginPage || !appShell || !profileName || !profileRole || !profileAvatar) return;
-  const session = { role: account.role, email: account.email, name: account.name, initials: account.initials };
+function persistSchoolSession(session, remember = false) {
   sessionStorage.removeItem(sessionKey);
   localStorage.removeItem(sessionKey);
   (remember ? localStorage : sessionStorage).setItem(sessionKey, JSON.stringify(session));
-  applyDashboardRole(account.role, false);
-  profileName.textContent = account.name;
-  profileRole.textContent = account.role === "TEACHER" ? "Guru" : "Administrator";
-  profileAvatar.textContent = account.initials;
-  if (welcomeFirstName) welcomeFirstName.textContent = account.name.split(" ")[0];
-  loginPage.hidden = true;
-  appShell.hidden = false;
-  document.title = account.role === "TEACHER" ? "ClassPing School — Portal Guru" : "ClassPing School — Dashboard Admin";
+}
+
+function clearSchoolSession() {
+  sessionStorage.removeItem(sessionKey);
+  localStorage.removeItem(sessionKey);
+  activeSchoolSession = null;
+  sessionRemembered = false;
+}
+
+function readSchoolSession() {
+  const localSession = localStorage.getItem(sessionKey);
+  const rawSession = localSession || sessionStorage.getItem(sessionKey);
+  if (!rawSession) return { session: null, remember: false, expired: false };
+  const session = JSON.parse(rawSession);
+  if (!['ADMIN', 'TEACHER'].includes(session.role)) throw new Error('Invalid school role');
+  const lastActive = Number(session.lastActive) || Date.now();
+  return {
+    session: { ...session, lastActive },
+    remember: Boolean(localSession),
+    expired: Date.now() - lastActive >= sessionIdleTimeout
+  };
+}
+
+function showAuthenticatedSchool(session) {
+  activeSchoolSession = session;
+  if (profileName) profileName.textContent = session.name;
+  if (profileRole) profileRole.textContent = session.role === "TEACHER" ? "Guru" : "Administrator";
+  if (profileAvatar) profileAvatar.textContent = session.initials;
+  if (welcomeFirstName) welcomeFirstName.textContent = session.name.split(" ")[0];
+
+  if (loginPage && appShell) {
+    applyDashboardRole(session.role, false);
+    loginPage.hidden = true;
+    appShell.hidden = false;
+    document.title = session.role === "TEACHER" ? "ClassPing School — Portal Guru" : "ClassPing School — Dashboard Admin";
+  }
+}
+
+function showSchoolLogin(message = "") {
+  if (!loginPage || !appShell) return;
+  appShell.hidden = true;
+  loginPage.hidden = false;
+  applyDashboardRole("ADMIN", true);
+  document.title = "ClassPing School — Masuk";
+  if (loginError) loginError.textContent = message;
+  loginEmail?.focus();
+}
+
+function expireSchoolSession() {
+  clearSchoolSession();
+  const message = "Sesi berakhir karena tidak ada aktivitas selama 30 menit. Silakan masuk kembali.";
+  if (loginPage) showSchoolLogin(message);
+  else window.location.replace("index.html?reason=idle");
+}
+
+function restoreSchoolSession() {
+  try {
+    const stored = readSchoolSession();
+    if (stored.expired) {
+      expireSchoolSession();
+      return false;
+    }
+    if (!stored.session) {
+      if (loginPage) {
+        const idleMessage = new URLSearchParams(window.location.search).get("reason") === "idle"
+          ? "Sesi berakhir karena tidak ada aktivitas selama 30 menit. Silakan masuk kembali."
+          : "";
+        showSchoolLogin(idleMessage);
+      } else {
+        window.location.replace("index.html");
+      }
+      return false;
+    }
+    sessionRemembered = stored.remember;
+    showAuthenticatedSchool(stored.session);
+    return true;
+  } catch {
+    clearSchoolSession();
+    if (loginPage) showSchoolLogin();
+    else window.location.replace("index.html");
+    return false;
+  }
+}
+
+function touchSchoolSession() {
+  if (!activeSchoolSession) return;
+  const now = Date.now();
+  if (now - lastSessionTouch < sessionTouchInterval) return;
+  activeSchoolSession.lastActive = now;
+  lastSessionTouch = now;
+  persistSchoolSession(activeSchoolSession, sessionRemembered);
+}
+
+function enterApp(account, remember = false) {
+  const session = {
+    role: account.role,
+    email: account.email,
+    name: account.name,
+    initials: account.initials,
+    lastActive: Date.now()
+  };
+  sessionRemembered = remember;
+  lastSessionTouch = session.lastActive;
+  persistSchoolSession(session, remember);
+  showAuthenticatedSchool(session);
   window.scrollTo(0, 0);
 }
 
@@ -302,15 +402,11 @@ document.querySelectorAll("[data-demo-account]").forEach((button) => {
   });
 });
 
-if (logoutButton && appShell && loginPage && loginEmail) {
+if (logoutButton && appShell) {
   logoutButton.addEventListener("click", () => {
-    sessionStorage.removeItem(sessionKey);
-    localStorage.removeItem(sessionKey);
-    appShell.hidden = true;
-    loginPage.hidden = false;
-    applyDashboardRole("ADMIN", true);
-    document.title = "ClassPing School — Masuk";
-    loginEmail.focus();
+    clearSchoolSession();
+    if (loginPage) showSchoolLogin();
+    else window.location.replace("index.html");
   });
 }
 
@@ -322,19 +418,38 @@ function getUnpaidStudents() {
 }
 
 function updateDashboardStats() {
-  if (!document.querySelector("#collectedAmount") || !document.querySelector("#targetAmount") || !document.querySelector("#paidStudentCount") || !document.querySelector("#paidStudentTotal") || !document.querySelector("#unpaidStudentCount") || !document.querySelector("#overdueStudentCount") || !document.querySelector("#totalStudentCount") || !document.querySelector("#activeClassCount") || !document.querySelector("#unpaidTodoSummary")) return;
-  const paidNames = new Set(payments.filter((payment) => payment.month === "Agustus 2026").map((payment) => payment.name));
+  const paymentNames = new Set(payments.filter((payment) => payment.month === "Agustus 2026").map((payment) => payment.name));
+  const paidNames = new Set(students.filter((student) => paymentNames.has(student.name)).map((student) => student.name));
   const unpaid = getUnpaidStudents();
   const overdue = unpaid.filter((student) => student.overdue).length;
-  document.querySelector("#collectedAmount").textContent = rupiah.format(paidNames.size * 250000);
-  document.querySelector("#targetAmount").textContent = rupiah.format(students.length * 250000);
-  document.querySelector("#paidStudentCount").textContent = paidNames.size;
-  document.querySelector("#paidStudentTotal").textContent = students.length;
-  document.querySelector("#unpaidStudentCount").textContent = unpaid.length;
-  document.querySelector("#overdueStudentCount").textContent = overdue;
-  document.querySelector("#totalStudentCount").textContent = students.length;
-  document.querySelector("#activeClassCount").textContent = new Set(students.map((student) => student.className)).size;
-  document.querySelector("#unpaidTodoSummary").textContent = `${unpaid.length} siswa belum membayar · ${overdue} terlambat`;
+  const femaleStudents = students.filter((student) => student.gender === "Perempuan").length;
+  const maleStudents = students.filter((student) => student.gender === "Laki-laki").length;
+  const activeStudents = students.filter((student) => student.status === "Aktif").length;
+  const ages = students.map((student) => student.age).filter(Number.isFinite);
+  const ageCounts = ages.reduce((counts, age) => ({ ...counts, [age]: (counts[age] || 0) + 1 }), {});
+  const ageDistribution = Object.entries(ageCounts).map(([age, count]) => `${age} th: ${count}`).join(" · ");
+  const values = {
+    collectedAmount: rupiah.format(paidNames.size * 250000),
+    targetAmount: rupiah.format(students.length * 250000),
+    paidStudentCount: paidNames.size,
+    paidStudentTotal: students.length,
+    unpaidStudentCount: unpaid.length,
+    overdueStudentCount: overdue,
+    totalStudentCount: students.length,
+    activeClassCount: new Set(students.map((student) => student.className)).size,
+    unpaidTodoSummary: `${unpaid.length} siswa belum membayar · ${overdue} terlambat`,
+    studentTotalSummary: students.length,
+    femaleStudentSummary: femaleStudents,
+    maleStudentSummary: maleStudents,
+    studentAgeRangeSummary: ages.length ? `${Math.min(...ages)}–${Math.max(...ages)} tahun` : "Belum ada data",
+    studentAgeDistributionSummary: ageDistribution || "Belum ada data usia",
+    activeStudentSummary: activeStudents,
+    inactiveStudentSummary: students.length - activeStudents
+  };
+  Object.entries(values).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  });
 }
 
 function renderPagination(totalPages, currentPage, container, pageKey) {
@@ -391,14 +506,16 @@ function renderPayments() {
   renderPagination(totalPages, paymentPage, paymentPagination, "payment");
   emptyState.hidden = filtered.length > 0;
 
-  paymentPagination.querySelectorAll(".page-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nextPage = Number(button.dataset.page || paymentPage);
-      if (!Number.isFinite(nextPage)) return;
-      paymentPage = nextPage;
-      renderPayments();
+  if (paymentPagination) {
+    paymentPagination.querySelectorAll(".page-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextPage = Number(button.dataset.page || paymentPage);
+        if (!Number.isFinite(nextPage)) return;
+        paymentPage = nextPage;
+        renderPayments();
+      });
     });
-  });
+  }
 
   document.querySelectorAll(".action-menu-trigger").forEach((button) => {
     button.addEventListener("click", (event) => {
@@ -441,7 +558,7 @@ function renderStudents() {
         <td>${student.nis}</td><td><strong>${student.className}</strong></td>
         <td><span class="gender-pill ${student.gender === "Perempuan" ? "female" : ""}">${student.gender}</span></td>
         <td><div class="guardian-cell"><strong>${student.guardian}</strong><small>${student.relation}</small></div></td>
-        <td>${student.phone}</td><td><span class="status-pill">Aktif</span></td>
+        <td>${student.phone}</td><td><span class="status-pill ${student.status === "Aktif" ? "" : "muted"}">${student.status}</span></td>
         <td>
           <div class="student-action-wrap">
             <button class="more-button action-menu-trigger" type="button" aria-label="Menu untuk ${student.name}" data-student="${student.name}">•••</button>
@@ -458,14 +575,16 @@ function renderStudents() {
   studentEmptyState.hidden = filtered.length > 0;
   renderPagination(totalPages, studentPage, studentPagination, "student");
 
-  studentPagination.querySelectorAll(".page-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nextPage = Number(button.dataset.page || studentPage);
-      if (!Number.isFinite(nextPage)) return;
-      studentPage = nextPage;
-      renderStudents();
+  if (studentPagination) {
+    studentPagination.querySelectorAll(".page-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextPage = Number(button.dataset.page || studentPage);
+        if (!Number.isFinite(nextPage)) return;
+        studentPage = nextPage;
+        renderStudents();
+      });
     });
-  });
+  }
 
   document.querySelectorAll(".action-menu-trigger").forEach((button) => {
     button.addEventListener("click", (event) => {
@@ -1001,7 +1120,12 @@ if (document.querySelector("#assessmentClassFilter")) document.querySelector("#a
 if (document.querySelector("#openPayment") && paymentDialog) document.querySelector("#openPayment").addEventListener("click", () => paymentDialog.showModal());
 if (document.querySelector("#openActivity") && activityDialog) document.querySelector("#openActivity").addEventListener("click", () => activityDialog.showModal());
 if (document.querySelector("#emptyAddActivity") && activityDialog) document.querySelector("#emptyAddActivity").addEventListener("click", () => activityDialog.showModal());
-if (document.querySelector("#openReminder") && reminderDialog) document.querySelector("#openReminder").addEventListener("click", openReminderDialog);
+if (document.querySelector("#openReminder")) {
+  document.querySelector("#openReminder").addEventListener("click", (event) => {
+    if (reminderDialog) openReminderDialog(event);
+    else openSendReminderDialog(getUnpaidStudents()[0]?.name || "");
+  });
+}
 if (document.querySelector("#openReminderFromTodo") && reminderDialog) document.querySelector("#openReminderFromTodo").addEventListener("click", openReminderDialog);
 if (sendReminderDialog) {
   sendReminderDialog.querySelectorAll("[data-reminder-method]").forEach((button) => {
@@ -1237,9 +1361,10 @@ function populateActivityView() {
   `).join("");
 }
 
-if (document.querySelector("#collectedAmount")) updateDashboardStats();
+if (document.querySelector("#collectedAmount") || document.querySelector("#unpaidTodoSummary")) updateDashboardStats();
 if (paymentRows && searchInput && classFilter) renderPayments();
 if (studentRows && studentSearch && studentClassFilter) renderStudents();
+if (assessmentRows && assessmentSearch) renderAssessments();
 if (document.querySelector("#activityName")) populateActivityView();
 if (document.querySelector("#assessmentDetail")) populateAssessmentViewPage();
 if (window.location.pathname.endsWith("assessment-update.html")) populateAssessmentEditForm();
@@ -1253,16 +1378,21 @@ document.querySelectorAll(".settings-tab").forEach((tab) => {
   });
 });
 
-try {
-  const savedSession = localStorage.getItem(sessionKey) || sessionStorage.getItem(sessionKey);
-  if (savedSession && loginPage && appShell && loginEmail && loginPassword && loginForm && loginError && rememberLogin) {
-    const session = JSON.parse(savedSession);
-    if (!["ADMIN", "TEACHER"].includes(session.role)) throw new Error("Invalid school role");
-    enterApp(session, Boolean(localStorage.getItem(sessionKey)));
-  } else if (loginEmail) {
-    loginEmail.focus();
-  }
-} catch {
-  localStorage.removeItem(sessionKey);
-  sessionStorage.removeItem(sessionKey);
-}
+restoreSchoolSession();
+
+window.addEventListener("pageshow", () => {
+  restoreSchoolSession();
+});
+
+["pointerdown", "pointermove", "keydown", "scroll", "touchstart"].forEach((eventName) => {
+  document.addEventListener(eventName, touchSchoolSession, { passive: true });
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && restoreSchoolSession()) touchSchoolSession();
+});
+
+window.setInterval(() => {
+  if (!activeSchoolSession) return;
+  if (Date.now() - activeSchoolSession.lastActive >= sessionIdleTimeout) expireSchoolSession();
+}, 60_000);

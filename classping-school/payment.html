@@ -24,7 +24,6 @@
         <a class="nav-item" href="activity.html"><svg><use href="#icon-clipboard" /></svg>Laporan Aktivitas</a>
         <a class="nav-item" href="assessment.html"><svg><use href="#icon-award" /></svg>Penilaian</a>
         <a class="nav-item active" href="payment.html"><svg><use href="#icon-wallet" /></svg>Pembayaran <span class="nav-badge">8</span></a>
-        <a class="nav-item" href="report.html"><svg><use href="#icon-chart" /></svg>Laporan</a>
         <p class="nav-label">PENGATURAN</p>
         <a class="nav-item" href="school-profile.html"><svg><use href="#icon-school" /></svg>Profil Sekolah</a>
         <a class="nav-item" href="settings.html"><svg><use href="#icon-settings" /></svg>Pengaturan</a>
@@ -57,6 +56,51 @@
       </header>
 
       <main id="main">
+        <section class="page-heading page-heading-actions">
+          <div>
+            <p class="eyebrow">ADMINISTRASI SEKOLAH</p>
+            <h1>Pembayaran SPP</h1>
+            <p>Pantau pemasukan, status pembayaran siswa, dan transaksi terbaru.</p>
+          </div>
+          <button class="primary-button" id="openPayment" type="button"><svg><use href="#icon-plus" /></svg>Catat Pembayaran</button>
+        </section>
+
+        <section class="stats-grid" aria-label="Ringkasan SPP">
+          <article class="stat-card green">
+            <div class="stat-top"><span class="stat-icon"><svg><use href="#icon-wallet" /></svg></span><span class="trend up">↗ 12%</span></div>
+            <p>Total SPP Terkumpul</p><strong id="collectedAmount">Rp 1.250.000</strong><small>dari target <span id="targetAmount">Rp 2.000.000</span></small>
+          </article>
+          <article class="stat-card blue">
+            <div class="stat-top"><span class="stat-icon"><svg><use href="#icon-check" /></svg></span><span class="trend">Bulan ini</span></div>
+            <p>Sudah Membayar</p><strong><span id="paidStudentCount">5</span> <em>siswa</em></strong><small>dari total <span id="paidStudentTotal">8</span> siswa</small>
+          </article>
+          <article class="stat-card orange">
+            <div class="stat-top"><span class="stat-icon"><svg><use href="#icon-clock" /></svg></span><span class="trend warning">Perlu tindak lanjut</span></div>
+            <p>Belum Membayar</p><strong><span id="unpaidStudentCount">3</span> <em>siswa</em></strong><small><span id="overdueStudentCount">1</span> siswa melewati jatuh tempo</small><button class="stat-action" id="openReminder" type="button"><svg><use href="#icon-bell" /></svg>Kirim pengingat wali</button>
+          </article>
+          <article class="stat-card purple">
+            <div class="stat-top"><span class="stat-icon"><svg><use href="#icon-users" /></svg></span><span class="trend">Aktif</span></div>
+            <p>Total Siswa</p><strong><span id="totalStudentCount">8</span> <em>siswa</em></strong><small><span id="activeClassCount">4</span> kelas aktif</small>
+          </article>
+        </section>
+
+        <article class="panel payment-progress payment-page-progress" id="laporan">
+          <div class="panel-heading"><div><h2>Progres Pembayaran</h2><p>Realisasi SPP 6 bulan terakhir</p></div><select aria-label="Pilih tahun"><option>2026</option><option>2025</option></select></div>
+          <div class="chart-wrap">
+            <div class="chart-y"><span>25jt</span><span>20jt</span><span>15jt</span><span>10jt</span><span>5jt</span><span>0</span></div>
+            <div class="chart" aria-label="Grafik pembayaran Januari hingga Juni">
+              <div class="grid-lines"></div>
+              <div class="bar-group"><div class="bar" style="--height:76%"><span>19jt</span></div><small>Jan</small></div>
+              <div class="bar-group"><div class="bar" style="--height:84%"><span>21jt</span></div><small>Feb</small></div>
+              <div class="bar-group"><div class="bar" style="--height:72%"><span>18jt</span></div><small>Mar</small></div>
+              <div class="bar-group"><div class="bar" style="--height:92%"><span>23jt</span></div><small>Apr</small></div>
+              <div class="bar-group"><div class="bar" style="--height:88%"><span>22jt</span></div><small>Mei</small></div>
+              <div class="bar-group current"><div class="bar" style="--height:75%"><span>18,75jt</span></div><small>Jun</small></div>
+            </div>
+          </div>
+          <div class="chart-legend"><span><i></i>SPP terkumpul</span><span class="target"><i></i>Target bulanan Rp 24jt</span></div>
+        </article>
+
         <section class="panel transactions" id="pembayaran">
           <div class="panel-heading transaction-heading">
             <div>
@@ -102,6 +146,16 @@
     </div>
   </div>
 
+  <dialog id="paymentDialog" aria-labelledby="dialogTitle">
+    <form id="paymentForm" method="dialog">
+      <div class="dialog-heading"><div><span class="dialog-icon"><svg><use href="#icon-wallet" /></svg></span><div><h2 id="dialogTitle">Catat Pembayaran</h2><p>Tambahkan pembayaran SPP siswa.</p></div></div><button class="close-button" value="cancel" aria-label="Tutup" type="submit" formnovalidate>×</button></div>
+      <label>Nama siswa<input name="student" required placeholder="Contoh: Alya Putri Ramadhani" /></label>
+      <div class="form-grid"><label>Kelas<select name="class" required><option value="">Pilih kelas</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option></select></label><label>Bulan SPP<select name="month" required><option>Agustus 2026</option><option>September 2026</option></select></label></div>
+      <div class="form-grid"><label>Jumlah<input name="amount" required inputmode="numeric" value="250.000" /></label><label>Metode<select name="method"><option>Transfer Bank</option><option>Tunai</option><option>QRIS</option></select></label></div>
+      <div class="dialog-actions"><button class="secondary-button" value="cancel" type="submit" formnovalidate>Batal</button><button class="primary-button" value="default" type="submit">Simpan Pembayaran</button></div>
+    </form>
+  </dialog>
+
   <dialog id="sendReminderDialog" class="reminder-dialog" aria-labelledby="sendReminderDialogTitle">
     <form method="dialog">
       <div class="dialog-heading">
@@ -112,7 +166,7 @@
             <p>Pilih media pengiriman reminder untuk wali siswa.</p>
           </div>
         </div>
-        <button class="close-button" value="cancel" aria-label="Tutup" type="submit">×</button>
+        <button class="close-button" value="cancel" aria-label="Tutup" type="submit" formnovalidate>×</button>
       </div>
       <div class="send-reminder-choice">
         <button type="button" class="primary-button" data-reminder-method="email">Email</button>
@@ -135,11 +189,13 @@
     <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
     <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
     <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
     <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
     <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
     <symbol id="icon-filter" viewBox="0 0 24 24"><path d="M4 5h16M7 12h10M10 19h4"/></symbol>
   </svg>
-  <script src="script.js"></script>
+  <script src="script.js?v=20260901-session"></script>
 </body>
 </html>

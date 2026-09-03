@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260903-7" />
 </head>
 <body>
   <a class="skip-link" href="#main">Lewati ke konten</a>
@@ -51,7 +51,7 @@
         <div class="demo-divider"><span>Akun demo</span></div>
         <div class="demo-accounts">
           <button type="button" data-demo-account="admin"><span class="demo-icon admin">AS</span><span><strong>Administrator Sekolah</strong><small>admin@classping.id</small></span><svg><use href="#icon-arrow-right" /></svg></button>
-          <button type="button" data-demo-account="parent"><span class="demo-icon parent">RR</span><span><strong>Orang Tua Alya</strong><small>parent@classping.id</small></span><svg><use href="#icon-arrow-right" /></svg></button>
+          <button type="button" data-demo-account="parent"><span class="demo-icon parent">RR</span><span><strong>Orang Tua Alya &amp; Jisindo</strong><small>parent@classping.id</small></span><svg><use href="#icon-arrow-right" /></svg></button>
         </div>
         <p class="login-help">Staf sekolah? <a href="http://localhost:4175/index.html?portal=school">Buka ClassPing School</a></p>
       </div>
@@ -299,13 +299,13 @@
           </section>
           <section class="parent-layout">
             <div class="parent-feed" id="parentActivities">
-              <div class="section-heading"><div><h2>Aktivitas Alya</h2><p>Foto yang menampilkan Alya, dibagikan oleh sekolah.</p></div><button class="text-button">Lihat semua</button></div>
+              <div class="section-heading"><div><h2>Aktivitas Alya</h2><p>Foto yang menampilkan Alya, dibagikan oleh sekolah.</p></div><a class="text-button" href="student-activity.html">Lihat semua</a></div>
               <article class="parent-activity panel"><div class="parent-photo art-paint"><span>🎨</span><span class="privacy-label">Khusus orang tua Alya</span></div><div class="parent-activity-copy"><span class="activity-date">HARI INI · 09.00</span><h3>Melukis dengan Jari</h3><p>Alya terlihat antusias mencampur warna biru dan kuning. Ia juga mampu menyebutkan warna baru yang terbentuk.</p><div class="teacher-note"><strong>Catatan Bu Ratna</strong><p>“Alya sudah berani bereksperimen dan berbagi alat dengan teman.”</p></div></div></article>
               <article class="parent-activity panel"><div class="parent-photo art-garden"><span>🌱</span><span class="photo-count">2 foto</span></div><div class="parent-activity-copy"><span class="activity-date">HARI INI · 10.15</span><h3>Menanam Kacang Hijau</h3><p>Alya belajar memasukkan kapas dan biji ke dalam gelas kecil, lalu menyiramnya secukupnya.</p></div></article>
             </div>
             <aside class="parent-side">
-              <article class="panel assessment-card" id="parentAssessment"><div class="panel-heading"><div><h2>Penilaian Alya</h2><p>Agustus 2026</p></div><span class="report-ready">Raport tersedia</span></div><div class="skill-row"><span>Nilai Agama & Moral</span><b>BSH</b><div class="progress"><i style="width:78%"></i></div></div><div class="skill-row"><span>Fisik Motorik</span><b>BSB</b><div class="progress"><i style="width:92%"></i></div></div><div class="skill-row"><span>Kognitif</span><b>BSH</b><div class="progress"><i style="width:81%"></i></div></div><div class="skill-row"><span>Bahasa</span><b>BSH</b><div class="progress"><i style="width:84%"></i></div></div><p class="assessment-key">BSH: Berkembang Sesuai Harapan · BSB: Berkembang Sangat Baik</p></article>
-              <article class="panel fee-card" id="parentFees"><div class="panel-heading"><div><h2>SPP & Tagihan</h2><p>Riwayat pembayaran Alya</p></div></div><div class="next-bill"><small>Tagihan September 2026</small><strong>Rp 250.000</strong><span>Jatuh tempo 10 Sep 2026</span></div><div class="fine-info"><span>!</span><p>Denda setelah jatuh tempo<br><strong>Rp 5.000 / hari</strong></p></div><div class="fee-history"><div><span>Agustus 2026<small>2 Agu · Transfer Bank</small></span><b>Lunas</b></div><div><span>Juli 2026<small>8 Jul · QRIS</small></span><b>Lunas</b></div><div><span>Juni 2026<small>13 Jun · Terlambat 3 hari</small></span><b class="fine-paid">Lunas + denda Rp 15.000</b></div></div><button class="primary-button pay-button">Bayar Sekarang</button></article>
+              <a class="panel assessment-card assessment-card-link" id="parentAssessment" href="assessment.html" aria-label="Buka halaman Penilaian Alya"><div class="panel-heading"><div><h2>Penilaian Alya</h2><p>Agustus 2026</p></div><span class="report-ready">Raport tersedia</span></div><div class="skill-row"><span>Nilai Agama & Moral</span><b>BSH</b><div class="progress"><i style="width:78%"></i></div></div><div class="skill-row"><span>Fisik Motorik</span><b>BSB</b><div class="progress"><i style="width:92%"></i></div></div><div class="skill-row"><span>Kognitif</span><b>BSH</b><div class="progress"><i style="width:81%"></i></div></div><div class="skill-row"><span>Bahasa</span><b>BSH</b><div class="progress"><i style="width:84%"></i></div></div><p class="assessment-key">BSH: Berkembang Sesuai Harapan · BSB: Berkembang Sangat Baik</p></a>
+              <article class="panel fee-card" id="parentFees"><div class="panel-heading"><div><h2>SPP & Tagihan</h2><p>Riwayat pembayaran Alya</p></div></div><div class="next-bill"><small>Tagihan September 2026</small><strong>Rp 250.000</strong><span>Jatuh tempo 10 Sep 2026</span></div><div class="fine-info"><span>!</span><p>Denda setelah jatuh tempo<br><strong>Rp 5.000 / hari</strong></p></div><div class="fee-history"><div><span>Agustus 2026<small>2 Agu · Transfer Bank</small></span><b>Lunas</b></div><div><span>Juli 2026<small>8 Jul · QRIS</small></span><b>Lunas</b></div><div><span>Juni 2026<small>13 Jun · Terlambat 3 hari</small></span><b class="fine-paid">Lunas + denda Rp 15.000</b></div></div><button class="primary-button pay-button" id="openGuardianPayment" type="button">Bayar Sekarang</button></article>
             </aside>
           </section>
         </div>
@@ -320,6 +320,18 @@
       <div class="form-grid"><label>Kelas<select name="class" required><option value="">Pilih kelas</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option></select></label><label>Bulan SPP<select name="month" required><option>Agustus 2026</option><option>September 2026</option></select></label></div>
       <div class="form-grid"><label>Jumlah<input name="amount" required inputmode="numeric" value="250.000" /></label><label>Metode<select name="method"><option>Transfer Bank</option><option>Tunai</option><option>QRIS</option></select></label></div>
       <div class="dialog-actions"><button class="secondary-button" value="cancel" type="submit">Batal</button><button class="primary-button" value="default" type="submit">Simpan Pembayaran</button></div>
+    </form>
+  </dialog>
+  <dialog id="guardianPaymentDialog" class="guardian-payment-dialog" aria-labelledby="guardianPaymentTitle">
+    <form id="guardianPaymentForm">
+      <div class="dialog-heading"><div><span class="dialog-icon"><svg><use href="#icon-wallet" /></svg></span><div><h2 id="guardianPaymentTitle">Bayar SPP melalui transfer</h2><p>Transfer melalui bank, lalu unggah bukti pembayarannya di sini.</p></div></div><button class="close-button" id="closeGuardianPayment" aria-label="Tutup" type="button">×</button></div>
+      <div class="bank-transfer-box"><span class="bank-transfer-mark">BCA</span><div><small>Rekening tujuan</small><strong>1234567890</strong><span>a.n. TK Harapan Bangsa</span></div><button id="copyBankAccount" type="button">Salin</button></div>
+      <div class="form-grid guardian-payment-fields"><label>Bulan pembayaran<select id="guardianPaymentMonth" name="month" required><option value="September 2026" data-bill="250000">September 2026</option><option value="Oktober 2026" data-bill="250000">Oktober 2026</option><option value="November 2026" data-bill="250000">November 2026</option></select></label><label>Total tagihan<input id="guardianBillAmount" value="Rp 250.000" readonly /></label></div>
+      <label class="receipt-upload" for="guardianReceipt"><svg><use href="#icon-upload" /></svg><strong>Unggah bukti transfer</strong><span>JPG, PNG, atau PDF · maksimal 5 MB</span><input id="guardianReceipt" name="receipt" type="file" accept="image/jpeg,image/png,application/pdf" required /></label>
+      <div class="receipt-file" id="guardianReceiptPreview" hidden><span>✓</span><div><strong></strong><small>Bukti siap diperiksa</small></div><button id="removeGuardianReceipt" type="button" aria-label="Hapus bukti pembayaran">Hapus</button></div>
+      <label>Nominal pada bukti transfer<input id="guardianReceiptAmount" name="receiptAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="Contoh: 250000" required /><small class="field-help">Masukkan nominal yang tercantum pada bukti agar sistem dapat menghitung status pembayaran.</small></label>
+      <div class="payment-check-result" id="guardianPaymentResult" role="status" aria-live="polite" hidden></div>
+      <div class="dialog-actions"><button class="secondary-button" id="cancelGuardianPayment" type="button">Batal</button><button class="primary-button" type="submit">Kirim Bukti Pembayaran</button></div>
     </form>
   </dialog>
   <dialog id="reminderDialog" class="reminder-dialog" aria-labelledby="reminderDialogTitle">
@@ -393,6 +405,6 @@ Admin TK Harapan Bangsa</textarea></label>
     <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
     <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
   </svg>
-  <script src="script.js"></script>
+  <script src="script.js?v=20260903-6"></script>
 </body>
 </html>

@@ -24,20 +24,407 @@ const guardianActivityData = [
 ];
 
 const guardianAssessmentData = [
-  { name: "Penilaian Keterampilan Motorik", className: "A1", period: "Semester 1", average: "88", status: "Published" },
-  { name: "Penilaian Sosial Emosional", className: "A2", period: "Semester 1", average: "92", status: "Published" },
-  { name: "Penilaian Bahasa Indonesia", className: "B1", period: "Semester 1", average: "84", status: "Draft" },
-  { name: "Penilaian Kreativitas", className: "B2", period: "Semester 1", average: "90", status: "Published" },
-  { name: "Penilaian Agama", className: "A1", period: "Triwulan 2", average: "95", status: "Published" }
+  { childId: "alya", name: "Penilaian Keterampilan Motorik", className: "A1", period: "Semester 1", average: "88", status: "Published" },
+  { childId: "alya", name: "Penilaian Sosial Emosional", className: "A1", period: "Semester 1", average: "92", status: "Published" },
+  { childId: "alya", name: "Penilaian Bahasa Indonesia", className: "A1", period: "Semester 1", average: "84", status: "Draft" },
+  { childId: "alya", name: "Penilaian Kreativitas", className: "A1", period: "Semester 1", average: "90", status: "Published" },
+  { childId: "jisindo", name: "Penilaian Kemandirian", className: "B2", period: "Semester 1", average: "86", status: "Published" },
+  { childId: "jisindo", name: "Penilaian Bahasa & Literasi", className: "B2", period: "Semester 1", average: "79", status: "Published" },
+  { childId: "jisindo", name: "Penilaian Motorik Kasar", className: "B2", period: "Semester 1", average: "91", status: "Published" },
+  { childId: "jisindo", name: "Penilaian Sosial Emosional", className: "B2", period: "Semester 1", average: "82", status: "Draft" }
 ];
 
 const guardianPaymentData = [
-  { student: "Alya Putri Ramadhani", month: "Agustus 2026", type: "SPP Bulanan", nominal: "Rp 250.000", status: "Lunas", date: "27 Agu 2026" },
-  { student: "Alya Putri Ramadhani", month: "Juli 2026", type: "SPP Bulanan", nominal: "Rp 250.000", status: "Lunas", date: "26 Jul 2026" },
-  { student: "Alya Putri Ramadhani", month: "Juni 2026", type: "SPP Bulanan", nominal: "Rp 250.000", status: "Lunas", date: "25 Jun 2026" },
-  { student: "Alya Putri Ramadhani", month: "September 2026", type: "SPP Bulanan", nominal: "Rp 250.000", status: "Belum", date: "Belum dibayar" },
-  { student: "Alya Putri Ramadhani", month: "Oktober 2026", type: "Kegiatan Ekskul", nominal: "Rp 180.000", status: "Belum", date: "Belum dibayar" }
+  { childId: "alya", student: "Alya Putri Ramadhani", month: "Agustus 2026", type: "SPP Bulanan", nominal: "Rp 250.000", status: "Lunas", date: "27 Agu 2026" },
+  { childId: "alya", student: "Alya Putri Ramadhani", month: "Juli 2026", type: "SPP Bulanan", nominal: "Rp 250.000", status: "Lunas", date: "26 Jul 2026" },
+  { childId: "alya", student: "Alya Putri Ramadhani", month: "Juni 2026", type: "SPP Bulanan", nominal: "Rp 250.000", status: "Lunas", date: "25 Jun 2026" },
+  { childId: "alya", student: "Alya Putri Ramadhani", month: "September 2026", type: "SPP Bulanan", nominal: "Rp 250.000", status: "Belum", date: "Belum dibayar" },
+  { childId: "alya", student: "Alya Putri Ramadhani", month: "Oktober 2026", type: "Kegiatan Ekskul", nominal: "Rp 180.000", status: "Belum", date: "Belum dibayar" },
+  { childId: "jisindo", student: "Jisindo Beaugeste", month: "September 2026", type: "SPP Bulanan", nominal: "Rp 275.000", status: "Belum", date: "Belum dibayar" },
+  { childId: "jisindo", student: "Jisindo Beaugeste", month: "Agustus 2026", type: "SPP Bulanan", nominal: "Rp 275.000", status: "Sebagian", date: "Rp 175.000 · 19 Agu 2026" },
+  { childId: "jisindo", student: "Jisindo Beaugeste", month: "Juli 2026", type: "SPP Bulanan", nominal: "Rp 275.000", status: "Lunas", date: "9 Jul 2026" },
+  { childId: "jisindo", student: "Jisindo Beaugeste", month: "Juni 2026", type: "SPP Bulanan", nominal: "Rp 275.000", status: "Lunas", date: "7 Jun 2026" }
 ];
+
+const guardianChildren = {
+  alya: { id: "alya", firstName: "Alya", name: "Alya Putri Ramadhani", initials: "AP", className: "A1", classLabel: "Matahari", nis: "26001", badge: "1" },
+  jisindo: { id: "jisindo", firstName: "Jisindo", name: "Jisindo Beaugeste", initials: "JB", className: "B2", classLabel: "Bulan", nis: "26008", badge: "2" }
+};
+
+let activeGuardianChildId = "alya";
+
+function getGuardianChildId(session = activeSession) {
+  const requested = new URLSearchParams(window.location.search).get("child");
+  if (requested && guardianChildren[requested]) return requested;
+  if (session?.activeChild && guardianChildren[session.activeChild]) return session.activeChild;
+  return "alya";
+}
+
+function withGuardianChild(href, childId = activeGuardianChildId) {
+  if (!href || href.startsWith("#") || href.startsWith("http") || href.startsWith("mailto:")) return href;
+  const [path, hash = ""] = href.split("#");
+  const [base, query = ""] = path.split("?");
+  const params = new URLSearchParams(query);
+  params.set("child", childId);
+  return `${base}?${params.toString()}${hash ? `#${hash}` : ""}`;
+}
+
+function renderJisindoDashboard() {
+  if (!parentView) return;
+  parentView.innerHTML = `
+    <section class="parent-hero panel" id="parentHome">
+      <div><p class="eyebrow">PORTAL ORANG TUA</p><h1>Selamat pagi, Ibu Rina! 👋</h1><p>Ini kabar terbaru Jisindo dari TK Harapan Bangsa.</p></div>
+      <div class="child-card"><span class="child-avatar child-avatar-blue">JB</span><div><strong>Jisindo Beaugeste</strong><small>Kelas B2 · Bulan · NIS 26008</small></div><span class="active-dot">● Aktif</span></div>
+    </section>
+    <section class="parent-alert fee-alert warning-alert"><span class="alert-icon"><svg><use href="#icon-bell" /></svg></span><div><strong>SPP Agustus masih kurang Rp 100.000</strong><p>Selesaikan sisa pembayaran bersama tagihan September sebelum 10 September 2026.</p></div><a href="payment.html">Lihat tagihan →</a></section>
+    <section class="parent-overview">
+      <article class="parent-stat panel"><span class="stat-icon green"><svg><use href="#icon-clipboard" /></svg></span><div><small>Aktivitas minggu ini</small><strong>4 kegiatan</strong><p>9 foto Jisindo</p></div></article>
+      <article class="parent-stat panel"><span class="stat-icon purple"><svg><use href="#icon-award" /></svg></span><div><small>Perkembangan</small><strong>Mulai Berkembang</strong><p>Semester 1</p></div></article>
+      <article class="parent-stat panel"><span class="stat-icon blue"><svg><use href="#icon-wallet" /></svg></span><div><small>Status SPP Agustus</small><strong class="partial-text">Sebagian</strong><p>Sisa Rp 100.000</p></div></article>
+    </section>
+    <section class="parent-layout">
+      <div class="parent-feed" id="parentActivities">
+        <div class="section-heading"><div><h2>Aktivitas Jisindo</h2><p>Foto yang menampilkan Jisindo, dibagikan oleh sekolah.</p></div><a class="text-button" href="student-activity.html">Lihat semua</a></div>
+        <article class="parent-activity panel"><div class="parent-photo art-music"><span>🔦</span><span class="privacy-label">Khusus orang tua Jisindo</span></div><div class="parent-activity-copy"><span class="activity-date">HARI INI · 08.30</span><h3>Eksperimen Cahaya dan Bayangan</h3><p>Jisindo mencoba berbagai benda untuk melihat bentuk bayangan yang dihasilkan.</p><div class="teacher-note"><strong>Catatan Bu Nia</strong><p>“Jisindo tekun mengamati perubahan bayangan dan berani menjelaskan temuannya.”</p></div></div></article>
+        <article class="parent-activity panel"><div class="parent-photo art-garden"><span>🍂</span><span class="photo-count">3 foto</span></div><div class="parent-activity-copy"><span class="activity-date">KEMARIN · 10.00</span><h3>Kolase Daun Musim Kering</h3><p>Jisindo menyusun daun berdasarkan ukuran dan warna menjadi sebuah gambar.</p></div></article>
+      </div>
+      <aside class="parent-side">
+        <a class="panel assessment-card assessment-card-link" id="parentAssessment" href="assessment.html" aria-label="Buka halaman Penilaian Jisindo"><div class="panel-heading"><div><h2>Penilaian Jisindo</h2><p>Agustus 2026</p></div><span class="report-ready draft-report">Dalam proses</span></div><div class="skill-row"><span>Kemandirian</span><b>BSH</b><div class="progress"><i style="width:82%"></i></div></div><div class="skill-row"><span>Bahasa & Literasi</span><b>MB</b><div class="progress"><i style="width:68%"></i></div></div><div class="skill-row"><span>Motorik Kasar</span><b>BSB</b><div class="progress"><i style="width:91%"></i></div></div><div class="skill-row"><span>Sosial Emosional</span><b>BSH</b><div class="progress"><i style="width:80%"></i></div></div><p class="assessment-key">MB: Mulai Berkembang · BSH: Berkembang Sesuai Harapan · BSB: Berkembang Sangat Baik</p></a>
+        <article class="panel fee-card" id="parentFees"><div class="panel-heading"><div><h2>SPP & Tagihan</h2><p>Riwayat pembayaran Jisindo</p></div></div><div class="next-bill overdue-bill"><small>Sisa Agustus + SPP September</small><strong>Rp 375.000</strong><span>Jatuh tempo 10 Sep 2026</span></div><div class="fine-info"><span>!</span><p>Rincian sisa Agustus<br><strong>Rp 100.000</strong></p></div><div class="fee-history"><div><span>Agustus 2026<small>19 Agu · Transfer Bank</small></span><b class="fine-paid">Sebagian</b></div><div><span>Juli 2026<small>9 Jul · Transfer Bank</small></span><b>Lunas</b></div><div><span>Juni 2026<small>7 Jun · QRIS</small></span><b>Lunas</b></div></div><button class="primary-button pay-button" id="openGuardianPayment" type="button">Bayar Sekarang</button></article>
+      </aside>
+    </section>`;
+}
+
+function renderJisindoFeed() {
+  const social = document.querySelector(".guardian-social.parent-only");
+  if (!social) return;
+  const posts = [
+    { teacher: "Bu Nia", avatar: "BN", tone: "purple", time: "Hari ini, 08.30", art: "art-music", emoji: "🔦", title: "Eksperimen Cahaya dan Bayangan", caption: "Jisindo mencoba senter pada benda bening dan tidak bening, lalu menceritakan perbedaan bayangannya.", likes: 11, skills: ["Sains", "Bahasa", "Keberanian"], date: "3 SEPTEMBER 2026" },
+    { teacher: "Bu Ratna", avatar: "BR", tone: "green", time: "Kemarin, 10.00", art: "art-garden", emoji: "🍂", title: "Kolase Daun Musim Kering", caption: "Jisindo mengelompokkan daun berdasarkan ukuran dan menyusunnya menjadi bentuk kupu-kupu.", likes: 8, skills: ["Kreativitas", "Motorik halus"], date: "2 SEPTEMBER 2026" },
+    { teacher: "Bu Sinta", avatar: "BS", tone: "", time: "Senin, 09.15", art: "art-paint", emoji: "🏃", title: "Lintasan Rintangan", caption: "Jisindo menjaga keseimbangan saat melewati balok, melompat, dan menyemangati teman satu kelompoknya.", likes: 15, skills: ["Motorik kasar", "Sosial"], date: "31 AGUSTUS 2026" }
+  ];
+  social.innerHTML = `
+    <div class="guardian-feed-heading"><div><p class="eyebrow">MOMEN JISINDO</p><h1>Aktivitas Jisindo</h1><p>Foto dan cerita kegiatan yang menandai Jisindo.</p></div><span class="feed-privacy-pill"><svg aria-hidden="true"><use href="#icon-lock" /></svg>Khusus Jisindo</span></div>
+    <div class="guardian-feed-notice" role="note"><span><svg aria-hidden="true"><use href="#icon-shield" /></svg></span><div><strong>Feed pribadi keluarga Jisindo</strong><p>Anda hanya melihat foto yang sudah ditandai “Jisindo” oleh sekolah.</p></div></div>
+    <div class="guardian-feed" aria-label="Feed foto aktivitas Jisindo">
+      ${posts.map((post) => `<article class="guardian-post"><header class="guardian-post-header"><span class="post-avatar ${post.tone}" aria-hidden="true">${post.avatar}</span><div><strong>${post.teacher}</strong><span>Kelas B2 — Bulan · ${post.time}</span></div><span class="tagged-label"><svg aria-hidden="true"><use href="#icon-user-check" /></svg>Jisindo ditandai</span></header><div class="guardian-post-photo ${post.art}" role="img" aria-label="Jisindo mengikuti kegiatan ${post.title}" data-download-name="jisindo-${slugify(post.title)}"><span class="photo-scene" aria-hidden="true">${post.emoji}</span></div><div class="guardian-post-content"><div class="post-actions" aria-label="Aksi unggahan"><button class="post-action post-like" type="button" aria-label="Sukai foto ${post.title}" aria-pressed="false"><svg aria-hidden="true"><use href="#icon-heart" /></svg></button><button class="post-action" type="button" aria-label="Lihat komentar foto ${post.title}"><svg aria-hidden="true"><use href="#icon-message" /></svg></button><button class="post-action post-download" type="button" aria-label="Unduh foto ${post.title}"><svg aria-hidden="true"><use href="#icon-download" /></svg></button><button class="post-action post-save" type="button" aria-label="Simpan foto ${post.title}" aria-pressed="false"><svg aria-hidden="true"><use href="#icon-bookmark" /></svg></button></div><p class="post-likes"><span>${post.likes}</span> apresiasi</p><p class="post-caption"><strong>${post.title}</strong> ${post.caption}</p><div class="post-skills" aria-label="Aspek perkembangan">${post.skills.map((skill) => `<span>${skill}</span>`).join("")}</div><p class="post-time">${post.date}</p></div></article>`).join("")}
+      <p class="feed-end"><span aria-hidden="true">✓</span><strong>Semua kabar Jisindo sudah dilihat</strong>Foto baru akan muncul setelah sekolah menandai Jisindo.</p>
+    </div>`;
+}
+
+function updateGuardianLinks(child) {
+  document.querySelectorAll(".parent-nav a[href]").forEach((link) => {
+    link.href = withGuardianChild(link.getAttribute("href"), child.id);
+    if (link.getAttribute("href").startsWith("student-activity.html")) {
+      link.childNodes.forEach((node) => { if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) node.textContent = `Aktivitas ${child.firstName}`; });
+    }
+  });
+  document.querySelectorAll("#parentView a[href], .parent-page a[href], .guardian-social a[href]").forEach((link) => {
+    link.href = withGuardianChild(link.getAttribute("href"), child.id);
+  });
+  document.querySelectorAll(".parent-nav .nav-badge").forEach((badge) => { badge.textContent = child.badge; });
+}
+
+function setupGuardianProfileMenu(child) {
+  const profile = document.querySelector(".profile");
+  const actions = profile?.closest(".topbar-actions");
+  if (!profile || !actions) return;
+  profile.classList.add("profile-trigger");
+  profile.setAttribute("role", "button");
+  profile.setAttribute("tabindex", "0");
+  profile.setAttribute("aria-haspopup", "menu");
+  profile.setAttribute("aria-expanded", "false");
+  profile.setAttribute("aria-label", "Buka menu keluarga Rina Ramadhani");
+  let menu = actions.querySelector(".guardian-profile-menu");
+  if (!menu) {
+    menu = document.createElement("div");
+    menu.className = "guardian-profile-menu";
+    menu.hidden = true;
+    menu.setAttribute("role", "menu");
+    actions.append(menu);
+    profile.addEventListener("click", () => {
+      const notificationMenu = actions.querySelector(".guardian-notification-menu");
+      const notificationButton = actions.querySelector("[data-notification-trigger]");
+      if (notificationMenu) notificationMenu.hidden = true;
+      notificationButton?.setAttribute("aria-expanded", "false");
+      menu.hidden = !menu.hidden;
+      profile.setAttribute("aria-expanded", String(!menu.hidden));
+    });
+    profile.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); profile.click(); }
+      if (event.key === "Escape") { menu.hidden = true; profile.setAttribute("aria-expanded", "false"); profile.focus(); }
+    });
+    document.addEventListener("click", (event) => {
+      if (!actions.contains(event.target)) { menu.hidden = true; profile.setAttribute("aria-expanded", "false"); }
+    });
+    menu.addEventListener("click", (event) => {
+      const childButton = event.target.closest("[data-child-select]");
+      if (childButton) {
+        activeSession.activeChild = childButton.dataset.childSelect;
+        saveSession(activeSession, Boolean(localStorage.getItem(sessionKey)));
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+        window.location.href = `${currentPage}?child=${activeSession.activeChild}`;
+      }
+      if (event.target.closest("[data-profile-logout]")) logoutGuardian();
+    });
+  }
+  menu.innerHTML = `<div class="family-menu-head"><span class="profile-avatar">RR</span><div><strong>Rina Ramadhani</strong><small>Orang tua · 2 anak</small></div></div><p class="family-menu-label">PILIH ANAK</p>${Object.values(guardianChildren).map((item) => `<button class="family-child-option${item.id === child.id ? " active" : ""}" type="button" role="menuitemradio" aria-checked="${item.id === child.id}" data-child-select="${item.id}"><span class="child-option-avatar ${item.id === "jisindo" ? "blue" : ""}">${item.initials}</span><span><strong>${item.name}</strong><small>Kelas ${item.className} · ${item.classLabel}</small></span><i>${item.id === child.id ? "✓" : ""}</i></button>`).join("")}<div class="family-menu-actions"><a role="menuitem" href="guardian-profile.html?child=${child.id}"><span aria-hidden="true">◉</span>Profil Rina</a><button type="button" role="menuitem" data-profile-logout><svg><use href="#icon-logout" /></svg>Keluar</button></div>`;
+}
+
+const guardianNotificationKey = "classping-guardian-notifications";
+const defaultGuardianNotifications = [
+  { id: "alya-activity-paint", childId: "alya", kind: "activity", title: "Aktivitas baru Alya", message: "Bu Ratna mengunggah laporan Melukis dengan Jari.", time: "Hari ini · 09.05", href: "student-activity.html", read: false },
+  { id: "alya-payment-august", childId: "alya", kind: "payment", title: "Bukti pembayaran diterima", message: "Bukti SPP Agustus Alya berhasil diunggah dan sedang diverifikasi.", time: "2 Agu · 13.20", href: "payment.html", read: true },
+  { id: "jisindo-activity-shadow", childId: "jisindo", kind: "activity", title: "Aktivitas baru Jisindo", message: "Bu Nia mengunggah Eksperimen Cahaya dan Bayangan.", time: "Hari ini · 08.35", href: "student-activity.html", read: false },
+  { id: "jisindo-payment-august", childId: "jisindo", kind: "payment", title: "Bukti pembayaran diterima", message: "Bukti SPP Agustus Jisindo berhasil diunggah dan sudah diperiksa.", time: "19 Agu · 14.10", href: "payment.html", read: true }
+];
+
+function loadGuardianNotifications() {
+  try {
+    const stored = localStorage.getItem(guardianNotificationKey);
+    if (stored) return JSON.parse(stored);
+    localStorage.setItem(guardianNotificationKey, JSON.stringify(defaultGuardianNotifications));
+  } catch {
+    return [...defaultGuardianNotifications];
+  }
+  return [...defaultGuardianNotifications];
+}
+
+function saveGuardianNotifications(notifications) {
+  try { localStorage.setItem(guardianNotificationKey, JSON.stringify(notifications)); } catch { /* Prototype fallback. */ }
+}
+
+function renderGuardianNotifications(menu, trigger, child) {
+  const notifications = loadGuardianNotifications();
+  const childNotifications = notifications.filter((item) => item.childId === child.id);
+  const unreadCount = childNotifications.filter((item) => !item.read).length;
+  trigger.setAttribute("aria-label", unreadCount ? `Notifikasi, ${unreadCount} belum dibaca` : "Notifikasi, semua sudah dibaca");
+  const badge = trigger.querySelector(".notification-count");
+  if (badge) {
+    badge.textContent = unreadCount > 9 ? "9+" : String(unreadCount);
+    badge.hidden = unreadCount === 0;
+  }
+  menu.innerHTML = `<div class="notification-menu-head"><div><strong>Notifikasi ${child.firstName}</strong><small>${unreadCount ? `${unreadCount} kabar belum dibaca` : "Semua kabar sudah dibaca"}</small></div><button type="button" data-read-all ${unreadCount ? "" : "disabled"}>Tandai semua dibaca</button></div><div class="notification-list">${childNotifications.length ? childNotifications.map((item) => `<a class="notification-item${item.read ? "" : " unread"}" href="${withGuardianChild(item.href, child.id)}" data-notification-id="${item.id}"><span class="notification-type ${item.kind}" aria-hidden="true">${item.kind === "activity" ? "▣" : "✓"}</span><span><strong>${item.title}</strong><small>${item.message}</small><time>${item.time}</time></span>${item.read ? "" : '<i aria-label="Belum dibaca"></i>'}</a>`).join("") : '<p class="notification-empty">Belum ada notifikasi.</p>'}</div><a class="notification-footer" href="${withGuardianChild("index.html", child.id)}">Buka beranda ${child.firstName}</a>`;
+}
+
+function setupGuardianNotifications(child) {
+  const actions = document.querySelector(".topbar-actions");
+  const profile = actions?.querySelector(".profile");
+  if (!actions || !profile) return;
+  let trigger = actions.querySelector('[aria-label="Notifikasi"], [data-notification-trigger]');
+  if (!trigger) {
+    trigger = document.createElement("button");
+    trigger.className = "icon-button";
+    trigger.type = "button";
+    trigger.innerHTML = '<svg><use href="#icon-bell" /></svg><span></span>';
+    actions.insertBefore(trigger, profile);
+  }
+  trigger.dataset.notificationTrigger = "true";
+  trigger.setAttribute("aria-haspopup", "dialog");
+  trigger.setAttribute("aria-expanded", "false");
+  let menu = actions.querySelector(".guardian-notification-menu");
+  if (!menu) {
+    menu = document.createElement("section");
+    menu.className = "guardian-notification-menu";
+    menu.hidden = true;
+    menu.setAttribute("aria-label", "Daftar notifikasi");
+    actions.append(menu);
+    trigger.addEventListener("click", () => {
+      const profileMenu = actions.querySelector(".guardian-profile-menu");
+      if (profileMenu) profileMenu.hidden = true;
+      profile.setAttribute("aria-expanded", "false");
+      menu.hidden = !menu.hidden;
+      trigger.setAttribute("aria-expanded", String(!menu.hidden));
+    });
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") { menu.hidden = true; trigger.setAttribute("aria-expanded", "false"); trigger.focus(); }
+    });
+    document.addEventListener("click", (event) => {
+      if (!actions.contains(event.target)) { menu.hidden = true; trigger.setAttribute("aria-expanded", "false"); }
+    });
+    menu.addEventListener("click", (event) => {
+      const item = event.target.closest("[data-notification-id]");
+      if (item) {
+        const notifications = loadGuardianNotifications();
+        const selected = notifications.find((notification) => notification.id === item.dataset.notificationId);
+        if (selected) selected.read = true;
+        saveGuardianNotifications(notifications);
+      }
+      if (event.target.closest("[data-read-all]")) {
+        const notifications = loadGuardianNotifications();
+        notifications.forEach((notification) => { if (notification.childId === activeGuardianChildId) notification.read = true; });
+        saveGuardianNotifications(notifications);
+        renderGuardianNotifications(menu, trigger, guardianChildren[activeGuardianChildId]);
+      }
+    });
+  }
+  trigger.innerHTML = '<svg><use href="#icon-bell" /></svg><span class="notification-count"></span>';
+  renderGuardianNotifications(menu, trigger, child);
+}
+
+function addGuardianNotification(notification) {
+  const notifications = loadGuardianNotifications();
+  notifications.unshift({ id: `notice-${Date.now()}`, childId: activeGuardianChildId, read: false, time: "Baru saja", ...notification });
+  saveGuardianNotifications(notifications);
+  const menu = document.querySelector(".guardian-notification-menu");
+  const trigger = document.querySelector("[data-notification-trigger]");
+  if (menu && trigger) renderGuardianNotifications(menu, trigger, guardianChildren[activeGuardianChildId]);
+}
+
+const schoolContactEmail = "admin@tkharapanbangsa.sch.id";
+
+function getSchoolContactSubject(category, childId) {
+  const child = guardianChildren[childId];
+  const childName = child?.name || "akun keluarga Rina Ramadhani";
+  const subjects = {
+    profile: `Permintaan pembaruan profil — ${childName}`,
+    bug: `Laporan kendala website — ${childName}`,
+    feedback: `Masukan untuk ClassPing — ${childName}`
+  };
+  return subjects[category] || subjects.profile;
+}
+
+function setupGuardianSchoolContact(child) {
+  if (!sidebar) return;
+  let helpCard = sidebar.querySelector(".guardian-school-help");
+  if (!helpCard) {
+    helpCard = document.createElement("section");
+    helpCard.className = "guardian-school-help";
+    helpCard.setAttribute("aria-labelledby", "guardianHelpTitle");
+    helpCard.innerHTML = `
+      <span class="guardian-help-icon" aria-hidden="true">?</span>
+      <div><strong id="guardianHelpTitle">Butuh bantuan?</strong><p>Hubungi sekolah untuk akun, kendala, atau masukan.</p></div>
+      <button type="button" data-open-school-contact><span aria-hidden="true">✉</span> Hubungi sekolah</button>`;
+    const logout = sidebar.querySelector(".logout");
+    sidebar.insertBefore(helpCard, logout || null);
+  }
+
+  let contactDialog = document.querySelector("#schoolContactDialog");
+  if (!contactDialog) {
+    contactDialog = document.createElement("dialog");
+    contactDialog.id = "schoolContactDialog";
+    contactDialog.className = "school-contact-dialog";
+    contactDialog.setAttribute("aria-labelledby", "schoolContactTitle");
+    contactDialog.innerHTML = `
+      <form id="schoolContactForm">
+        <div class="dialog-heading">
+          <div><span class="dialog-icon contact-dialog-icon" aria-hidden="true">✉</span><div><h2 id="schoolContactTitle">Hubungi sekolah</h2><p>Kirim permintaan atau masukan ke TK Harapan Bangsa.</p></div></div>
+          <button class="close-button" type="button" data-close-school-contact aria-label="Tutup">×</button>
+        </div>
+        <div class="contact-recipient" aria-label="Alamat penerima"><span>KEPADA</span><strong>TK Harapan Bangsa</strong><small>${schoolContactEmail}</small></div>
+        <div class="contact-form-grid">
+          <label>Jenis bantuan
+            <select name="category" required>
+              <option value="profile">Pembaruan profil</option>
+              <option value="bug">Kendala pada website</option>
+              <option value="feedback">Masukan umum</option>
+            </select>
+          </label>
+          <label>Terkait dengan
+            <select name="relatedTo" required></select>
+          </label>
+        </div>
+        <label>Subjek
+          <input name="subject" type="text" required maxlength="120" autocomplete="off" />
+        </label>
+        <label>Pesan
+          <textarea name="message" required rows="5" maxlength="1500" placeholder="Jelaskan permintaan atau kendala Anda secara singkat. Untuk laporan bug, sertakan halaman dan langkah yang dilakukan."></textarea>
+        </label>
+        <p class="contact-dialog-note"><span aria-hidden="true">i</span>Demi keamanan, jangan cantumkan kata sandi atau data pembayaran. Draf akan dibuka di aplikasi email Anda sebelum dikirim.</p>
+        <p class="contact-status" id="schoolContactStatus" role="status" aria-live="polite"></p>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" data-close-school-contact>Batal</button>
+          <button class="primary-button" type="submit"><span aria-hidden="true">✉</span>Buka aplikasi email</button>
+        </div>
+      </form>`;
+    document.body.append(contactDialog);
+
+    const contactForm = contactDialog.querySelector("#schoolContactForm");
+    const categoryField = contactForm.elements.category;
+    const relatedField = contactForm.elements.relatedTo;
+    const subjectField = contactForm.elements.subject;
+    const status = contactDialog.querySelector("#schoolContactStatus");
+
+    const updateSubject = () => {
+      subjectField.value = getSchoolContactSubject(categoryField.value, relatedField.value);
+    };
+    categoryField.addEventListener("change", updateSubject);
+    relatedField.addEventListener("change", updateSubject);
+    contactDialog.querySelectorAll("[data-close-school-contact]").forEach((button) => {
+      button.addEventListener("click", () => contactDialog.close());
+    });
+    contactDialog.addEventListener("click", (event) => {
+      if (event.target === contactDialog) contactDialog.close();
+    });
+    contactForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!contactForm.reportValidity()) return;
+      const selectedChild = guardianChildren[relatedField.value];
+      const categoryLabel = categoryField.selectedOptions[0]?.textContent || "Bantuan";
+      const relatedLabel = selectedChild ? `${selectedChild.name} · Kelas ${selectedChild.className}` : "Akun keluarga Rina Ramadhani";
+      const body = [
+        "Yth. Tim TK Harapan Bangsa,",
+        "",
+        contactForm.elements.message.value.trim(),
+        "",
+        `Jenis bantuan: ${categoryLabel}`,
+        `Terkait dengan: ${relatedLabel}`,
+        "Pengirim: Rina Ramadhani (parent@classping.id)",
+        `Halaman asal: ${window.location.href}`,
+        "",
+        "Hormat saya,",
+        "Rina Ramadhani"
+      ].join("\n");
+      status.textContent = "Draf email siap. Membuka aplikasi email Anda…";
+      const mailto = `mailto:${schoolContactEmail}?subject=${encodeURIComponent(subjectField.value.trim())}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailto;
+    });
+  }
+
+  const relatedField = contactDialog.querySelector('[name="relatedTo"]');
+  relatedField.innerHTML = `${Object.values(guardianChildren).map((item) => `<option value="${item.id}">${item.name} · Kelas ${item.className}</option>`).join("")}<option value="family">Akun Rina / umum</option>`;
+  relatedField.value = child.id;
+
+  const openButton = helpCard.querySelector("[data-open-school-contact]");
+  openButton.onclick = () => {
+    const form = contactDialog.querySelector("#schoolContactForm");
+    form.reset();
+    form.elements.relatedTo.value = activeGuardianChildId;
+    form.elements.subject.value = getSchoolContactSubject(form.elements.category.value, form.elements.relatedTo.value);
+    contactDialog.querySelector("#schoolContactStatus").textContent = "";
+    contactDialog.showModal();
+    window.setTimeout(() => form.elements.category.focus(), 0);
+  };
+}
+
+function applyGuardianChildContext() {
+  if (!activeSession || (!isParentView && activeSession.role !== "PARENT")) return;
+  activeGuardianChildId = getGuardianChildId(activeSession);
+  activeSession.activeChild = activeGuardianChildId;
+  const child = guardianChildren[activeGuardianChildId];
+  if (profileRole) profileRole.textContent = `Orang Tua ${child.firstName}`;
+  if (child.id === "jisindo") {
+    renderJisindoDashboard();
+    renderJisindoFeed();
+  }
+  const assessmentSubtitle = document.querySelector("#assessmentTitle + p");
+  if (assessmentSubtitle) assessmentSubtitle.textContent = `Perkembangan dan evaluasi belajar ${child.firstName}`;
+  const paymentSubtitle = document.querySelector("#paymentTitle + p");
+  if (paymentSubtitle) paymentSubtitle.textContent = `Riwayat pembayaran dan tagihan ${child.firstName}`;
+  const paymentFilter = document.querySelector("#paymentFilter");
+  if (child.id === "jisindo" && paymentFilter && !paymentFilter.querySelector('option[value="Sebagian"]')) {
+    paymentFilter.insertAdjacentHTML("beforeend", '<option value="Sebagian">Sebagian</option>');
+  }
+  if (child.id === "jisindo" && guardianPaymentMonth) {
+    guardianPaymentMonth.innerHTML = '<option value="Sisa Agustus 2026" data-bill="100000">Sisa Agustus 2026</option><option value="September 2026" data-bill="275000">September 2026</option><option value="Oktober 2026" data-bill="275000">Oktober 2026</option>';
+    if (guardianBillAmount) guardianBillAmount.value = formatRupiah(100000);
+  }
+  updateGuardianLinks(child);
+  setupGuardianNotifications(child);
+  setupGuardianProfileMenu(child);
+  setupGuardianSchoolContact(child);
+  document.title = document.title.replace(/Alya|Jisindo/g, child.firstName);
+}
 
 const students = [
   { name: "Alya Putri Ramadhani", className: "A1", guardian: "Ibu Rina Ramadhani", phone: "0812-3456-7801" },
@@ -71,6 +458,14 @@ const menuButton = document.querySelector("#menuButton");
 const dialog = document.querySelector("#paymentDialog");
 const form = document.querySelector("#paymentForm");
 const toast = document.querySelector("#toast");
+const guardianPaymentDialog = document.querySelector("#guardianPaymentDialog");
+const guardianPaymentForm = document.querySelector("#guardianPaymentForm");
+const guardianPaymentMonth = document.querySelector("#guardianPaymentMonth");
+const guardianBillAmount = document.querySelector("#guardianBillAmount");
+const guardianReceipt = document.querySelector("#guardianReceipt");
+const guardianReceiptAmount = document.querySelector("#guardianReceiptAmount");
+const guardianReceiptPreview = document.querySelector("#guardianReceiptPreview");
+const guardianPaymentResult = document.querySelector("#guardianPaymentResult");
 const reminderDialog = document.querySelector("#reminderDialog");
 const reminderForm = document.querySelector("#reminderForm");
 const reminderTemplate = document.querySelector("#reminderTemplate");
@@ -158,15 +553,17 @@ function enterApp(account, remember = false) {
     email: account.email,
     name: account.name,
     initials: account.initials,
-    viewRole: account.viewRole || account.role
+    viewRole: account.viewRole || account.role,
+    activeChild: getGuardianChildId(account)
   };
   activeSession = session;
   saveSession(session, remember);
   if (loginPage) loginPage.hidden = true;
   if (appShell) appShell.hidden = false;
   applyDashboardRole(session.viewRole);
+  applyGuardianChildContext();
   if (loginPage) {
-    document.title = session.role === "PARENT" ? "ClassPing Guardian — Beranda Alya" : "ClassPing Guardian — Dashboard Admin";
+    document.title = session.role === "PARENT" ? `ClassPing Guardian — Beranda ${guardianChildren[session.activeChild].firstName}` : "ClassPing Guardian — Dashboard Admin";
   }
   window.scrollTo(0, 0);
 }
@@ -214,6 +611,108 @@ function showToast(message, warning = false) {
   toast.classList.add("show");
   window.setTimeout(() => toast.classList.remove("show"), 3000);
 }
+
+function formatRupiah(value) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(value);
+}
+
+function getSelectedGuardianBill() {
+  const selectedOption = guardianPaymentMonth?.selectedOptions?.[0];
+  return Number(selectedOption?.dataset.bill || 250000);
+}
+
+function resetGuardianPaymentFlow() {
+  guardianPaymentForm?.reset();
+  if (guardianBillAmount) guardianBillAmount.value = formatRupiah(getSelectedGuardianBill());
+  if (guardianReceiptPreview) {
+    guardianReceiptPreview.hidden = true;
+    const filename = guardianReceiptPreview.querySelector("strong");
+    if (filename) filename.textContent = "";
+  }
+  if (guardianPaymentResult) {
+    guardianPaymentResult.hidden = true;
+    guardianPaymentResult.classList.remove("warning");
+    guardianPaymentResult.innerHTML = "";
+  }
+}
+
+function closeGuardianPaymentFlow() {
+  guardianPaymentDialog?.close();
+}
+
+document.querySelector("#openGuardianPayment")?.addEventListener("click", () => {
+  resetGuardianPaymentFlow();
+  guardianPaymentDialog?.showModal();
+  window.setTimeout(() => guardianPaymentMonth?.focus(), 0);
+});
+
+document.querySelector("#closeGuardianPayment")?.addEventListener("click", closeGuardianPaymentFlow);
+document.querySelector("#cancelGuardianPayment")?.addEventListener("click", closeGuardianPaymentFlow);
+
+guardianPaymentMonth?.addEventListener("change", () => {
+  if (guardianBillAmount) guardianBillAmount.value = formatRupiah(getSelectedGuardianBill());
+  if (guardianPaymentResult) guardianPaymentResult.hidden = true;
+});
+
+guardianReceipt?.addEventListener("change", () => {
+  const file = guardianReceipt.files?.[0];
+  if (!file) {
+    guardianReceiptPreview.hidden = true;
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    guardianReceipt.value = "";
+    guardianReceiptPreview.hidden = true;
+    showToast("Ukuran bukti pembayaran maksimal 5 MB.", true);
+    return;
+  }
+  const filename = guardianReceiptPreview.querySelector("strong");
+  if (filename) filename.textContent = file.name;
+  guardianReceiptPreview.hidden = false;
+});
+
+document.querySelector("#removeGuardianReceipt")?.addEventListener("click", () => {
+  if (guardianReceipt) guardianReceipt.value = "";
+  if (guardianReceiptPreview) guardianReceiptPreview.hidden = true;
+  guardianReceipt?.focus();
+});
+
+document.querySelector("#copyBankAccount")?.addEventListener("click", async (event) => {
+  try {
+    await navigator.clipboard.writeText("1234567890");
+    event.currentTarget.textContent = "Tersalin";
+    window.setTimeout(() => { event.currentTarget.textContent = "Salin"; }, 1600);
+  } catch {
+    showToast("Nomor rekening: 1234567890");
+  }
+});
+
+guardianPaymentForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!guardianPaymentForm.reportValidity()) return;
+
+  const bill = getSelectedGuardianBill();
+  const paid = Number(guardianReceiptAmount.value);
+  const month = guardianPaymentMonth.value;
+  const remaining = Math.max(0, bill - paid);
+
+  guardianPaymentResult.classList.toggle("warning", remaining > 0);
+  guardianPaymentResult.innerHTML = remaining === 0
+    ? `<span>✓</span><div><strong>Lunas</strong><small>Bukti pembayaran ${month} sesuai dengan total tagihan dan telah dikirim untuk verifikasi sekolah.</small></div>`
+    : `<span>!</span><div><strong>Pembayaran belum lunas</strong><small>Sisa yang perlu dibayar berikutnya: <b>${formatRupiah(remaining)}</b>.</small></div>`;
+  guardianPaymentResult.hidden = false;
+  addGuardianNotification({
+    kind: "payment",
+    title: "Bukti pembayaran berhasil diunggah",
+    message: `Bukti ${month} sebesar ${formatRupiah(paid)} diterima. ${remaining ? `Sisa tagihan ${formatRupiah(remaining)}.` : "Menunggu verifikasi sekolah."}`,
+    href: "payment.html"
+  });
+  guardianPaymentResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
 
 function updateDashboardStats() {
   const paidNames = new Set(payments.map((payment) => payment.name));
@@ -541,6 +1040,7 @@ if (loginForm && loginEmail && loginPassword && loginError && rememberLogin) {
   if (viewSwitch) {
     viewSwitch.addEventListener("click", () => {
       applyDashboardRole(isParentView ? "ADMIN" : "PARENT", true);
+      applyGuardianChildContext();
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
@@ -647,13 +1147,13 @@ if (loginForm && loginEmail && loginPassword && loginError && rememberLogin) {
         const sub = document.querySelector("#activitySubtitle");
         if (sub) sub.textContent = `Kelas ${matchedAct.className} · ${matchedAct.date}`;
       } else {
-        const matchedAss = guardianAssessmentData.find((a) => slugify(a.name) === detailId);
+        const matchedAss = guardianAssessmentData.find((a) => a.childId === activeGuardianChildId && slugify(a.name) === detailId);
         if (matchedAss) {
           document.querySelector("#activityName").textContent = matchedAss.name;
           const sub = document.querySelector("#activitySubtitle");
           if (sub) sub.textContent = `Kelas ${matchedAss.className} · ${matchedAss.period}`;
         } else {
-          const matchedPay = guardianPaymentData.find((a) => slugify(a.month) === detailId);
+          const matchedPay = guardianPaymentData.find((a) => a.childId === activeGuardianChildId && slugify(a.month) === detailId);
           if (matchedPay) {
             document.querySelector("#activityName").textContent = matchedPay.type;
             const sub = document.querySelector("#activitySubtitle");
@@ -708,6 +1208,117 @@ document.querySelectorAll(".post-save").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+  const track = carousel.querySelector(".guardian-carousel-track");
+  const slides = [...carousel.querySelectorAll(".guardian-slide")];
+  const dots = [...carousel.querySelectorAll(".carousel-dots button")];
+  const position = carousel.querySelector(".photo-position");
+  let currentSlide = 0;
+  let pointerStartX = null;
+
+  function showSlide(nextIndex) {
+    currentSlide = (nextIndex + slides.length) % slides.length;
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    slides.forEach((slide, index) => {
+      const active = index === currentSlide;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+    });
+    dots.forEach((dot, index) => {
+      const active = index === currentSlide;
+      dot.classList.toggle("active", active);
+      if (active) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+    if (position) position.textContent = `${currentSlide + 1}/${slides.length}`;
+  }
+
+  carousel.querySelector(".carousel-previous")?.addEventListener("click", () => showSlide(currentSlide - 1));
+  carousel.querySelector(".carousel-next")?.addEventListener("click", () => showSlide(currentSlide + 1));
+  dots.forEach((dot, index) => dot.addEventListener("click", () => showSlide(index)));
+
+  track?.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      showSlide(currentSlide - 1);
+    }
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      showSlide(currentSlide + 1);
+    }
+  });
+
+  carousel.addEventListener("pointerdown", (event) => {
+    pointerStartX = event.clientX;
+  });
+  carousel.addEventListener("pointerup", (event) => {
+    if (pointerStartX === null) return;
+    const distance = event.clientX - pointerStartX;
+    pointerStartX = null;
+    if (Math.abs(distance) < 45) return;
+    showSlide(currentSlide + (distance < 0 ? 1 : -1));
+  });
+  carousel.addEventListener("pointercancel", () => { pointerStartX = null; });
+
+  showSlide(0);
+});
+
+function downloadGuardianSlide(button) {
+  const post = button.closest(".guardian-post");
+  const slide = post?.querySelector(".guardian-slide.is-active") || post?.querySelector(".guardian-post-photo");
+  if (!slide) return;
+  const originalLabel = button.getAttribute("aria-label") || "Unduh foto";
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 900;
+  const context = canvas.getContext("2d");
+  const palette = slide.classList.contains("art-paint-alt")
+    ? ["#98d9d2", "#d9edb2", "#f6c889"]
+    : slide.classList.contains("art-garden")
+      ? ["#bde6c4", "#7fc5a4", "#68ae8d"]
+      : slide.classList.contains("art-music")
+        ? ["#d5c3f0", "#a99adf", "#8878c5"]
+        : ["#ffd98d", "#f2a69d", "#ee938d"];
+  const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+  palette.forEach((color, index) => gradient.addColorStop(index / (palette.length - 1), color));
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.strokeStyle = "rgba(255,255,255,.24)";
+  context.lineWidth = 70;
+  context.beginPath();
+  context.arc(1080, 70, 270, 0, Math.PI * 2);
+  context.stroke();
+  context.beginPath();
+  context.arc(120, 850, 310, 0, Math.PI * 2);
+  context.stroke();
+  context.fillStyle = "#17231f";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.font = '170px "Apple Color Emoji", "Segoe UI Emoji", sans-serif';
+  context.fillText(slide.querySelector(".photo-scene")?.textContent.trim() || "📷", canvas.width / 2, canvas.height / 2);
+
+  canvas.toBlob((blob) => {
+    if (!blob) return;
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = `${slide.dataset.downloadName || "aktivitas-alya"}.png`;
+    link.click();
+    URL.revokeObjectURL(downloadUrl);
+    button.classList.add("downloaded");
+    button.setAttribute("aria-label", "Foto berhasil diunduh");
+    window.setTimeout(() => {
+      button.classList.remove("downloaded");
+      button.setAttribute("aria-label", originalLabel);
+    }, 1800);
+  }, "image/png");
+}
+
+document.querySelectorAll(".post-download").forEach((button) => {
+  button.addEventListener("click", () => downloadGuardianSlide(button));
+});
+
 if (document.querySelector("#assessmentRows")) {
   renderGuardianListPage({
     rowsSelector: "#assessmentRows",
@@ -715,7 +1326,7 @@ if (document.querySelector("#assessmentRows")) {
     filterSelector: "#assessmentStatusFilter",
     emptySelector: "#assessmentEmptyState",
     paginationSelector: "#assessmentPagination",
-    data: guardianAssessmentData,
+    data: guardianAssessmentData.filter((item) => item.childId === activeGuardianChildId),
     searchFields: ["name", "className", "status"],
     filterKey: "status",
     mapRow: (item) => `
@@ -725,7 +1336,7 @@ if (document.querySelector("#assessmentRows")) {
         <td>${item.period}</td>
         <td>${item.average}</td>
         <td><span class="status-pill ${item.status === "Draft" ? "warning" : ""}">${item.status}</span></td>
-        <td><a class="table-view-button" href="assessment-view.html?id=${slugify(item.name)}">View</a></td>
+        <td><a class="table-view-button" href="assessment-view.html?id=${slugify(item.name)}&child=${activeGuardianChildId}">View</a></td>
       </tr>
     `
   });
@@ -738,7 +1349,7 @@ if (document.querySelector("#paymentRows")) {
     filterSelector: "#paymentFilter",
     emptySelector: "#paymentEmptyState",
     paginationSelector: "#paymentPagination",
-    data: guardianPaymentData,
+    data: guardianPaymentData.filter((item) => item.childId === activeGuardianChildId),
     searchFields: ["student", "month", "type"],
     filterKey: "status",
     mapRow: (item) => `
@@ -746,9 +1357,9 @@ if (document.querySelector("#paymentRows")) {
         <td>${item.month}</td>
         <td>${item.type}</td>
         <td>${item.nominal}</td>
-        <td><span class="status-pill ${item.status === "Belum" ? "warning" : ""}">${item.status}</span></td>
+        <td><span class="status-pill ${item.status !== "Lunas" ? "warning" : ""}">${item.status}</span></td>
         <td>${item.date}</td>
-        <td><a class="table-view-button" href="payment-view.html?id=${slugify(item.month)}">View</a></td>
+        <td><a class="table-view-button" href="payment-view.html?id=${slugify(item.month)}&child=${activeGuardianChildId}">View</a></td>
       </tr>
     `
   });

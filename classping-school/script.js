@@ -115,6 +115,8 @@ const adminView = document.querySelector("#adminView");
 const profileName = document.querySelector(".profile strong");
 const profileRole = document.querySelector(".profile small");
 const profileAvatar = document.querySelector(".profile-avatar");
+const profileTrigger = document.querySelector(".profile");
+const notificationTrigger = document.querySelector('.icon-button[aria-label="Notifikasi"]');
 const activityDialog = document.querySelector("#activityDialog");
 const activityForm = document.querySelector("#activityForm");
 const activityPhotos = document.querySelector("#activityPhotos");
@@ -153,8 +155,12 @@ const logoutButton = document.querySelector(".logout");
 const welcomeFirstName = document.querySelector("#welcomeFirstName");
 const dashboardDate = document.querySelector("#dashboardDate");
 const sessionKey = "classping-school-session";
+const schoolProfileOverridesKey = "classping-school-profile-overrides";
+const schoolNotificationsKey = "classping-school-notifications";
+const schoolWorktimeKey = "classping-school-worktime";
 const sessionIdleTimeout = 30 * 60 * 1000;
 const sessionTouchInterval = 30 * 1000;
+const weeklyWorktimeTarget = 40 * 60;
 const studentPagination = document.querySelector("#studentPagination");
 const paymentPagination = document.querySelector("#paymentPagination");
 const activityPagination = document.querySelector("#activityPagination");
@@ -167,6 +173,8 @@ let assessmentPage = 1;
 let activeSchoolSession = null;
 let sessionRemembered = false;
 let lastSessionTouch = 0;
+let worktimeLastTick = Date.now();
+let worktimeInterval = null;
 
 const activityCatalog = {
   "melukis-dengan-jari": {
@@ -218,6 +226,448 @@ const demoAccounts = {
   teacher: { email: "nia@classping.id", password: "guru123", role: "TEACHER", name: "Nia Ramadhani", initials: "NR" }
 };
 
+function getUserInitials(name = "") {
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase() || "?";
+}
+
+function escapeInterfaceText(value = "") {
+  return String(value).replace(/[&<>'"]/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  })[character]);
+}
+
+function readLocalObject(key, fallback = {}) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function loadSchoolProfileOverride(role) {
+  return readLocalObject(schoolProfileOverridesKey)[role] || {};
+}
+
+function saveSchoolProfileOverride(session) {
+  const overrides = readLocalObject(schoolProfileOverridesKey);
+  overrides[session.role] = {
+    name: session.name,
+    email: session.email,
+    phone: session.phone || ""
+  };
+  localStorage.setItem(schoolProfileOverridesKey, JSON.stringify(overrides));
+}
+
+function showSchoolToast(message, tone = "success") {
+  if (!toast) return;
+  toast.innerHTML = `<span>${tone === "success" ? "✓" : "!"}</span>${escapeInterfaceText(message)}`;
+  toast.classList.toggle("warning", tone !== "success");
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+function defaultSchoolNotifications() {
+  return [
+    {
+      id: "demo-upload-success",
+      type: "upload",
+      title: "Aktivitas berhasil dipublikasikan",
+      message: "Foto Melukis dengan Jari sudah tampil untuk orang tua siswa yang ditandai.",
+      time: "Baru saja",
+      link: "activity.html",
+      read: false
+    },
+    {
+      id: "demo-payment-success",
+      type: "payment",
+      title: "Pembayaran SPP diterima",
+      message: "Pembayaran Alya untuk September 2026 telah tercatat lunas.",
+      time: "12 menit lalu",
+      link: "payment.html",
+      read: false
+    }
+  ];
+}
+
+function loadSchoolNotifications() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(schoolNotificationsKey));
+    if (Array.isArray(stored)) return stored;
+  } catch {
+    // Use the prototype defaults below.
+  }
+  const defaults = defaultSchoolNotifications();
+  localStorage.setItem(schoolNotificationsKey, JSON.stringify(defaults));
+  return defaults;
+}
+
+function saveSchoolNotifications(notifications) {
+  localStorage.setItem(schoolNotificationsKey, JSON.stringify(notifications.slice(0, 20)));
+}
+
+function notificationIcon(type) {
+  return type === "payment" ? "Rp" : type === "hours" ? "⏱" : "↑";
+}
+
+function ensureSchoolNotificationPanel() {
+  if (!notificationTrigger) return null;
+  let panel = document.querySelector(".school-notification-panel");
+  if (!panel) {
+    panel = document.createElement("section");
+    panel.className = "school-notification-panel";
+    panel.hidden = true;
+    panel.setAttribute("aria-label", "Daftar notifikasi");
+    notificationTrigger.closest(".topbar-actions")?.append(panel);
+  }
+  return panel;
+}
+
+function renderSchoolNotifications() {
+  if (!notificationTrigger) return;
+  const notifications = loadSchoolNotifications();
+  const unread = notifications.filter((item) => !item.read).length;
+  const badge = notificationTrigger.querySelector(".notification-badge") || notificationTrigger.querySelector("span");
+  if (badge) {
+    badge.classList.add("notification-badge");
+    badge.hidden = unread === 0;
+    badge.textContent = unread > 9 ? "9+" : String(unread);
+  }
+  notificationTrigger.setAttribute("aria-label", unread ? `Notifikasi, ${unread} belum dibaca` : "Notifikasi, tidak ada yang baru");
+
+  const panel = ensureSchoolNotificationPanel();
+  if (!panel) return;
+  panel.innerHTML = `
+    <header><div><strong>Notifikasi</strong><span>${unread ? `${unread} belum dibaca` : "Semua sudah dibaca"}</span></div>${unread ? '<button type="button" data-read-all>Tandai dibaca</button>' : ""}</header>
+    <div class="school-notification-list">
+      ${notifications.length ? notifications.map((item) => `
+        <a class="school-notification-item ${item.read ? "" : "unread"}" href="${item.link || "#"}">
+          <span class="school-notification-icon ${item.type}">${notificationIcon(item.type)}</span>
+          <span><strong>${escapeInterfaceText(item.title)}</strong><small>${escapeInterfaceText(item.message)}</small><time>${escapeInterfaceText(item.time || "Baru saja")}</time></span>
+        </a>`).join("") : '<p class="school-notification-empty">Belum ada notifikasi.</p>'}
+    </div>`;
+}
+
+function addSchoolNotification(notification) {
+  const notifications = loadSchoolNotifications();
+  if (notification.id && notifications.some((item) => item.id === notification.id)) return;
+  notifications.unshift({
+    ...notification,
+    id: notification.id || `notification-${Date.now()}`,
+    time: notification.time || "Baru saja",
+    read: false
+  });
+  saveSchoolNotifications(notifications);
+  renderSchoolNotifications();
+}
+
+function ensureSchoolProfileMenu() {
+  if (!profileTrigger) return null;
+  let menu = document.querySelector(".school-profile-menu");
+  if (!menu) {
+    menu = document.createElement("section");
+    menu.className = "school-profile-menu";
+    menu.hidden = true;
+    menu.setAttribute("role", "menu");
+    menu.setAttribute("aria-label", "Menu profil pengguna");
+    profileTrigger.closest(".topbar-actions")?.append(menu);
+  }
+  return menu;
+}
+
+function renderSchoolProfileMenu() {
+  const menu = ensureSchoolProfileMenu();
+  if (!menu || !activeSchoolSession) return;
+  const session = activeSchoolSession;
+  menu.innerHTML = `
+    <div class="school-profile-menu__head">
+      <span class="profile-avatar">${getUserInitials(session.name)}</span>
+      <div><strong>${escapeInterfaceText(session.name)}</strong><small>${session.role === "TEACHER" ? "Guru" : "Administrator"}</small><span>${escapeInterfaceText(session.email)}</span></div>
+    </div>
+    <button type="button" role="menuitem" data-edit-school-profile><span aria-hidden="true">✎</span><span><strong>Edit profil</strong><small>Ubah nama dan informasi akun</small></span></button>
+    <button type="button" role="menuitem" class="danger" data-school-profile-logout><span aria-hidden="true">↪</span><span><strong>Keluar</strong><small>Akhiri sesi di perangkat ini</small></span></button>`;
+}
+
+function ensureSchoolProfileDialog() {
+  let dialog = document.querySelector("#schoolProfileDialog");
+  if (dialog) return dialog;
+  dialog = document.createElement("dialog");
+  dialog.id = "schoolProfileDialog";
+  dialog.className = "school-profile-dialog";
+  dialog.setAttribute("aria-labelledby", "schoolProfileDialogTitle");
+  dialog.innerHTML = `
+    <form id="schoolProfileForm">
+      <div class="dialog-heading"><div><span class="dialog-icon">✎</span><div><h2 id="schoolProfileDialogTitle">Edit Profil</h2><p>Perbarui informasi pengguna portal sekolah.</p></div></div><button class="close-button" type="button" data-close-school-profile aria-label="Tutup">×</button></div>
+      <div class="school-profile-dialog__identity"><span class="profile-avatar" data-profile-preview>?</span><div><strong data-profile-preview-name>Pengguna</strong><small data-profile-preview-role>Portal sekolah</small></div></div>
+      <label>Nama lengkap<input name="profileName" type="text" autocomplete="name" required maxlength="80" /></label>
+      <label>Email akun<input name="profileEmail" type="email" autocomplete="email" required maxlength="120" /></label>
+      <label>Nomor WhatsApp<input name="profilePhone" type="tel" autocomplete="tel" placeholder="08xx-xxxx-xxxx" maxlength="24" /></label>
+      <div class="dialog-actions"><button class="secondary-button" type="button" data-close-school-profile>Batal</button><button class="primary-button" type="submit">Simpan perubahan</button></div>
+    </form>`;
+  document.body.append(dialog);
+  return dialog;
+}
+
+function openSchoolProfileDialog() {
+  if (!activeSchoolSession) return;
+  const dialog = ensureSchoolProfileDialog();
+  const form = dialog.querySelector("#schoolProfileForm");
+  const accountFallback = activeSchoolSession.role === "TEACHER" ? demoAccounts.teacher : demoAccounts.admin;
+  const profileValues = {
+    profileName: activeSchoolSession.name || accountFallback.name,
+    profileEmail: activeSchoolSession.email || accountFallback.email,
+    profilePhone: activeSchoolSession.phone || ""
+  };
+  Object.entries(profileValues).forEach(([name, value]) => {
+    const input = form.querySelector(`[name="${name}"]`);
+    input.value = value;
+    input.defaultValue = value;
+  });
+  dialog.querySelector("[data-profile-preview]").textContent = getUserInitials(activeSchoolSession.name);
+  dialog.querySelector("[data-profile-preview-name]").textContent = activeSchoolSession.name;
+  dialog.querySelector("[data-profile-preview-role]").textContent = activeSchoolSession.role === "TEACHER" ? "Guru" : "Administrator";
+  dialog.showModal();
+  form.elements.profileName.focus();
+}
+
+function setupSchoolHeaderInteractions() {
+  if (profileTrigger) {
+    profileTrigger.setAttribute("role", "button");
+    profileTrigger.setAttribute("tabindex", "0");
+    profileTrigger.setAttribute("aria-haspopup", "true");
+    profileTrigger.setAttribute("aria-expanded", "false");
+    profileTrigger.setAttribute("aria-label", "Buka menu profil");
+    const toggleProfileMenu = () => {
+      const menu = ensureSchoolProfileMenu();
+      if (!menu || !activeSchoolSession) return;
+      renderSchoolProfileMenu();
+      const opening = menu.hidden;
+      menu.hidden = !opening;
+      profileTrigger.setAttribute("aria-expanded", String(opening));
+      const notificationPanel = ensureSchoolNotificationPanel();
+      if (notificationPanel) notificationPanel.hidden = true;
+      notificationTrigger?.setAttribute("aria-expanded", "false");
+    };
+    profileTrigger.addEventListener("click", toggleProfileMenu);
+    profileTrigger.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggleProfileMenu();
+      }
+    });
+  }
+
+  if (notificationTrigger) {
+    notificationTrigger.setAttribute("aria-haspopup", "true");
+    notificationTrigger.setAttribute("aria-expanded", "false");
+    notificationTrigger.addEventListener("click", () => {
+      renderSchoolNotifications();
+      const panel = ensureSchoolNotificationPanel();
+      if (!panel) return;
+      const opening = panel.hidden;
+      panel.hidden = !opening;
+      notificationTrigger.setAttribute("aria-expanded", String(opening));
+      const profileMenu = ensureSchoolProfileMenu();
+      if (profileMenu) profileMenu.hidden = true;
+      profileTrigger?.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  document.addEventListener("click", (event) => {
+    const profileMenu = document.querySelector(".school-profile-menu");
+    const notificationPanel = document.querySelector(".school-notification-panel");
+    if (profileMenu && !profileMenu.hidden && !profileMenu.contains(event.target) && !profileTrigger?.contains(event.target)) {
+      profileMenu.hidden = true;
+      profileTrigger?.setAttribute("aria-expanded", "false");
+    }
+    if (notificationPanel && !notificationPanel.hidden && !notificationPanel.contains(event.target) && !notificationTrigger?.contains(event.target)) {
+      notificationPanel.hidden = true;
+      notificationTrigger?.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    document.querySelectorAll(".school-profile-menu,.school-notification-panel").forEach((panel) => { panel.hidden = true; });
+    profileTrigger?.setAttribute("aria-expanded", "false");
+    notificationTrigger?.setAttribute("aria-expanded", "false");
+  });
+
+  document.addEventListener("click", (event) => {
+    if (event.target.closest("[data-edit-school-profile]")) {
+      document.querySelector(".school-profile-menu").hidden = true;
+      profileTrigger?.setAttribute("aria-expanded", "false");
+      openSchoolProfileDialog();
+    }
+    if (event.target.closest("[data-school-profile-logout]")) logoutSchoolUser();
+    if (event.target.closest("[data-read-all]")) {
+      const notifications = loadSchoolNotifications().map((item) => ({ ...item, read: true }));
+      saveSchoolNotifications(notifications);
+      renderSchoolNotifications();
+    }
+    if (event.target.closest("[data-close-school-profile]")) document.querySelector("#schoolProfileDialog")?.close();
+  });
+
+  document.addEventListener("submit", (event) => {
+    if (event.target.id !== "schoolProfileForm") return;
+    event.preventDefault();
+    if (!event.target.reportValidity() || !activeSchoolSession) return;
+    const data = new FormData(event.target);
+    activeSchoolSession = {
+      ...activeSchoolSession,
+      name: data.get("profileName").trim(),
+      email: data.get("profileEmail").trim().toLowerCase(),
+      phone: data.get("profilePhone").trim(),
+      initials: getUserInitials(data.get("profileName"))
+    };
+    saveSchoolProfileOverride(activeSchoolSession);
+    persistSchoolSession(activeSchoolSession, sessionRemembered);
+    showAuthenticatedSchool(activeSchoolSession);
+    document.querySelector("#schoolProfileDialog")?.close();
+    showSchoolToast("Profil berhasil diperbarui.");
+  });
+
+  renderSchoolNotifications();
+}
+
+function getSchoolWeek(date = new Date()) {
+  const weekStart = new Date(date);
+  const dayFromMonday = (weekStart.getDay() + 6) % 7;
+  weekStart.setDate(weekStart.getDate() - dayFromMonday);
+  weekStart.setHours(0, 1, 0, 0);
+  if (date < weekStart) weekStart.setDate(weekStart.getDate() - 7);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 6);
+  const key = `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, "0")}-${String(weekStart.getDate()).padStart(2, "0")}`;
+  return { key, start: weekStart, end: weekEnd };
+}
+
+function formatWorktime(minutes, zeroLabel = "0m") {
+  const rounded = Math.max(0, Math.round(minutes));
+  const hours = Math.floor(rounded / 60);
+  const remaining = rounded % 60;
+  if (!hours) return remaining ? `${remaining}m` : zeroLabel;
+  return remaining ? `${hours}j ${remaining}m` : `${hours}j`;
+}
+
+function readSchoolWorktimeStore() {
+  return readLocalObject(schoolWorktimeKey);
+}
+
+function loadCurrentWorktimeRecord() {
+  if (!activeSchoolSession) return null;
+  const store = readSchoolWorktimeStore();
+  const identity = activeSchoolSession.role;
+  const week = getSchoolWeek();
+  let record = store[identity];
+  if (!record) {
+    record = { weekKey: week.key, days: [120, 210, 165, 270, 0, 0, 0], previousTotal: 685 };
+  } else if (record.weekKey !== week.key) {
+    const previousTotal = (record.days || []).reduce((sum, value) => sum + Number(value || 0), 0);
+    record = { weekKey: week.key, days: [0, 0, 0, 0, 0, 0, 0], previousTotal };
+  }
+  record.days = Array.from({ length: 7 }, (_, index) => Number(record.days?.[index] || 0));
+  store[identity] = record;
+  localStorage.setItem(schoolWorktimeKey, JSON.stringify(store));
+  return { store, identity, record, week };
+}
+
+function checkWorktimeNotifications(totalMinutes, weekKey) {
+  if (!activeSchoolSession) return;
+  const identity = activeSchoolSession.role.toLowerCase();
+  if (totalMinutes >= weeklyWorktimeTarget) {
+    addSchoolNotification({
+      id: `hours-over-${identity}-${weekKey}`,
+      type: "hours",
+      title: "Batas 40 jam terlampaui",
+      message: `Waktu aktif pekan ini sudah ${formatWorktime(totalMinutes)}. Pertimbangkan pembagian beban kerja.`,
+      link: "index.html"
+    });
+  } else if (totalMinutes >= 36 * 60) {
+    addSchoolNotification({
+      id: `hours-near-${identity}-${weekKey}`,
+      type: "hours",
+      title: "Mendekati 40 jam pekan ini",
+      message: `Waktu aktif sudah ${formatWorktime(totalMinutes)} dari target 40 jam.`,
+      link: "index.html"
+    });
+  }
+}
+
+function renderSchoolWorktime() {
+  const totalElement = document.querySelector("#worktimeTotal");
+  const chart = document.querySelector("#worktimeChart");
+  if (!totalElement || !chart || !activeSchoolSession) return;
+  const current = loadCurrentWorktimeRecord();
+  if (!current) return;
+  const { record, week } = current;
+  const total = record.days.reduce((sum, value) => sum + value, 0);
+  const previous = Number(record.previousTotal || 0);
+  const difference = total - previous;
+  const todayIndex = (new Date().getDay() + 6) % 7;
+  const labels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+  const dayDescription = [];
+
+  totalElement.textContent = formatWorktime(total);
+  const weekLabel = document.querySelector("#worktimeWeekLabel");
+  if (weekLabel) {
+    const start = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short" }).format(week.start);
+    const end = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short" }).format(week.end);
+    weekLabel.textContent = `${start}–${end}`;
+  }
+  const change = document.querySelector("#worktimeChange");
+  if (change) {
+    change.textContent = difference === 0 ? "Sama dengan minggu lalu" : `${difference > 0 ? "↗" : "↘"} ${formatWorktime(Math.abs(difference))} dari minggu lalu`;
+    change.classList.toggle("down", difference < 0);
+  }
+  chart.innerHTML = record.days.map((minutes, index) => {
+    const height = Math.min(100, Math.max(minutes > 0 ? 3 : 0, (minutes / 480) * 100));
+    const display = minutes > 0 ? formatWorktime(minutes) : "—";
+    dayDescription.push(`${labels[index]} ${display}`);
+    return `<div class="workday ${index === todayIndex ? "today" : ""} ${index > todayIndex ? "future" : ""}"><span><i style="height:${height}%"></i></span><b>${display}</b><small>${labels[index]}</small></div>`;
+  }).join("");
+  chart.setAttribute("aria-label", `Waktu aktif pekan ini: ${dayDescription.join(", ")}`);
+  const goalLabel = document.querySelector("#worktimeGoalLabel");
+  if (goalLabel) goalLabel.textContent = `${formatWorktime(total)} / 40j`;
+  const goalProgress = document.querySelector("#worktimeGoalProgress");
+  if (goalProgress) goalProgress.style.width = `${Math.min(100, (total / weeklyWorktimeTarget) * 100)}%`;
+  checkWorktimeNotifications(total, week.key);
+}
+
+function trackSchoolWorktime() {
+  const now = Date.now();
+  if (!activeSchoolSession || document.hidden) {
+    worktimeLastTick = now;
+    return;
+  }
+  const current = loadCurrentWorktimeRecord();
+  if (!current) return;
+  const elapsedMinutes = Math.min(1, Math.max(0, (now - worktimeLastTick) / 60000));
+  worktimeLastTick = now;
+  const todayIndex = (new Date(now).getDay() + 6) % 7;
+  current.record.days[todayIndex] += elapsedMinutes;
+  current.store[current.identity] = current.record;
+  localStorage.setItem(schoolWorktimeKey, JSON.stringify(current.store));
+  renderSchoolWorktime();
+}
+
+function startSchoolWorktimeTracking() {
+  worktimeLastTick = Date.now();
+  renderSchoolWorktime();
+  if (worktimeInterval) window.clearInterval(worktimeInterval);
+  worktimeInterval = window.setInterval(trackSchoolWorktime, 15_000);
+}
+
 function updateDashboardDate() {
   if (!dashboardDate) return;
   dashboardDate.textContent = new Intl.DateTimeFormat("id-ID", {
@@ -245,9 +695,11 @@ function applyDashboardRole(role, allowPreview = true) {
   viewSwitch.hidden = !allowPreview;
   const label = viewSwitch.querySelector("span");
   if (label) label.textContent = isParentView ? "Kembali ke Admin" : "Lihat sebagai Orang Tua";
-  profileName.textContent = isParentView ? "Rina Ramadhani" : "Andini Sari";
-  profileRole.textContent = isParentView ? "Orang Tua Alya" : "Administrator";
-  profileAvatar.textContent = isParentView ? "RR" : "AS";
+  const sessionName = activeSchoolSession?.name || "Andini Sari";
+  const sessionRole = activeSchoolSession?.role === "TEACHER" ? "Guru" : "Administrator";
+  profileName.textContent = isParentView ? "Rina Ramadhani" : sessionName;
+  profileRole.textContent = isParentView ? "Orang Tua Alya" : sessionRole;
+  profileAvatar.textContent = isParentView ? "RR" : getUserInitials(sessionName);
 }
 
 function authenticate(email, password) {
@@ -267,15 +719,29 @@ function clearSchoolSession() {
   sessionRemembered = false;
 }
 
+function logoutSchoolUser() {
+  clearSchoolSession();
+  if (loginPage) showSchoolLogin();
+  else window.location.replace("index.html");
+}
+
 function readSchoolSession() {
   const localSession = localStorage.getItem(sessionKey);
   const rawSession = localSession || sessionStorage.getItem(sessionKey);
   if (!rawSession) return { session: null, remember: false, expired: false };
   const session = JSON.parse(rawSession);
   if (!['ADMIN', 'TEACHER'].includes(session.role)) throw new Error('Invalid school role');
+  const accountFallback = session.role === "TEACHER" ? demoAccounts.teacher : demoAccounts.admin;
   const lastActive = Number(session.lastActive) || Date.now();
   return {
-    session: { ...session, lastActive },
+    session: {
+      ...session,
+      name: session.name || accountFallback.name,
+      email: session.email || accountFallback.email,
+      phone: session.phone || "",
+      initials: getUserInitials(session.name || accountFallback.name),
+      lastActive
+    },
     remember: Boolean(localSession),
     expired: Date.now() - lastActive >= sessionIdleTimeout
   };
@@ -285,8 +751,11 @@ function showAuthenticatedSchool(session) {
   activeSchoolSession = session;
   if (profileName) profileName.textContent = session.name;
   if (profileRole) profileRole.textContent = session.role === "TEACHER" ? "Guru" : "Administrator";
-  if (profileAvatar) profileAvatar.textContent = session.initials;
+  if (profileAvatar) profileAvatar.textContent = getUserInitials(session.name);
   if (welcomeFirstName) welcomeFirstName.textContent = session.name.split(" ")[0];
+  renderSchoolProfileMenu();
+  renderSchoolNotifications();
+  renderSchoolWorktime();
 
   if (loginPage && appShell) {
     applyDashboardRole(session.role, false);
@@ -352,11 +821,14 @@ function touchSchoolSession() {
 }
 
 function enterApp(account, remember = false) {
+  const profileOverride = loadSchoolProfileOverride(account.role);
+  const effectiveAccount = { ...account, ...profileOverride, role: account.role };
   const session = {
-    role: account.role,
-    email: account.email,
-    name: account.name,
-    initials: account.initials,
+    role: effectiveAccount.role,
+    email: effectiveAccount.email,
+    name: effectiveAccount.name,
+    phone: effectiveAccount.phone || "",
+    initials: getUserInitials(effectiveAccount.name),
     lastActive: Date.now()
   };
   sessionRemembered = remember;
@@ -403,11 +875,7 @@ document.querySelectorAll("[data-demo-account]").forEach((button) => {
 });
 
 if (logoutButton && appShell) {
-  logoutButton.addEventListener("click", () => {
-    clearSchoolSession();
-    if (loginPage) showSchoolLogin();
-    else window.location.replace("index.html");
-  });
+  logoutButton.addEventListener("click", logoutSchoolUser);
 }
 
 const rupiah = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
@@ -1210,6 +1678,12 @@ if (activityForm && activityDialog && activityGrid && activityPhotos && uploadPr
     toast.innerHTML = "<span>✓</span>Aktivitas berhasil dipublikasikan.";
     toast.classList.add("show");
     window.setTimeout(() => toast.classList.remove("show"), 3000);
+    addSchoolNotification({
+      type: "upload",
+      title: "Aktivitas berhasil dipublikasikan",
+      message: `${data.get("title")} sudah tampil untuk ${tagged.length} orang tua siswa yang ditandai.`,
+      link: "activity.html"
+    });
   });
 }
 
@@ -1237,6 +1711,12 @@ if (manageActivityForm && manageActivityDialog && classStudentOptions && toast) 
     toast.innerHTML = `<span>✓</span>Foto dan ${taggedCount} tag siswa ${managedClass} tersimpan.`;
     toast.classList.add("show");
     window.setTimeout(() => toast.classList.remove("show"), 3000);
+    addSchoolNotification({
+      type: "upload",
+      title: "Foto aktivitas berhasil diperbarui",
+      message: `${taggedCount} tag siswa kelas ${managedClass} telah tersimpan.`,
+      link: "activity.html"
+    });
   });
 }
 
@@ -1317,6 +1797,12 @@ if (paymentForm && paymentDialog && toast) {
     toast.innerHTML = "<span>✓</span>Pembayaran berhasil dicatat.";
     toast.classList.add("show");
     window.setTimeout(() => toast.classList.remove("show"), 3000);
+    addSchoolNotification({
+      type: "payment",
+      title: "Pembayaran SPP diterima",
+      message: `Pembayaran ${name} untuk ${data.get("month")} sebesar Rp ${data.get("amount")} telah tercatat.`,
+      link: "payment.html"
+    });
   });
 }
 
@@ -1378,7 +1864,9 @@ document.querySelectorAll(".settings-tab").forEach((tab) => {
   });
 });
 
+setupSchoolHeaderInteractions();
 restoreSchoolSession();
+startSchoolWorktimeTracking();
 
 window.addEventListener("pageshow", () => {
   restoreSchoolSession();
@@ -1389,7 +1877,11 @@ window.addEventListener("pageshow", () => {
 });
 
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && restoreSchoolSession()) touchSchoolSession();
+  worktimeLastTick = Date.now();
+  if (!document.hidden && restoreSchoolSession()) {
+    touchSchoolSession();
+    renderSchoolWorktime();
+  }
 });
 
 window.setInterval(() => {

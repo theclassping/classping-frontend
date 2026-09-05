@@ -107,17 +107,15 @@ body.parent-view .admin-only{display:none!important}
 .photo-scene{font-size:88px;filter:drop-shadow(0 18px 16px rgba(48,48,35,.12));transform:rotate(-4deg)}
 .photo-position{position:absolute;right:13px;top:13px;padding:5px 9px;border-radius:20px;background:rgba(20,37,31,.7);color:#fff;font-size:8px;font-weight:700}
 .guardian-post-content{padding:12px 15px 16px}
-.post-actions{display:flex;align-items:center;gap:3px;margin:0 -7px 2px}
+.post-actions{display:flex;align-items:center;gap:3px;margin:0 0 8px}
 .post-action{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer;transition:background .18s ease,color .18s ease,transform .18s ease}
 .post-action:hover{background:#f0f5f2;color:var(--green)}
 .post-action:active{transform:scale(.92)}
 .post-action svg{width:21px;height:21px;stroke-width:1.9}
-.post-action.liked{color:#d94b57}
-.post-action.liked svg{fill:currentColor}
-.post-action.saved{color:var(--green)}
-.post-action.saved svg{fill:currentColor}
-.post-save{margin-left:auto}
-.post-likes{font-size:9px;font-weight:700;margin:0 0 7px}
+.post-actions-private{justify-content:flex-end}
+.post-actions-private .post-download{display:inline-flex;width:auto;min-height:40px;height:40px;gap:7px;padding:0 12px;border:1px solid #cfe3da;border-radius:11px;color:var(--green);font-size:9px;font-weight:700}
+.post-actions-private .post-download svg{width:18px;height:18px}
+.post-actions-private .post-download:hover{border-color:#9fc9b8;background:#eef7f3}
 .post-caption{color:#53615b;font-size:10px;line-height:1.6;margin:0}
 .post-caption strong{color:var(--ink);margin-right:4px}
 .post-skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}

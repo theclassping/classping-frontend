@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260903-7" />
+  <link rel="stylesheet" href="styles.css?v=20260904-1" />
 </head>
 <body>
   <div class="app-shell" id="appShell">
@@ -112,21 +112,12 @@
                 </div>
               </div>
               <div class="guardian-post-content">
-                <div class="post-actions" aria-label="Aksi unggahan">
-                  <button class="post-action post-like" type="button" aria-label="Sukai foto Melukis dengan Jari" aria-pressed="false">
-                    <svg aria-hidden="true"><use href="#icon-heart" /></svg>
-                  </button>
-                  <button class="post-action" type="button" aria-label="Lihat komentar foto Melukis dengan Jari">
-                    <svg aria-hidden="true"><use href="#icon-message" /></svg>
-                  </button>
+                <div class="post-actions post-actions-private" aria-label="Aksi foto">
                   <button class="post-action post-download" type="button" aria-label="Unduh foto Melukis dengan Jari">
                     <svg aria-hidden="true"><use href="#icon-download" /></svg>
-                  </button>
-                  <button class="post-action post-save" type="button" aria-label="Simpan foto Melukis dengan Jari" aria-pressed="false">
-                    <svg aria-hidden="true"><use href="#icon-bookmark" /></svg>
+                    <span>Unduh foto</span>
                   </button>
                 </div>
-                <p class="post-likes"><span>12</span> apresiasi</p>
                 <p class="post-caption"><strong>Melukis dengan Jari</strong> Hari ini Alya berani mencampur warna biru dan kuning menjadi hijau. Ia juga berbagi cat dengan teman di sebelahnya. Hebat, Alya! 🌈</p>
                 <div class="post-skills" aria-label="Aspek perkembangan"><span>Motorik halus</span><span>Kreativitas</span><span>Sosial</span></div>
                 <p class="post-time">31 AGUSTUS 2026</p>
@@ -146,13 +137,9 @@
                 <span class="photo-scene" aria-hidden="true">🌱</span>
               </div>
               <div class="guardian-post-content">
-                <div class="post-actions" aria-label="Aksi unggahan">
-                  <button class="post-action post-like" type="button" aria-label="Sukai foto Menanam Kacang Hijau" aria-pressed="false"><svg aria-hidden="true"><use href="#icon-heart" /></svg></button>
-                  <button class="post-action" type="button" aria-label="Lihat komentar foto Menanam Kacang Hijau"><svg aria-hidden="true"><use href="#icon-message" /></svg></button>
-                  <button class="post-action post-download" type="button" aria-label="Unduh foto Menanam Kacang Hijau"><svg aria-hidden="true"><use href="#icon-download" /></svg></button>
-                  <button class="post-action post-save" type="button" aria-label="Simpan foto Menanam Kacang Hijau" aria-pressed="false"><svg aria-hidden="true"><use href="#icon-bookmark" /></svg></button>
+                <div class="post-actions post-actions-private" aria-label="Aksi foto">
+                  <button class="post-action post-download" type="button" aria-label="Unduh foto Menanam Kacang Hijau"><svg aria-hidden="true"><use href="#icon-download" /></svg><span>Unduh foto</span></button>
                 </div>
-                <p class="post-likes"><span>9</span> apresiasi</p>
                 <p class="post-caption"><strong>Menanam Kacang Hijau</strong> Alya belajar menaruh benih, menyiram secukupnya, dan memahami bahwa tanaman membutuhkan waktu untuk tumbuh.</p>
                 <div class="post-skills" aria-label="Aspek perkembangan"><span>Sains awal</span><span>Tanggung jawab</span></div>
                 <p class="post-time">31 AGUSTUS 2026</p>
@@ -173,13 +160,9 @@
                 <span class="photo-position">1/3</span>
               </div>
               <div class="guardian-post-content">
-                <div class="post-actions" aria-label="Aksi unggahan">
-                  <button class="post-action post-like" type="button" aria-label="Sukai foto Bermain Alat Musik" aria-pressed="false"><svg aria-hidden="true"><use href="#icon-heart" /></svg></button>
-                  <button class="post-action" type="button" aria-label="Lihat komentar foto Bermain Alat Musik"><svg aria-hidden="true"><use href="#icon-message" /></svg></button>
-                  <button class="post-action post-download" type="button" aria-label="Unduh foto Bermain Alat Musik"><svg aria-hidden="true"><use href="#icon-download" /></svg></button>
-                  <button class="post-action post-save" type="button" aria-label="Simpan foto Bermain Alat Musik" aria-pressed="false"><svg aria-hidden="true"><use href="#icon-bookmark" /></svg></button>
+                <div class="post-actions post-actions-private" aria-label="Aksi foto">
+                  <button class="post-action post-download" type="button" aria-label="Unduh foto Bermain Alat Musik"><svg aria-hidden="true"><use href="#icon-download" /></svg><span>Unduh foto</span></button>
                 </div>
-                <p class="post-likes"><span>14</span> apresiasi</p>
                 <p class="post-caption"><strong>Bermain Alat Musik</strong> Alya mengikuti pola ketukan sederhana dengan tamborin dan menunggu giliran tampil bersama kelompoknya. 🎵</p>
                 <div class="post-skills" aria-label="Aspek perkembangan"><span>Seni</span><span>Konsentrasi</span><span>Percaya diri</span></div>
                 <p class="post-time">28 AGUSTUS 2026</p>
@@ -246,11 +229,8 @@
     <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
     <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.5 3.1 7.6 7.5 9.5 4.4-1.9 7.5-5 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></symbol>
     <symbol id="icon-user-check" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2.5 21v-2a6.5 6.5 0 0 1 11-4.7M16 17l2 2 4-5"/></symbol>
-    <symbol id="icon-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/></symbol>
-    <symbol id="icon-message" viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></symbol>
     <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
-    <symbol id="icon-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4V3Z"/></symbol>
   </svg>
-  <script src="script.js?v=20260903-6"></script>
+  <script src="script.js?v=20260904-1"></script>
 </body>
 </html>

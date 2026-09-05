@@ -99,15 +99,15 @@ function renderJisindoFeed() {
   const social = document.querySelector(".guardian-social.parent-only");
   if (!social) return;
   const posts = [
-    { teacher: "Bu Nia", avatar: "BN", tone: "purple", time: "Hari ini, 08.30", art: "art-music", emoji: "🔦", title: "Eksperimen Cahaya dan Bayangan", caption: "Jisindo mencoba senter pada benda bening dan tidak bening, lalu menceritakan perbedaan bayangannya.", likes: 11, skills: ["Sains", "Bahasa", "Keberanian"], date: "3 SEPTEMBER 2026" },
-    { teacher: "Bu Ratna", avatar: "BR", tone: "green", time: "Kemarin, 10.00", art: "art-garden", emoji: "🍂", title: "Kolase Daun Musim Kering", caption: "Jisindo mengelompokkan daun berdasarkan ukuran dan menyusunnya menjadi bentuk kupu-kupu.", likes: 8, skills: ["Kreativitas", "Motorik halus"], date: "2 SEPTEMBER 2026" },
-    { teacher: "Bu Sinta", avatar: "BS", tone: "", time: "Senin, 09.15", art: "art-paint", emoji: "🏃", title: "Lintasan Rintangan", caption: "Jisindo menjaga keseimbangan saat melewati balok, melompat, dan menyemangati teman satu kelompoknya.", likes: 15, skills: ["Motorik kasar", "Sosial"], date: "31 AGUSTUS 2026" }
+    { teacher: "Bu Nia", avatar: "BN", tone: "purple", time: "Hari ini, 08.30", art: "art-music", emoji: "🔦", title: "Eksperimen Cahaya dan Bayangan", caption: "Jisindo mencoba senter pada benda bening dan tidak bening, lalu menceritakan perbedaan bayangannya.", skills: ["Sains", "Bahasa", "Keberanian"], date: "3 SEPTEMBER 2026" },
+    { teacher: "Bu Ratna", avatar: "BR", tone: "green", time: "Kemarin, 10.00", art: "art-garden", emoji: "🍂", title: "Kolase Daun Musim Kering", caption: "Jisindo mengelompokkan daun berdasarkan ukuran dan menyusunnya menjadi bentuk kupu-kupu.", skills: ["Kreativitas", "Motorik halus"], date: "2 SEPTEMBER 2026" },
+    { teacher: "Bu Sinta", avatar: "BS", tone: "", time: "Senin, 09.15", art: "art-paint", emoji: "🏃", title: "Lintasan Rintangan", caption: "Jisindo menjaga keseimbangan saat melewati balok, melompat, dan menyemangati teman satu kelompoknya.", skills: ["Motorik kasar", "Sosial"], date: "31 AGUSTUS 2026" }
   ];
   social.innerHTML = `
     <div class="guardian-feed-heading"><div><p class="eyebrow">MOMEN JISINDO</p><h1>Aktivitas Jisindo</h1><p>Foto dan cerita kegiatan yang menandai Jisindo.</p></div><span class="feed-privacy-pill"><svg aria-hidden="true"><use href="#icon-lock" /></svg>Khusus Jisindo</span></div>
     <div class="guardian-feed-notice" role="note"><span><svg aria-hidden="true"><use href="#icon-shield" /></svg></span><div><strong>Feed pribadi keluarga Jisindo</strong><p>Anda hanya melihat foto yang sudah ditandai “Jisindo” oleh sekolah.</p></div></div>
     <div class="guardian-feed" aria-label="Feed foto aktivitas Jisindo">
-      ${posts.map((post) => `<article class="guardian-post"><header class="guardian-post-header"><span class="post-avatar ${post.tone}" aria-hidden="true">${post.avatar}</span><div><strong>${post.teacher}</strong><span>Kelas B2 — Bulan · ${post.time}</span></div><span class="tagged-label"><svg aria-hidden="true"><use href="#icon-user-check" /></svg>Jisindo ditandai</span></header><div class="guardian-post-photo ${post.art}" role="img" aria-label="Jisindo mengikuti kegiatan ${post.title}" data-download-name="jisindo-${slugify(post.title)}"><span class="photo-scene" aria-hidden="true">${post.emoji}</span></div><div class="guardian-post-content"><div class="post-actions" aria-label="Aksi unggahan"><button class="post-action post-like" type="button" aria-label="Sukai foto ${post.title}" aria-pressed="false"><svg aria-hidden="true"><use href="#icon-heart" /></svg></button><button class="post-action" type="button" aria-label="Lihat komentar foto ${post.title}"><svg aria-hidden="true"><use href="#icon-message" /></svg></button><button class="post-action post-download" type="button" aria-label="Unduh foto ${post.title}"><svg aria-hidden="true"><use href="#icon-download" /></svg></button><button class="post-action post-save" type="button" aria-label="Simpan foto ${post.title}" aria-pressed="false"><svg aria-hidden="true"><use href="#icon-bookmark" /></svg></button></div><p class="post-likes"><span>${post.likes}</span> apresiasi</p><p class="post-caption"><strong>${post.title}</strong> ${post.caption}</p><div class="post-skills" aria-label="Aspek perkembangan">${post.skills.map((skill) => `<span>${skill}</span>`).join("")}</div><p class="post-time">${post.date}</p></div></article>`).join("")}
+      ${posts.map((post) => `<article class="guardian-post"><header class="guardian-post-header"><span class="post-avatar ${post.tone}" aria-hidden="true">${post.avatar}</span><div><strong>${post.teacher}</strong><span>Kelas B2 — Bulan · ${post.time}</span></div><span class="tagged-label"><svg aria-hidden="true"><use href="#icon-user-check" /></svg>Jisindo ditandai</span></header><div class="guardian-post-photo ${post.art}" role="img" aria-label="Jisindo mengikuti kegiatan ${post.title}" data-download-name="jisindo-${slugify(post.title)}"><span class="photo-scene" aria-hidden="true">${post.emoji}</span></div><div class="guardian-post-content"><div class="post-actions post-actions-private" aria-label="Aksi foto"><button class="post-action post-download" type="button" aria-label="Unduh foto ${post.title}"><svg aria-hidden="true"><use href="#icon-download" /></svg><span>Unduh foto</span></button></div><p class="post-caption"><strong>${post.title}</strong> ${post.caption}</p><div class="post-skills" aria-label="Aspek perkembangan">${post.skills.map((skill) => `<span>${skill}</span>`).join("")}</div><p class="post-time">${post.date}</p></div></article>`).join("")}
       <p class="feed-end"><span aria-hidden="true">✓</span><strong>Semua kabar Jisindo sudah dilihat</strong>Foto baru akan muncul setelah sekolah menandai Jisindo.</p>
     </div>`;
 }
@@ -1188,25 +1188,6 @@ if (document.querySelector("#studentActivityRows") && activeSession?.role === "A
     `
   });
 }
-
-document.querySelectorAll(".post-like").forEach((button) => {
-  button.addEventListener("click", () => {
-    const isLiked = button.getAttribute("aria-pressed") === "true";
-    const likes = button.closest(".guardian-post")?.querySelector(".post-likes span");
-    button.setAttribute("aria-pressed", String(!isLiked));
-    button.classList.toggle("liked", !isLiked);
-    if (likes) likes.textContent = String(Number(likes.textContent) + (isLiked ? -1 : 1));
-  });
-});
-
-document.querySelectorAll(".post-save").forEach((button) => {
-  button.addEventListener("click", () => {
-    const isSaved = button.getAttribute("aria-pressed") === "true";
-    button.setAttribute("aria-pressed", String(!isSaved));
-    button.classList.toggle("saved", !isSaved);
-    button.setAttribute("aria-label", isSaved ? button.getAttribute("aria-label").replace("Batalkan simpan", "Simpan") : button.getAttribute("aria-label").replace("Simpan", "Batalkan simpan"));
-  });
-});
 
 document.querySelectorAll("[data-carousel]").forEach((carousel) => {
   const track = carousel.querySelector(".guardian-carousel-track");
